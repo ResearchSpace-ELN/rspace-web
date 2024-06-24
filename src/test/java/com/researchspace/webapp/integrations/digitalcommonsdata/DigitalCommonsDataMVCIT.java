@@ -1,4 +1,4 @@
-package com.researchspace.webapp.integrations.dcd;
+package com.researchspace.webapp.integrations.digitalcommonsdata;
 
 import static com.researchspace.service.IntegrationsHandler.DIGITAL_COMMONS_DATA_APP_NAME;
 import static org.junit.Assert.assertEquals;
@@ -47,7 +47,6 @@ import org.springframework.web.client.RestTemplate;
 public class DigitalCommonsDataMVCIT extends API_MVC_TestBase {
 
   private RestTemplate restTemplate;
-  private @Autowired DigitalCommonsDataManager digitalCommonsDataManager;
   private @Autowired UserConnectionManager userConnectionManager;
 
   private User user;

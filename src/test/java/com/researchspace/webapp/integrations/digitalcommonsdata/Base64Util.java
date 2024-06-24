@@ -1,4 +1,4 @@
-package com.researchspace.webapp.integrations.dcd;
+package com.researchspace.webapp.integrations.digitalcommonsdata;
 
 import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;

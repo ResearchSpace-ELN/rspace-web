@@ -6,7 +6,7 @@ import com.researchspace.model.User;
 import com.researchspace.model.oauth.UserConnection;
 import com.researchspace.properties.IPropertyHolder;
 import com.researchspace.service.UserConnectionManager;
-import com.researchspace.webapp.integrations.dcd.DigitalCommonsDataController;
+import com.researchspace.webapp.integrations.digitalcommonsdata.DigitalCommonsDataController;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
@@ -28,7 +28,9 @@ public class DigitalCommonsDataUIConnectionConfig implements RSpaceRepoConnectio
 
   public DigitalCommonsDataUIConnectionConfig(
       DigitalCommonsDataController digitalCommonsDataController,
-      UserConnectionManager source, User subject, IPropertyHolder propertyHolder) {
+      UserConnectionManager source,
+      User subject,
+      IPropertyHolder propertyHolder) {
     this.subject = subject;
     this.userConnectionManager = source;
     this.propertyHolder = propertyHolder;
@@ -58,95 +60,14 @@ public class DigitalCommonsDataUIConnectionConfig implements RSpaceRepoConnectio
     }
     String accessToken = optUserConnection.get().getAccessToken();
 
-    if (!digitalCommonsDataController.isConnectionAlive(principal)){
+    if (!digitalCommonsDataController.isConnectionAlive(principal)) {
       digitalCommonsDataController.refreshToken(new BindingAwareModelMap(), principal);
-      accessToken = userConnectionManager.findByUserNameProviderName(
-          subject.getUsername(), DIGITAL_COMMONS_DATA_APP_NAME).get().getAccessToken();
+      accessToken =
+          userConnectionManager
+              .findByUserNameProviderName(subject.getUsername(), DIGITAL_COMMONS_DATA_APP_NAME)
+              .get()
+              .getAccessToken();
     }
     return accessToken;
   }
-
-//  private String refreshToken() throws HttpStatusCodeException {
-//    DcdAccessToken accessToken;
-//    UserConnection userConnection =
-//        userConnectionManager
-//            .findByUserNameProviderName(subject.getUsername(), DIGITAL_COMMONS_DATA_APP_NAME)
-//            .get();
-//    if (StringUtils.isBlank(userConnection.getRefreshToken())) {
-//      throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-//    }
-//
-//    accessToken = doRefreshToken(userConnection.getRefreshToken());
-//    userConnection.setAccessToken(accessToken.getAccessToken());
-//    userConnection.setRefreshToken(accessToken.getRefreshToken());
-//    userConnection.setExpireTime(getExpireTime(accessToken.getExpiresIn()));
-//    userConnection.setDisplayName("DigitalCommonsData refreshed access token");
-//    userConnectionManager.save(userConnection);
-//    log.info("Connected DigitalCommonsData for user {}", subject.getUsername());
-//    return accessToken.getAccessToken();
-//  }
-
-//  protected DcdAccessToken doRefreshToken(String refreshToken) throws HttpStatusCodeException {
-//
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//    headers.setBasicAuth(
-//        propertyHolder.getDigitalCommonsDataClientId(),
-//        propertyHolder.getDigitalCommonsDataClientSecret());
-//    MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-//    formData.add("grant_type", "refresh_token");
-//    formData.add("refresh_token", refreshToken);
-//    formData.add(
-//        "redirect_uri",
-//        propertyHolder.getDigitalCommonsDataCallbackBaseUrl()
-//            + "/apps/digitalcommonsdata/callback");
-//    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
-//
-//    return restTemplate
-//        .exchange(
-//            getAuthBaseUrl() + "/oauth2/token", HttpMethod.POST, request, DcdAccessToken.class)
-//        .getBody();
-//  }
-
-//  protected Boolean isConnectionAlive(String accessToken) {
-//    if (StringUtils.isNotBlank(accessToken)) {
-//      String expectedMsg =
-//          "404 Not Found: \"{\"message\":\"Draft dataset '" + FAKE_ID + "' not found\"}\"";
-//      try {
-//        doCheckConnectionAlive(accessToken);
-//      } catch (HttpClientErrorException clientEx) {
-//        if (expectedMsg.equals(clientEx.getMessage())) {
-//          return Boolean.TRUE;
-//        }
-//      } catch (Exception e) {
-//        log.error("Couldn't perform test action {}", e.getMessage());
-//        return Boolean.FALSE;
-//      }
-//    }
-//    return Boolean.FALSE;
-//  }
-
-
-//  protected void doCheckConnectionAlive(String accessToken) {
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.add("Authorization", "Bearer " + accessToken);
-//    restTemplate.exchange(
-//        getApiBaseUrl() + "/active-data-entities/datasets/drafts/" + FAKE_ID,
-//        HttpMethod.DELETE,
-//        new HttpEntity<>(headers),
-//        Object.class);
-//  }
-//
-//  private long getExpireTime(Long expiresInSeconds) {
-//    return Instant.now().toEpochMilli() + (expiresInSeconds * 1000);
-//  }
-//
-//  private String getAuthBaseUrl() {
-//    return propertyHolder.getDigitalCommonsDataBaseUrl().replace("://", "://auth.");
-//  }
-
-  private String getApiBaseUrl() {
-    return propertyHolder.getDigitalCommonsDataBaseUrl().replace("://", "://api.");
-  }
-
 }

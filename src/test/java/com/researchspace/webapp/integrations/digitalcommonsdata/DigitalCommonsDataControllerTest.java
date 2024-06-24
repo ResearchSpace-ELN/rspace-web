@@ -1,4 +1,5 @@
-package com.researchspace.webapp.integrations.dcd;
+package com.researchspace.webapp.integrations.digitalcommonsdata;
+
 
 import static com.researchspace.service.IntegrationsHandler.DIGITAL_COMMONS_DATA_APP_NAME;
 import static org.junit.Assert.assertEquals;
@@ -16,10 +17,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DigitalCommonsDataManagerTest extends SpringTransactionalTest {
+public class DigitalCommonsDataControllerTest extends SpringTransactionalTest {
 
-  @Autowired private DigitalCommonsDataManager digitalCommonsDataManager;
-  @Autowired private UserConnectionManager userConnectionManager;
+  @Autowired
+  private DigitalCommonsDataController digitalCommonsDataController;
+
+  @Autowired
+  private UserConnectionManager userConnectionManager;
 
   private User testUser;
   private UserConnectionId userConnectionId;
@@ -43,7 +47,7 @@ public class DigitalCommonsDataManagerTest extends SpringTransactionalTest {
   }
 
   @After
-  public void tearDown() {
+  public void tearDownConnection() {
     userConnectionManager.deleteByUserAndProvider(
         DIGITAL_COMMONS_DATA_APP_NAME, testUser.getUsername());
   }
@@ -51,7 +55,7 @@ public class DigitalCommonsDataManagerTest extends SpringTransactionalTest {
   @Test
   public void testGetUserConnectionSucceed() {
     UserConnection actualConnection =
-        digitalCommonsDataManager.getUserConnection(testUser.getUsername()).orElseGet(null);
+        digitalCommonsDataController.getUserConnection(testUser.getUsername()).orElseGet(null);
 
     assertNotNull(actualConnection);
     assertEquals("ACCESS_TOKEN", actualConnection.getAccessToken());
@@ -63,7 +67,9 @@ public class DigitalCommonsDataManagerTest extends SpringTransactionalTest {
   @Test
   public void testGetUserConnectionFails() {
     UserConnection actualConnection =
-        digitalCommonsDataManager.getUserConnection("wrong_username").orElse(null);
+        digitalCommonsDataController.getUserConnection("wrong_username").orElse(null);
     assertNull(actualConnection);
   }
+
+
 }

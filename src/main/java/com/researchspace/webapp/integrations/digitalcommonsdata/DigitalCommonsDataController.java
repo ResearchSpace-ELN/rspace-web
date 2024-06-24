@@ -1,10 +1,11 @@
-package com.researchspace.webapp.integrations.dcd;
+package com.researchspace.webapp.integrations.digitalcommonsdata;
 
 import static com.researchspace.service.IntegrationsHandler.DIGITAL_COMMONS_DATA_APP_NAME;
 
 import com.researchspace.dcd.model.DcdAccessToken;
 import com.researchspace.model.oauth.UserConnection;
 import com.researchspace.model.oauth.UserConnectionId;
+import com.researchspace.service.UserConnectionManager;
 import com.researchspace.webapp.integrations.helper.BaseOAuth2Controller;
 import com.researchspace.webapp.integrations.helper.OauthAuthorizationError;
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
   @Value("${dcd.callback.base.url}")
   private String callbackBaseUrl;
 
-  private @Autowired DigitalCommonsDataManager digitalCommonsDataManager;
+  private @Autowired UserConnectionManager userConnectionManager;
 
   private final RestTemplate restTemplate;
 
@@ -68,12 +69,12 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
   private static final String TEMP_TOKEN =
       "TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEM-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP-TEMP";
   private static final String FAKE_DATASET_ID = "FAKE_ID";
+
   public DigitalCommonsDataController() {
     this.restTemplate = new RestTemplate();
   }
 
   @PostConstruct
-
   public void init() {
     URL_AUTH_END_POINT = getApiBaseUrl() + "/oauth2/authorize";
     URL_TOKEN_END_POINT = getApiBaseUrl() + "/oauth2/token";
@@ -140,8 +141,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
       @RequestParam Map<String, String> params, Model model, Principal principal)
       throws IOException, URISyntaxException {
     DcdAccessToken accessToken;
-    UserConnection userConnection =
-        digitalCommonsDataManager.getUserConnection(principal.getName()).get();
+    UserConnection userConnection = getUserConnection(principal.getName()).get();
     String clientCodeReturned = params.get("code");
     // now (having the client secret code) get the access TOKEN
     if (userConnection.getSecret() != null
@@ -176,8 +176,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
   @GetMapping("/refresh_token")
   public RedirectView refreshToken(Model model, Principal principal) {
     DcdAccessToken accessToken;
-    UserConnection userConnection =
-        digitalCommonsDataManager.getUserConnection(principal.getName()).get();
+    UserConnection userConnection = getUserConnection(principal.getName()).get();
     if (StringUtils.isBlank(userConnection.getRefreshToken())) {
       throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
     }
@@ -208,8 +207,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
 
   @GetMapping("/test_connection")
   public Boolean isConnectionAlive(Principal principal) {
-    Optional<UserConnection> optUserConnection =
-        digitalCommonsDataManager.getUserConnection(principal.getName());
+    Optional<UserConnection> optUserConnection = getUserConnection(principal.getName());
 
     if (optUserConnection.isEmpty()) {
       return Boolean.FALSE;
@@ -240,7 +238,6 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
     }
     return Boolean.FALSE;
   }
-
 
   private DcdAccessToken getAccessToken(String clientCode) throws HttpStatusCodeException {
 
@@ -289,6 +286,15 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
         new UserConnectionId(
             principal.getName(), DIGITAL_COMMONS_DATA_APP_NAME, "ProviderUserIdNotNeeded"));
     return conn;
+  }
+
+  public Optional<UserConnection> getUserConnection(String username) {
+    Optional<UserConnection> optConn =
+        userConnectionManager.findByUserNameProviderName(username, DIGITAL_COMMONS_DATA_APP_NAME);
+    if (!optConn.isPresent()) {
+      log.error("No Digital Commons Data connection found for user {}", username);
+    }
+    return optConn;
   }
 
   private long getExpireTime(Long expiresInSeconds) {

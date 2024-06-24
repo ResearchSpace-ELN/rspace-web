@@ -33,7 +33,7 @@ import com.researchspace.webapp.controller.repositories.FigshareUIConnectionConf
 import com.researchspace.webapp.controller.repositories.RSDataverseConnectionConfig;
 import com.researchspace.webapp.controller.repositories.RSpaceRepoConnectionConfig;
 import com.researchspace.webapp.controller.repositories.ZenodoUIConnectionConfig;
-import com.researchspace.webapp.integrations.dcd.DigitalCommonsDataController;
+import com.researchspace.webapp.integrations.digitalcommonsdata.DigitalCommonsDataController;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -130,8 +130,8 @@ public class RepositoryDepositHandlerImpl implements RepositoryDepositHandler {
           new ZenodoUIConnectionConfig(userConnectionManager, subject, this.propertyHolder);
     } else if (app.getName().equalsIgnoreCase(App.APP_DIGITAL_COMMONS_DATA)) {
       uiConnectionConfig =
-          new DigitalCommonsDataUIConnectionConfig(digitalCommonsDataController,
-              userConnectionManager, subject, this.propertyHolder);
+          new DigitalCommonsDataUIConnectionConfig(
+              digitalCommonsDataController, userConnectionManager, subject, this.propertyHolder);
     } else {
       throw new IllegalArgumentException("Unknown or unconfigured repository: " + app.getName());
     }
@@ -236,7 +236,8 @@ public class RepositoryDepositHandlerImpl implements RepositoryDepositHandler {
             getAppNameFromIntegrationName(IntegrationsHandler.DIGITAL_COMMONS_DATA_APP_NAME), user);
     checkConnectionState(appCfg.getApp(), userManager.getAuthenticatedUserInSession());
     DigitalCommonsDataUIConnectionConfig cfg =
-        new DigitalCommonsDataUIConnectionConfig(digitalCommonsDataController, userConnectionManager, user, propertyHolder);
+        new DigitalCommonsDataUIConnectionConfig(
+            digitalCommonsDataController, userConnectionManager, user, propertyHolder);
     RepositoryConfig repoConnectionInfo =
         repoCfgFactory.createRepositoryConfigFromAppCfg(cfg, user);
     return getRepositoryConfiguration(appCfg.getApp(), repoConnectionInfo);
