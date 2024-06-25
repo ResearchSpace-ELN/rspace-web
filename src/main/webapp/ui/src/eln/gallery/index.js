@@ -16,7 +16,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import useViewportDimensions from "../../util/useViewportDimensions";
 import Alerts from "../../Inventory/components/Alerts";
 import { DisableDragAndDropByDefault } from "../../components/useFileImportDragAndDrop";
-import { GallerySelection } from "./useGalleryActions";
+import { useGallerySelection, GallerySelection } from "./useGallerySelection";
 
 function WholePage() {
   const [appliedSearchTerm, setAppliedSearchTerm] = React.useState("");
