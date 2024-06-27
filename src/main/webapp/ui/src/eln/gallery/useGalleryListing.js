@@ -7,6 +7,10 @@ import * as Parsers from "../../util/parsers";
 import AlertContext, { mkAlert } from "../../stores/contexts/Alert";
 import * as FetchingData from "../../util/fetchingData";
 import { gallerySectionCollectiveNoun } from "./common";
+import {
+  filenameExceptExtension,
+  justFilenameExtension,
+} from "../../util/files";
 
 export opaque type Id = number;
 export function idToString(id: Id): string {
@@ -21,6 +25,15 @@ export type GalleryFile = {|
   thumbnailUrl: string,
   path: $ReadOnlyArray<GalleryFile>,
   open?: () => void,
+
+  /*
+   * There are various places in the UI where the user applies some
+   * transformation to the name of either a folder or file. Mainly the rename
+   * action, but also when duplicating and in other places too. This method
+   * allows the call to generate a new file name by applying a transformation
+   * to the name before the extension, leaving the extension in place.
+   */
+  transformFilename: ((string) => string) => string,
 |};
 
 /**
@@ -209,6 +222,14 @@ export function useGalleryListing({
             },
           }
         : {}),
+      transformFilename: (f) => {
+        if (/Folder/.test(type)) {
+          return f(name);
+        }
+        return `${f(filenameExceptExtension(name))}.${justFilenameExtension(
+          name
+        )}`;
+      },
     };
     return ret;
   }
