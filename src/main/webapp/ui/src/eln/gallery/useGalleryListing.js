@@ -37,6 +37,7 @@ export type GalleryFile = {|
 
   isFolder: boolean,
   isSystemFolder: boolean,
+  isSnippet: boolean,
 |};
 
 /**
@@ -239,6 +240,7 @@ export function useGalleryListing({
       },
       isFolder,
       isSystemFolder: /System Folder/.test(type),
+      isSnippet: /Snippet/.test(type),
     };
     return ret;
   }
