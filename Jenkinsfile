@@ -186,8 +186,8 @@ pipeline {
                 echo 'Building feature branch'
                 sh '''
                 ./mvnw clean package -DskipTests=true -DgenerateReactDist=clean -DrenameResourcesMD5=true \
-                -Denvironment=keepdbintact -Dspring.profiles.active=prod -DRS.logLevel=INFO
-                -Djava-version=${MAVEN_TOOLCHAIN_JAVA_VERSION} -Djava-vendor=${MAVEN_TOOLCHAIN_JAVA_VENDOR}
+                -Denvironment=keepdbintact -Dspring.profiles.active=prod -DRS.logLevel=INFO \
+                -Djava-version=${MAVEN_TOOLCHAIN_JAVA_VERSION} -Djava-vendor=${MAVEN_TOOLCHAIN_JAVA_VENDOR} \
                 -Dliquibase.context=run,dev-test -DpropertyFileDirPlaceholder=\\$\\{propertyFileDir\\}
                 '''
             }
@@ -252,6 +252,11 @@ pipeline {
                                         $class: 'StringParameterValue',
                                         name: 'SERVER_NAME',
                                         value: "$BRANCH_NAME-$BUILD_ID"
+                                ],
+                                [
+                                        $class: 'StringParameterValue',
+                                        name: 'AMI',
+                                        value: 'ami-0bd0e3179d69cc7ac'
                                 ],
                                 [
                                         $class: 'StringParameterValue',
