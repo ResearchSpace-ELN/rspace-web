@@ -210,6 +210,9 @@ public class PropertyHolder implements IMutablePropertyHolder {
   @Value("${zenodo.url}")
   private String zenodoApiUrl;
 
+  @Value("${dcd.base.url}")
+  private String digitalCommonsDataBaseUrl;
+
   @Value("${aspose.enabled:true}")
   private String asposeEnabled;
 
@@ -316,6 +319,10 @@ public class PropertyHolder implements IMutablePropertyHolder {
   @Override
   public String getZenodoApiUrl() {
     return this.zenodoApiUrl;
+  }
+
+  public String getDigitalCommonsDataBaseUrl() {
+    return this.digitalCommonsDataBaseUrl;
   }
 
   public Integer getMinUsernameLength() {
