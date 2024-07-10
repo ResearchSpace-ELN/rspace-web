@@ -269,5 +269,13 @@ public interface IPropertyHolder extends Versionable {
 
   String getZenodoApiUrl();
 
+  String getDigitalCommonsDataBaseUrl();
+
+  String getDigitalCommonsDataCallbackBaseUrl();
+
+  String getDigitalCommonsDataClientId();
+
+  String getDigitalCommonsDataClientSecret();
+
   boolean isAsposeEnabled();
 }

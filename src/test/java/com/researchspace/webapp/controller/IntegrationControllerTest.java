@@ -51,7 +51,7 @@ public class IntegrationControllerTest {
     when(userMgr.getAuthenticatedUserInSession()).thenReturn(subject);
     when(handler.getIntegration(Mockito.eq(subject), Mockito.anyString()))
         .thenReturn(new IntegrationInfo());
-    // +15 for all non-boolean integrations
+    // +19 for all non-boolean integrations
     int integrationsNumber = IntegrationsHandlerImpl.booleanIntegrationPrefs.size() + 19;
     AjaxReturnObject<Map<String, IntegrationInfo>> infos =
         integrationCtrller.getAllIntegrationsInfo(new MockPrincipal(subject.getUsername()));

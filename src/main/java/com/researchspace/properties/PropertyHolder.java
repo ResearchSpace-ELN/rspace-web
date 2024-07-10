@@ -210,6 +210,18 @@ public class PropertyHolder implements IMutablePropertyHolder {
   @Value("${zenodo.url}")
   private String zenodoApiUrl;
 
+  @Value("${dcd.base.url}")
+  private String digitalCommonsDataBaseUrl;
+
+  @Value("${dcd.callback.base.url}")
+  private String digitalCommonsDataCallbackBaseUrl;
+
+  @Value("${dcd.client.id}")
+  private String digitalCommonsDataClientId;
+
+  @Value("${dcd.client.secret}")
+  private String digitalCommonsDataClientSecret;
+
   @Value("${aspose.enabled:true}")
   private String asposeEnabled;
 
@@ -316,6 +328,25 @@ public class PropertyHolder implements IMutablePropertyHolder {
   @Override
   public String getZenodoApiUrl() {
     return this.zenodoApiUrl;
+  }
+
+  public String getDigitalCommonsDataBaseUrl() {
+    return this.digitalCommonsDataBaseUrl;
+  }
+
+  @Override
+  public String getDigitalCommonsDataCallbackBaseUrl() {
+    return digitalCommonsDataCallbackBaseUrl;
+  }
+
+  @Override
+  public String getDigitalCommonsDataClientId() {
+    return digitalCommonsDataClientId;
+  }
+
+  @Override
+  public String getDigitalCommonsDataClientSecret() {
+    return digitalCommonsDataClientSecret;
   }
 
   public Integer getMinUsernameLength() {

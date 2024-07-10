@@ -91,7 +91,8 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
           Preference.GOOGLEDRIVE,
           Preference.CHEMISTRY,
           Preference.ONEDRIVE,
-          Preference.MENDELEY);
+          Preference.MENDELEY,
+          Preference.DIGITAL_COMMONS_DATA);
 
   // for testing, shouldn't be exposed in interface
   public Map<SystemProperty, List<SystemProperty>> getParent2ChildMap() {
@@ -170,6 +171,10 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
         return;
       case ZENODO_APP_NAME:
         setSingleUserToken(info, user, ZENODO_APP_NAME, ZENODO_USER_TOKEN);
+        return;
+      case DIGITAL_COMMONS_DATA_APP_NAME:
+        setSingleUserToken(
+            info, user, DIGITAL_COMMONS_DATA_APP_NAME, DIGITAL_COMMONS_DATA_USER_TOKEN);
         return;
       default:
     }
@@ -403,6 +408,7 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
       case DRYAD_APP_NAME:
       case ARGOS_APP_NAME:
       case ZENODO_APP_NAME:
+      case DIGITAL_COMMONS_DATA_APP_NAME:
         return true;
     }
     return isSingleOptionSetAppConfigIntegration(integrationName);
