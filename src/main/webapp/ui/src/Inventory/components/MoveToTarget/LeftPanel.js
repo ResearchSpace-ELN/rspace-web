@@ -1,13 +1,14 @@
 //@flow
 
-import HelpLinkIcon from "../../../components/HelpLinkIcon";
 import useStores from "../../../stores/use-stores";
 import InventoryPicker from "../Picker/Picker";
 import Typography from "@mui/material/Typography";
 import { observer } from "mobx-react-lite";
 import React, { type ComponentType } from "react";
-import docLinks from "../../../assets/DocLinks";
 import ContainerModel from "../../../stores/models/ContainerModel";
+import HelpDocs from "../../../components/Help/HelpDocs";
+import IconButtonWithTooltip from "../../../components/IconButtonWithTooltip";
+import HelpIcon from "@mui/icons-material/Help";
 
 type LeftPanelArgs = {||};
 
@@ -23,12 +24,10 @@ function LeftPanel(_: LeftPanelArgs) {
     ) {
       if (uiStore.isSingleColumnLayout) {
         return "Press 'Next', followed by 'Move', to move the selected items to this bench.";
-      } else {
-        return "Press 'Move' in the bottom-right to move the selected items to this bench.";
       }
-    } else {
-      return null;
+      return "Press 'Move' in the bottom-right to move the selected items to this bench.";
     }
+    return null;
   };
 
   return (
@@ -45,9 +44,18 @@ function LeftPanel(_: LeftPanelArgs) {
           header={
             <Typography variant="h6" component="h3">
               Pick Destination&nbsp;
-              <HelpLinkIcon
-                link={docLinks.moving}
-                title="Info on moving items."
+              <HelpDocs
+                suggestions={["article:dncoti2i4t"]}
+                Action={({ onClick, disabled }) => (
+                  <IconButtonWithTooltip
+                    color="primary"
+                    size="small"
+                    onClick={onClick}
+                    icon={<HelpIcon />}
+                    title="Info on moving items."
+                    disabled={disabled}
+                  />
+                )}
               />
             </Typography>
           }

@@ -11,6 +11,13 @@ import AnalyticsContext from "../../stores/contexts/Analytics";
 import { when } from "mobx";
 import { observer } from "mobx-react-lite";
 
+const DEFAULT_HELP_SUGGESTIONS = [
+  "article:pfsj1e1u7j",
+  "article:xw0ds8tee1",
+  "article:bzgr8ea9e3",
+  "article:dagfzhl3yw",
+];
+
 type HelpDocsArgs = {|
   /**
    * This inner component is for rendering a button that triggers the opening
@@ -21,6 +28,8 @@ type HelpDocsArgs = {|
    * context then disabled will always be true.
    */
   Action: ({| onClick: () => void, disabled: boolean |}) => Node,
+
+  suggestions?: $ReadOnlyArray<string>,
 |};
 
 function loadScript(url: string): void {
@@ -39,7 +48,7 @@ function loadScript(url: string): void {
 /**
  * Displays the HelpDocs popup window.
  */
-function HelpDocs({ Action }: HelpDocsArgs): Node {
+function HelpDocs({ Action, suggestions }: HelpDocsArgs): Node {
   const analyticsContext = useContext(AnalyticsContext);
   const { trackEvent } = analyticsContext;
 
@@ -80,26 +89,21 @@ function HelpDocs({ Action }: HelpDocsArgs): Node {
       brand: "Support",
       color_mode: "light",
       disable_authorship: true,
-      suggestions: [
-        "article:pfsj1e1u7j",
-        "article:xw0ds8tee1",
-        "article:bzgr8ea9e3",
-        "article:dagfzhl3yw",
-      ],
+      suggestions: suggestions ?? DEFAULT_HELP_SUGGESTIONS,
       i18n: {
         contact_button: "Chat with us",
         search_placeholder: "Type to search for articles...",
         view_all: "View All Articles",
         suggested_articles: "Suggested Articles",
       },
-      onReady: function () {
+      onReady() {
         if (typeof window.Intercom !== "undefined") {
           const intercom = window.Intercom;
-          intercom("onShow", function () {
+          intercom("onShow", () => {
             window.Lighthouse.hide();
             window.Lighthouse.showButton();
           });
-          intercom("onHide", function () {
+          intercom("onHide", () => {
             window.Lighthouse.show();
           });
           if (document.getElementById("intercom-container")) {
@@ -108,26 +112,27 @@ function HelpDocs({ Action }: HelpDocsArgs): Node {
         }
         setLighthouseIsLoaded(true);
       },
-      onShow: function () {
+      onShow() {
         if (typeof window.Intercom !== "undefined") {
           const intercom = window.Intercom;
           intercom("hide");
         }
       },
-      onLoad: function () {
+      onLoad() {
         window.Lighthouse.hideButton();
       },
-      onHide: function () {
+      onHide() {
         window.Lighthouse.hideButton();
       },
     };
-  }, []);
+  }, [suggestions]);
 
   return (
     <>
       <Action
         disabled={!window.Lighthouse}
         onClick={() => {
+          window.hdlh.suggestions = suggestions ?? DEFAULT_HELP_SUGGESTIONS;
           // To show Lighthouse panel, Lighthouse button must be shown first
           window.Lighthouse.showButton();
           window.Lighthouse.show();
