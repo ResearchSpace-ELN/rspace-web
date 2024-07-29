@@ -10,6 +10,7 @@ import React, {
 import AnalyticsContext from "../../stores/contexts/Analytics";
 import { when } from "mobx";
 import { observer } from "mobx-react-lite";
+import Backdrop from "@mui/material/Backdrop";
 
 const DEFAULT_HELP_SUGGESTIONS = [
   "article:pfsj1e1u7j",
@@ -54,6 +55,8 @@ function HelpDocs({ Action, suggestions }: HelpDocsArgs): Node {
 
   // this is simply to trigger a re-render once lighthouse is loaded
   const [_lighthouseIsLoaded, setLighthouseIsLoaded] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   async function loadLighthouse(): Promise<void> {
     await when(() => analyticsContext.isAvailable !== null);
@@ -117,18 +120,27 @@ function HelpDocs({ Action, suggestions }: HelpDocsArgs): Node {
           const intercom = window.Intercom;
           intercom("hide");
         }
+        setOpen(true);
       },
       onLoad() {
         window.Lighthouse.hideButton();
       },
       onHide() {
         window.Lighthouse.hideButton();
+        setOpen(false);
       },
     };
   }, [suggestions]);
 
   return (
     <>
+      <Backdrop
+        sx={{ zIndex: 1400 }}
+        onClick={() => {
+          window.Lighthouse.hide();
+        }}
+        open={open}
+      />
       <Action
         disabled={!window.Lighthouse}
         onClick={() => {
