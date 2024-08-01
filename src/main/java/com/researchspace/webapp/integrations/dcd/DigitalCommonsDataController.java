@@ -32,6 +32,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
@@ -82,7 +83,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
     return this.webBaseUrl.replace("://", "://auth.");
   }
 
-  @GetMapping("/connect")
+  @PostMapping("/connect")
   public RedirectView connect(Model model, Principal principal) throws MalformedURLException {
     String redirectUrl = "";
     try {
@@ -168,7 +169,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
     userConnectionManager.save(userConnection);
     log.info("Connected DigitalCommonsData for user {}", principal.getName());
 
-    return new RedirectView("connected");
+    return new RedirectView("connect/dcd/connected");
   }
 
   @GetMapping("/refresh_token")
