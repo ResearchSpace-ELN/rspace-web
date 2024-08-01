@@ -135,8 +135,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
   }
 
   @GetMapping("/callback")
-  public RedirectView callback(
-      @RequestParam Map<String, String> params, Model model, Principal principal)
+  public String callback(@RequestParam Map<String, String> params, Model model, Principal principal)
       throws IOException, URISyntaxException {
     DcdAccessToken accessToken;
     UserConnection userConnection =
@@ -159,7 +158,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
               .build();
       model.addAttribute("error", error);
 
-      return new RedirectView("connect/authorizationError");
+      return "connect/authorizationError";
     }
 
     userConnection.setAccessToken(accessToken.getAccessToken());
@@ -169,7 +168,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
     userConnectionManager.save(userConnection);
     log.info("Connected DigitalCommonsData for user {}", principal.getName());
 
-    return new RedirectView("connect/dcd/connected");
+    return "connect/dcd/connected";
   }
 
   @GetMapping("/refresh_token")
