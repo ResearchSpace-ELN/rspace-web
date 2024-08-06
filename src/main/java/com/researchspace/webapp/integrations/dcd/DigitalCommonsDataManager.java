@@ -1,8 +1,6 @@
 package com.researchspace.webapp.integrations.dcd;
 
-import com.researchspace.model.User;
 import com.researchspace.model.oauth.UserConnection;
-import com.researchspace.model.views.ServiceOperationResult;
 import java.util.Optional;
 
 /** API Client wrapper for making calls to DMP API */
@@ -17,8 +15,8 @@ public interface DigitalCommonsDataManager {
    *     UserConnection table
    * @return
    */
-  ServiceOperationResult<String> addDoiIdentifierToDigitalCommonsData(
-      String digitalCommonsDataId, String doiIdentifier, User user);
+  // ServiceOperationResult<String> addDoiIdentifierToDigitalCommonsData(
+  // String digitalCommonsDataId, String doiIdentifier, User user);
 
   Optional<UserConnection> getUserConnection(String username);
 }
