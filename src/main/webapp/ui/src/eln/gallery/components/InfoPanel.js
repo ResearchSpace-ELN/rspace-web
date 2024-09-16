@@ -226,6 +226,7 @@ const NameFieldForLargeViewports = styled(
                   onClick={() => {
                     setName(file.name);
                   }}
+                  sx={{ px: 0.75 }}
                 >
                   Cancel
                 </Button>
@@ -234,6 +235,7 @@ const NameFieldForLargeViewports = styled(
                   variant="contained"
                   color="primary"
                   type="submit"
+                  sx={{ px: 0.75 }}
                 >
                   Save
                 </Button>
