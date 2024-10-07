@@ -2,8 +2,8 @@ package com.researchspace.webapp.integrations.fieldmark;
 
 import com.google.common.io.Files;
 import com.researchspace.api.v1.controller.API_MVC_TestBase;
-import com.researchspace.webapp.integrations.fieldmark.model.FieldmarkNotebook;
-import com.researchspace.webapp.integrations.fieldmark.model.FieldmarkRecordsJsonExport;
+import com.researchspace.fieldmark.model.FieldmarkNotebook;
+import com.researchspace.fieldmark.model.FieldmarkRecordsJsonExport;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
