@@ -11,8 +11,4 @@ import lombok.NoArgsConstructor;
 public class FieldmarkJsonExport {
 
   public ArrayList<FieldmarkRecord> records;
-
 }
-
-
-

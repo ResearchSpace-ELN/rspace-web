@@ -67,7 +67,9 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
     jsonResult =
         restTemplate
             .exchange(
-                new URL("https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/records").toURI(),
+                new URL(
+                        "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/records")
+                    .toURI(),
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
                 String.class)
@@ -77,7 +79,9 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
     FieldmarkJsonExport fieldmarkRecords =
         restTemplate
             .exchange(
-                new URL("https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/records").toURI(),
+                new URL(
+                        "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/records")
+                    .toURI(),
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
                 FieldmarkJsonExport.class)
@@ -88,7 +92,9 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
     jsonResult =
         restTemplate
             .exchange(
-                new URL("https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/Primary.csv").toURI(),
+                new URL(
+                        "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/Primary.csv")
+                    .toURI(),
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
                 String.class)
@@ -100,7 +106,8 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
         restTemplate
             .exchange(
                 new URL(
-                    "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/Primary.zip").toURI(),
+                        "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/Primary.zip")
+                    .toURI(),
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
                 byte[].class)
@@ -119,8 +126,8 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
           ZipEntry entry = entries.nextElement();
           // Check if entry is a directory
           if (!entry.isDirectory()) {
-            FileUtils.copyInputStreamToFile
-                (zipFile.getInputStream(entry), new File(entry.getName()));
+            FileUtils.copyInputStreamToFile(
+                zipFile.getInputStream(entry), new File(entry.getName()));
 
             System.out.println("File \"" + entry.getName() + "\" correctly saved");
           }
@@ -142,5 +149,4 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
     headers.add("Authorization", String.format("Bearer %s", accessToken));
     return headers;
   }
-
 }

@@ -271,5 +271,7 @@ public interface IPropertyHolder extends Versionable {
 
   String getDigitalCommonsDataBaseUrl();
 
+  String getFieldmarkBaseUrl();
+
   boolean isAsposeEnabled();
 }
