@@ -1,21 +1,24 @@
 package com.researchspace.webapp.integrations.fieldmark;
 
+import com.google.common.io.Files;
 import com.researchspace.api.v1.controller.API_MVC_TestBase;
-import com.researchspace.model.User;
-import com.researchspace.service.UserConnectionManager;
-import com.researchspace.webapp.integrations.fieldmark.model.FieldmarkJsonExport;
+import com.researchspace.fieldmark.model.FieldmarkNotebook;
+import com.researchspace.fieldmark.model.FieldmarkRecordsJsonExport;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,13 +29,11 @@ import org.springframework.web.client.RestTemplate;
 @WebAppConfiguration
 public class FieldmarkMVCIT extends API_MVC_TestBase {
 
-  private @Autowired UserConnectionManager userConnectionManager;
-  private User user;
+  private static final String COMMA_DELIMITER = ",";
 
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    user = createInitAndLoginAnyUser();
   }
 
   @Test
@@ -41,10 +42,9 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
           + "We leave the test Ignored so we can potentially run it manually by the bearer token")
   public void testCreateDatasetAndPushFile() throws IOException, URISyntaxException {
     RestTemplate restTemplate = new RestTemplate();
-
-    ////////// get access token ////////// - WITH CREDENTIAL FLOW
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
     /* ************
      ///// SET THE ACCESS TOKEN MANUALLY -  It is in BitWarden /////
     **************** */
@@ -61,7 +61,42 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
                 new HttpEntity<>(headers),
                 String.class)
             .getBody();
-    System.out.println("Notebooks: " + jsonResult);
+    System.out.println("Notebooks in JSON: " + jsonResult);
+
+    List<FieldmarkNotebook> fieldmarkNotebooks =
+        restTemplate
+            .exchange(
+                new URL("https://conductor.fieldmark.app/api/notebooks/").toURI(),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                List.class)
+            .getBody();
+    System.out.println("Notebooks in Object: " + fieldmarkNotebooks);
+
+    ///////// get the notebook ID ///////////
+    jsonResult =
+        restTemplate
+            .exchange(
+                new URL(
+                        "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/")
+                    .toURI(),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                String.class)
+            .getBody();
+    System.out.println("Notebook in JSON: " + jsonResult);
+
+    FieldmarkNotebook fieldmarkNotebook =
+        restTemplate
+            .exchange(
+                new URL(
+                        "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/")
+                    .toURI(),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                FieldmarkNotebook.class)
+            .getBody();
+    System.out.println("Notebook in Object: " + fieldmarkNotebook);
 
     ////////// get the records of the notebook //////////
     jsonResult =
@@ -76,7 +111,7 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
             .getBody();
     System.out.println("Records in JSON: " + jsonResult);
 
-    FieldmarkJsonExport fieldmarkRecords =
+    FieldmarkRecordsJsonExport fieldmarkRecords =
         restTemplate
             .exchange(
                 new URL(
@@ -84,7 +119,7 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
                     .toURI(),
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
-                FieldmarkJsonExport.class)
+                FieldmarkRecordsJsonExport.class)
             .getBody();
     System.out.println("Records in Object: " + fieldmarkRecords);
 
@@ -100,6 +135,38 @@ public class FieldmarkMVCIT extends API_MVC_TestBase {
                 String.class)
             .getBody();
     System.out.println("CSV: " + jsonResult);
+
+    byte[] csvFileBytes =
+        restTemplate
+            .exchange(
+                new URL(
+                        "https://conductor.fieldmark.app/api/notebooks/1726126204618-rspace-igsn-demo/Primary.csv")
+                    .toURI(),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                byte[].class)
+            .getBody();
+    System.out.println("CSV bytes: " + csvFileBytes);
+    File csvFileFromBytes = null;
+
+    ///// read the CSV and put into a List
+    try {
+      csvFileFromBytes = new File("file.csv");
+      FileUtils.writeByteArrayToFile(csvFileFromBytes, csvFileBytes);
+
+      List<String> lines = Files.readLines(csvFileFromBytes, Charset.defaultCharset());
+
+      List<List<String>> records =
+          lines.stream()
+              .map(line -> Arrays.asList(line.split(COMMA_DELIMITER)))
+              .collect(Collectors.toList());
+      System.out.println("CSV List of List: " + records);
+
+    } finally {
+      if (csvFileFromBytes != null) {
+        FileUtils.delete(csvFileFromBytes);
+      }
+    }
 
     ////////// get the ZIP file //////////
     byte[] zipFileBytes =
