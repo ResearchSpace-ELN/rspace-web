@@ -29,8 +29,6 @@ define(function() {
 
     function printSettingsList() {
 
-        _printSettings([ 'fieldmark.available' ]);
-
         _printCategory('3rd party File Stores');
         _printSettings([
                 'dropbox.available',
@@ -62,6 +60,7 @@ define(function() {
 
         _printCategory('Inventory');
         _printSettings([ 'inventory.available' ]);
+        _printSettings([ 'fieldmark.available' ]);
 
         _printCategory('Communication');
         _printSettings([ 'msteams.available' ]);
