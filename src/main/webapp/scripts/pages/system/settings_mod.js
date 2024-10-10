@@ -29,6 +29,8 @@ define(function() {
 
     function printSettingsList() {
 
+        _printSettings([ 'fieldmark.available' ]);
+
         _printCategory('3rd party File Stores');
         _printSettings([
                 'dropbox.available',
