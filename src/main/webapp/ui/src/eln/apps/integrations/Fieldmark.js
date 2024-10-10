@@ -5,7 +5,7 @@ import React, { type Node, type AbstractComponent } from "react";
 import IntegrationCard from "../IntegrationCard";
 import { type IntegrationStates } from "../useIntegrationsEndpoint";
 import Button from "@mui/material/Button";
-import DcdIcon from "../icons/dcd.svg";
+import FieldmarktIcon from "../icons/fieldmark.svg";
 import { useFieldmarkEndpoint } from "../useFieldmarkEndpoint";
 import AlertContext, { mkAlert } from "../../../stores/contexts/Alert";
 
@@ -52,7 +52,7 @@ function Fieldmark({ integrationState, update }: FieldmarkArgs): Node {
         name="Fieldmark"
         integrationState={integrationState}
         explanatoryText="Collect structured, geospatial, instrument and multimedia data into notebooks for easy importing into Inventory."
-        image={DcdIcon}
+        image={FieldmarktIcon}
         color={COLOR}
         update={(newMode) =>
           update({ mode: newMode, credentials: integrationState.credentials })
