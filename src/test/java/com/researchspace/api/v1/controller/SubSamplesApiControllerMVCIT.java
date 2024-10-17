@@ -13,6 +13,7 @@ import com.researchspace.api.v1.model.ApiContainer;
 import com.researchspace.api.v1.model.ApiInventoryRecordRevisionList;
 import com.researchspace.api.v1.model.ApiInventoryRecordRevisionList.ApiInventoryRecordRevision;
 import com.researchspace.api.v1.model.ApiSample;
+import com.researchspace.api.v1.model.ApiSampleInfo;
 import com.researchspace.api.v1.model.ApiSampleWithFullSubSamples;
 import com.researchspace.api.v1.model.ApiSubSample;
 import com.researchspace.api.v1.model.ApiSubSampleInfo;
@@ -21,6 +22,8 @@ import com.researchspace.apiutils.ApiError;
 import com.researchspace.model.User;
 import com.researchspace.model.audittrail.AuditAction;
 import com.researchspace.model.units.RSUnitDef;
+import java.util.List;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -31,6 +34,55 @@ public class SubSamplesApiControllerMVCIT extends API_MVC_InventoryTestBase {
   @Before
   public void setup() throws Exception {
     super.setUp();
+  }
+
+  @Test
+  public void createMoreSubSamplesInBasicSample() throws Exception {
+    User anyUser = createInitAndLoginAnyUser();
+    String apiKey = createNewApiKeyForUser(anyUser);
+
+    // new basic sample with default subsample
+    ApiSampleInfo basicSample = createBasicSampleForUser(anyUser);
+    assertEquals(1, basicSample.getSubSamplesCount());
+    assertEquals("asdf", basicSample.getQuantity().toString());
+
+    // create 2 subsamples, with default quantity
+    String twoNewSubSamplesConfigJson =
+        "{ \"sampleId\" : " + basicSample.getId() + ", \"numSubSamples\": 2 }";
+    MvcResult addNewSubSamplesResult =
+        mockMvc
+            .perform(
+                createBuilderForPostWithJSONBody(
+                    apiKey, "/subSamples", anyUser, twoNewSubSamplesConfigJson))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
+    List<Map> createdSubSamples = getFromJsonResponseBody(addNewSubSamplesResult, List.class);
+    assertEquals(2, createdSubSamples.size());
+    assertEquals("newSubSample#1", createdSubSamples.get(0).get("name"));
+    assertEquals("newSubSample#2", createdSubSamples.get(1).get("name"));
+
+    ApiSampleInfo updatedBasicSample = sampleApiMgr.getApiSampleById(basicSample.getId(), anyUser);
+    assertEquals(3, updatedBasicSample.getSubSamplesCount());
+    assertEquals("asdf", updatedBasicSample.getQuantity().toString());
+
+    // add one more subsample, with specified quantity
+    String oneNewSubSampleWithQuantityConfigJson =
+        "{ \"sampleId\" : " + basicSample.getId() + ", \"numSubSamples\": 1, \"\" }";
+    MvcResult addOneSubSampleWithQuantityResult =
+        mockMvc
+            .perform(
+                createBuilderForPostWithJSONBody(
+                    apiKey, "/subSamples", anyUser, twoNewSubSamplesConfigJson))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
+    createdSubSamples = getFromJsonResponseBody(addNewSubSamplesResult, List.class);
+    assertEquals(1, createdSubSamples.size());
+    assertEquals("newSubSample#1", createdSubSamples.get(0).get("name"));
+
+    updatedBasicSample = sampleApiMgr.getApiSampleById(basicSample.getId(), anyUser);
+    assertEquals(4, updatedBasicSample.getSubSamplesCount());
+    assertEquals("asdf", updatedBasicSample.getQuantity().toString());
+
   }
 
   @Test
