@@ -44,7 +44,7 @@ public class SubSamplesApiControllerMVCIT extends API_MVC_InventoryTestBase {
     // new basic sample with default subsample
     ApiSampleInfo basicSample = createBasicSampleForUser(anyUser);
     assertEquals(1, basicSample.getSubSamplesCount());
-    assertEquals("asdf", basicSample.getQuantity().toString());
+    assertEquals("5 g", basicSample.getQuantity().toQuantityInfo().toPlainString());
 
     // create 2 subsamples, with default quantity
     String twoNewSubSamplesConfigJson =
@@ -63,25 +63,26 @@ public class SubSamplesApiControllerMVCIT extends API_MVC_InventoryTestBase {
 
     ApiSampleInfo updatedBasicSample = sampleApiMgr.getApiSampleById(basicSample.getId(), anyUser);
     assertEquals(3, updatedBasicSample.getSubSamplesCount());
-    assertEquals("asdf", updatedBasicSample.getQuantity().toString());
+    assertEquals("7 g", updatedBasicSample.getQuantity().toQuantityInfo().toPlainString());
 
     // add one more subsample, with specified quantity
     String oneNewSubSampleWithQuantityConfigJson =
-        "{ \"sampleId\" : " + basicSample.getId() + ", \"numSubSamples\": 1, \"\" }";
+        "{ \"sampleId\" : " + basicSample.getId() + ", \"numSubSamples\": 1, "
+            + "\"singleSubSampleQuantity\": { \"numericValue\": 5, \"unitId\": 6 } }";
     MvcResult addOneSubSampleWithQuantityResult =
         mockMvc
             .perform(
                 createBuilderForPostWithJSONBody(
-                    apiKey, "/subSamples", anyUser, twoNewSubSamplesConfigJson))
+                    apiKey, "/subSamples", anyUser, oneNewSubSampleWithQuantityConfigJson))
             .andExpect(status().is2xxSuccessful())
             .andReturn();
-    createdSubSamples = getFromJsonResponseBody(addNewSubSamplesResult, List.class);
+    createdSubSamples = getFromJsonResponseBody(addOneSubSampleWithQuantityResult, List.class);
     assertEquals(1, createdSubSamples.size());
     assertEquals("newSubSample#1", createdSubSamples.get(0).get("name"));
 
     updatedBasicSample = sampleApiMgr.getApiSampleById(basicSample.getId(), anyUser);
     assertEquals(4, updatedBasicSample.getSubSamplesCount());
-    assertEquals("asdf", updatedBasicSample.getQuantity().toString());
+    assertEquals("7.005 g", updatedBasicSample.getQuantity().toQuantityInfo().toPlainString());
 
   }
 
