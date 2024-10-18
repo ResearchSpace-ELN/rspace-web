@@ -98,7 +98,7 @@ const UploadNewVersionMenuItem = ({
     return () => input?.removeEventListener("cancel", onError);
   }, [newVersionInputRef, onError]);
 
-  const uploadNewVersionAllowed = (): Result<null> => {
+  const uploadNewVersionAllowed = computed((): Result<null> => {
     return selection
       .asSet()
       .only.toResult(
@@ -118,13 +118,14 @@ const UploadNewVersionMenuItem = ({
           ]);
         return Result.Ok(null);
       });
-  };
+  });
 
   return (
     <>
       <NewMenuItem
         title="Upload New Version"
-        subheader={uploadNewVersionAllowed()
+        subheader={uploadNewVersionAllowed
+          .get()
           .map(() => "")
           .orElseGet(([e]) => e.message)}
         avatar={<FileUploadIcon />}
@@ -137,7 +138,7 @@ const UploadNewVersionMenuItem = ({
           newVersionInputRef.current?.click();
         }}
         compact
-        disabled={uploadNewVersionAllowed().isError}
+        disabled={uploadNewVersionAllowed.get().isError}
       />
       {selection
         .asSet()
@@ -345,19 +346,19 @@ function ActionsMenu({
       )
   );
 
-  const duplicateAllowed = (): Result<null> => {
+  const duplicateAllowed = computed((): Result<null> => {
     if (selection.asSet().some((f) => f.isSystemFolder))
       return Result.Error([new Error("Cannot duplicate system folders.")]);
     return Result.Ok(null);
-  };
+  });
 
-  const deleteAllowed = (): Result<null> => {
+  const deleteAllowed = computed((): Result<null> => {
     if (selection.asSet().some((f) => f.isSystemFolder))
       return Result.Error([new Error("Cannot delete system folders.")]);
     return Result.Ok(null);
-  };
+  });
 
-  const renameAllowed = (): Result<null> => {
+  const renameAllowed = computed((): Result<null> => {
     return selection
       .asSet()
       .only.toResult(() => new Error("Only one item may be renamed at once."))
@@ -366,25 +367,25 @@ function ActionsMenu({
           return Result.Error([new Error("Cannot rename system folders.")]);
         return Result.Ok(null);
       });
-  };
+  });
 
-  const moveToIrodsAllowed = (): Result<null> => {
+  const moveToIrodsAllowed = computed((): Result<null> => {
     if (selection.asSet().some((f) => f.isSystemFolder))
       return Result.Error([new Error("Cannot move system folders to iRODS.")]);
     return Result.Ok(null);
-  };
+  });
 
-  const sharingSnippetsAllowed = (): Result<null> => {
+  const sharingSnippetsAllowed = computed((): Result<null> => {
     if (selection.asSet().some((f) => !f.isSnippet))
       return Result.Error([new Error("Only snippets may be shared.")]);
     return Result.Error([new Error("Not yet available.")]);
-  };
+  });
 
-  const exportAllowed = (): Result<null> => {
+  const exportAllowed = computed((): Result<null> => {
     return Result.Ok(null);
-  };
+  });
 
-  const downloadAllowed = (): Result<null> => {
+  const downloadAllowed = computed((): Result<null> => {
     return selection
       .asSet()
       .only.toResult(
@@ -395,11 +396,11 @@ function ActionsMenu({
           return Result.Error([new Error("Cannot download folders.")]);
         return Result.Ok(null);
       });
-  };
+  });
 
-  const moveAllowed = (): Result<null> => {
+  const moveAllowed = computed((): Result<null> => {
     return Result.Ok(null);
-  };
+  });
 
   return (
     <>
@@ -483,7 +484,8 @@ function ActionsMenu({
         />
         <NewMenuItem
           title="Duplicate"
-          subheader={duplicateAllowed()
+          subheader={duplicateAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={COLOR.background}
@@ -496,11 +498,12 @@ function ActionsMenu({
             });
           }}
           compact
-          disabled={duplicateAllowed().isError}
+          disabled={duplicateAllowed.get().isError}
         />
         <NewMenuItem
           title="Move"
-          subheader={moveAllowed()
+          subheader={moveAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={COLOR.background}
@@ -510,7 +513,7 @@ function ActionsMenu({
             setMoveOpen(true);
           }}
           compact
-          disabled={moveAllowed().isError}
+          disabled={moveAllowed.get().isError}
           aria-haspopup="dialog"
         />
         <MoveDialog
@@ -524,7 +527,8 @@ function ActionsMenu({
         />
         <NewMenuItem
           title="Rename"
-          subheader={renameAllowed()
+          subheader={renameAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={COLOR.background}
@@ -534,7 +538,7 @@ function ActionsMenu({
             setRenameOpen(true);
           }}
           compact
-          disabled={renameAllowed().isError}
+          disabled={renameAllowed.get().isError}
           aria-haspopup="dialog"
         />
         {selection
@@ -564,7 +568,8 @@ function ActionsMenu({
         />
         <NewMenuItem
           title="Download"
-          subheader={downloadAllowed()
+          subheader={downloadAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={COLOR.background}
@@ -577,11 +582,12 @@ function ActionsMenu({
             setActionsMenuAnchorEl(null);
           }}
           compact
-          disabled={downloadAllowed().isError}
+          disabled={downloadAllowed.get().isError}
         />
         <NewMenuItem
           title="Export"
-          subheader={exportAllowed()
+          subheader={exportAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={COLOR.background}
@@ -591,7 +597,7 @@ function ActionsMenu({
             setExportOpen(true);
           }}
           compact
-          disabled={exportAllowed().isError}
+          disabled={exportAllowed.get().isError}
         />
         <EventBoundary>
           <ExportDialog
@@ -620,7 +626,8 @@ function ActionsMenu({
         </EventBoundary>
         <NewMenuItem
           title="Share"
-          subheader={sharingSnippetsAllowed()
+          subheader={sharingSnippetsAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={COLOR.background}
@@ -630,11 +637,12 @@ function ActionsMenu({
             setActionsMenuAnchorEl(null);
           }}
           compact
-          disabled={sharingSnippetsAllowed().isError}
+          disabled={sharingSnippetsAllowed.get().isError}
         />
         <NewMenuItem
           title="Move to iRODS"
-          subheader={moveToIrodsAllowed()
+          subheader={moveToIrodsAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={IRODS_COLOR.background}
@@ -655,7 +663,7 @@ function ActionsMenu({
             setIrodsOpen(true);
           }}
           compact
-          disabled={moveToIrodsAllowed().isError}
+          disabled={moveToIrodsAllowed.get().isError}
           aria-haspopup="dialog"
         />
         <MoveToIrods
@@ -675,7 +683,8 @@ function ActionsMenu({
         <Divider aria-orientation="horizontal" />
         <NewMenuItem
           title="Delete"
-          subheader={deleteAllowed()
+          subheader={deleteAllowed
+            .get()
             .map(() => "")
             .orElseGet(([e]) => e.message)}
           backgroundColor={lighten(theme.palette.error.light, 0.5)}
@@ -688,7 +697,7 @@ function ActionsMenu({
             });
           }}
           compact
-          disabled={deleteAllowed().isError}
+          disabled={deleteAllowed.get().isError}
         />
       </StyledMenu>
       <Typography
