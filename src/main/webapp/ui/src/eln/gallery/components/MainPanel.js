@@ -317,7 +317,6 @@ const Path = ({
                   );
                 })
                 .catch(() => {
-                  // does this happen if the permission is denied?
                   addAlert(
                     mkAlert({
                       variant: "error",
