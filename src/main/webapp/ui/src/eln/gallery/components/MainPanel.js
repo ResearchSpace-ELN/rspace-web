@@ -80,6 +80,8 @@ import Carousel from "./Carousel";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Chip from "@mui/material/Chip";
+import * as ArrayUtils from "../../../util/ArrayUtils";
+import AlertContext, { mkAlert } from "../../../stores/contexts/Alert";
 
 const DragCancelFab = () => {
   const dndContext = useDndContext();
@@ -252,6 +254,7 @@ const Path = ({
   path: $ReadOnlyArray<GalleryFile>,
   clearPath: () => void,
 |}) => {
+  const { addAlert } = React.useContext(AlertContext);
   const {
     eventHandlers: { onFocus, onBlur, onKeyDown },
     getTabIndex,
@@ -293,6 +296,35 @@ const Path = ({
           />
         ))}
       </StyledBreadcrumbs>
+      {ArrayUtils.last(path)
+        .map((f) => (
+          <button
+            onClick={() => {
+              navigator.clipboard
+                .writeText(f.pathAsString())
+                .then(() => {
+                  addAlert(
+                    mkAlert({
+                      variant: "success",
+                      message: "Successfully copied path.",
+                    })
+                  );
+                })
+                .catch(() => {
+                  // does this happen if the permission is denied?
+                  addAlert(
+                    mkAlert({
+                      variant: "error",
+                      message: "Failed to copy path.",
+                    })
+                  );
+                });
+            }}
+          >
+            copy
+          </button>
+        ))
+        .orElse(null)}
     </div>
   );
 };
