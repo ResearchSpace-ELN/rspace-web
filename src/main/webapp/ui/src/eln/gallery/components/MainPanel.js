@@ -82,6 +82,8 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Chip from "@mui/material/Chip";
 import * as ArrayUtils from "../../../util/ArrayUtils";
 import AlertContext, { mkAlert } from "../../../stores/contexts/Alert";
+import IconButtonWithTooltip from "../../../components/IconButtonWithTooltip";
+import ClipboardIcon from "@mui/icons-material/ContentPaste";
 
 const DragCancelFab = () => {
   const dndContext = useDndContext();
@@ -265,7 +267,8 @@ const Path = ({
   });
 
   return (
-    <div
+    <Stack
+      direction="row"
       onBlur={onBlur}
       onFocus={onFocus}
       onKeyDown={(e) => {
@@ -298,7 +301,10 @@ const Path = ({
       </StyledBreadcrumbs>
       {ArrayUtils.last(path)
         .map((f) => (
-          <button
+          <IconButtonWithTooltip
+            title="copy path"
+            icon={<ClipboardIcon />}
+            size="small"
             onClick={() => {
               navigator.clipboard
                 .writeText(f.pathAsString())
@@ -320,12 +326,10 @@ const Path = ({
                   );
                 });
             }}
-          >
-            copy
-          </button>
+          />
         ))
         .orElse(null)}
-    </div>
+    </Stack>
   );
 };
 
