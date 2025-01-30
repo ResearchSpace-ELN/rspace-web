@@ -32,7 +32,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { styled } from "@mui/material/styles";
 import { COLOR } from "../common";
-import ResetZoomIcon from "./ResetZoomIcon";
+import ResetZoomIcon from "./ResetZoomIcon.tsx";
 import Typography from "@mui/material/Typography";
 import { useFolderOpen } from "./OpenFolderProvider";
 import { doNotAwait } from "../../../util/Util";
