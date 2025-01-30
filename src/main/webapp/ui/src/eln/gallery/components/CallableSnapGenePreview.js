@@ -10,7 +10,7 @@ import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
-import ResetZoomIcon from "./ResetZoomIcon";
+import ResetZoomIcon from "./ResetZoomIcon.tsx";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";

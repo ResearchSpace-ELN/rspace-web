@@ -15,7 +15,7 @@ import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Divider from "@mui/material/Divider";
-import ResetZoomIcon from "./ResetZoomIcon";
+import ResetZoomIcon from "./ResetZoomIcon.tsx";
 
 /**
  * Much like how `window.open` allows any JS code on the page to trigger the
