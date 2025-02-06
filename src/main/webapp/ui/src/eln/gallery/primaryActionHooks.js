@@ -20,6 +20,10 @@ export function useImagePreviewOfGalleryFile(): (
 ) => Result<() => Promise<URL>> {
   return (file) => {
     if (file.isImage && file.downloadHref) return Result.Ok(file.downloadHref);
+    if (file.type === "Chemistry") return Result.Ok(() => Promise.resolve(`/gallery/getChemThumbnail/${file.id}/${Math.floor(
+      file.modificationDate.getTime() / 1000
+    )}`));
+    // should this not also work for chemistry previews?
     return Result.Error([new Error("Not an image")]);
   };
 }
