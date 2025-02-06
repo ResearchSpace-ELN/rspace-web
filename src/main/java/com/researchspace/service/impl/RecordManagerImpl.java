@@ -283,21 +283,35 @@ public class RecordManagerImpl implements RecordManager {
   @RequiresActiveLicense
   @Override
   public StructuredDocument createNewStructuredDocument(Long parentId, Long formID, User user) {
-    return createNewStructuredDocument(parentId, formID, "", user, new DefaultRecordContext());
+    return createNewStructuredDocument(
+        parentId, formID, "", user, new DefaultRecordContext(), false);
+  }
+
+  @RequiresActiveLicense
+  @Override
+  public StructuredDocument createNewStructuredDocument(
+      Long parentId, Long formID, User user, boolean skipAddingToChildren) {
+    return createNewStructuredDocument(
+        parentId, formID, "", user, new DefaultRecordContext(), skipAddingToChildren);
   }
 
   @RequiresActiveLicense
   @Override
   public StructuredDocument createNewStructuredDocument(
       Long parentId, Long formID, User user, RecordContext context, ImportOverride override) {
-    return doCreateDocument(parentId, formID, "", user, context, override);
+    return doCreateDocument(parentId, formID, "", user, context, override, false);
   }
 
   @RequiresActiveLicense
   @Override
   public StructuredDocument createNewStructuredDocument(
-      Long parentId, Long formID, String name, User user, RecordContext context) {
-    return doCreateDocument(parentId, formID, name, user, context, null);
+      Long parentId,
+      Long formID,
+      String name,
+      User user,
+      RecordContext context,
+      boolean skipAddingToChildren) {
+    return doCreateDocument(parentId, formID, name, user, context, null, skipAddingToChildren);
   }
 
   private StructuredDocument doCreateDocument(
@@ -306,7 +320,8 @@ public class RecordManagerImpl implements RecordManager {
       String name,
       User user,
       RecordContext context,
-      ImportOverride override) {
+      ImportOverride override,
+      boolean skipAddingToChildren) {
     Validate.notNull(formID, "FormId can't be null!");
     Validate.notNull(user, "User can't be null!");
 
@@ -345,7 +360,7 @@ public class RecordManagerImpl implements RecordManager {
 
     if (parentFolder != null) {
       recordDao.save(rc);
-      parentFolder.addChild(rc, user);
+      parentFolder.addChild(rc, user, skipAddingToChildren);
       folderDao.save(parentFolder);
     }
     recordDao.save(rc);
