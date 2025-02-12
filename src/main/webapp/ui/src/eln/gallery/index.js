@@ -38,7 +38,7 @@ import NavigateContext from "../../stores/contexts/Navigate";
 import { CallableImagePreview } from "./components/CallableImagePreview";
 import { CallablePdfPreview } from "./components/CallablePdfPreview";
 import { CallableAsposePreview } from "./components/CallableAsposePreview";
-import { useSearchParamState } from "../../util/useSearchParamState";
+import { useSearchParamState } from "../../util/useSearchParamState.ts";
 import { FilestoreLoginProvider } from "./components/FilestoreLoginDialog";
 import OpenFolderProvider from "./components/OpenFolderProvider";
 import * as FetchingData from "../../util/fetchingData";
