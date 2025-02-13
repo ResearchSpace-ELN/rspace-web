@@ -10,7 +10,7 @@ import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
 import materialTheme, { COLORS } from "../../theme";
 import Analytics from "../../components/Analytics";
 import CssBaseline from "@mui/material/CssBaseline";
-import { hslToHex } from "../../util/colors";
+import { hslToHex } from "../../util/colors.ts";
 
 window.addEventListener("load", () => {
   const domContainer = document.getElementById("app");
