@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import Name from "../Name";
 import fc from "fast-check";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { makeMockContainer } from "../../../../stores/models/__tests__/ContainerModel/mocking";
 
 beforeEach(() => {

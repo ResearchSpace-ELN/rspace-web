@@ -10,7 +10,7 @@ import "@testing-library/jest-dom";
 import Description from "../Description";
 import fc from "fast-check";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 
 beforeEach(() => {
   jest.clearAllMocks();

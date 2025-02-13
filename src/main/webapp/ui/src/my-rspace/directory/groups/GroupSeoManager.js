@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DialogContentText } from "@mui/material";
 import Button from "@mui/material/Button";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { makeStyles } from "tss-react/mui";
 import axios from "axios";
 import DialogContent from "@mui/material/DialogContent";

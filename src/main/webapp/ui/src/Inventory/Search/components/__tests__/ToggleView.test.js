@@ -8,7 +8,7 @@ import { render, cleanup, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ToggleView from "../ToggleView";
 import { TYPE_LABEL } from "../../../../stores/definitions/Search";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 
 beforeEach(() => {

@@ -10,7 +10,7 @@ import "@testing-library/jest-dom";
 import { makeMockField } from "../../../../stores/models/__tests__/FieldModel/mocking";
 import CustomField from "../CustomField";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import userEvent from "@testing-library/user-event";
 
 beforeEach(() => {

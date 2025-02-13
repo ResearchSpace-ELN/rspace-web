@@ -9,7 +9,7 @@ import React, {
   type ElementProps,
   type Node,
 } from "react";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";

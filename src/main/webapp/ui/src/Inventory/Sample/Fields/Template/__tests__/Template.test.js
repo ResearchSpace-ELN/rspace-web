@@ -17,7 +17,7 @@ import Template from "../Template";
 import { makeMockRootStore } from "../../../../../stores/stores/__tests__/RootStore/mocking";
 import { storesContext } from "../../../../../stores/stores-context";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 import ApiService from "../../../../../common/InvApiService";
 import { sleep } from "../../../../../util/Util";
 import "__mocks__/resizeObserver";

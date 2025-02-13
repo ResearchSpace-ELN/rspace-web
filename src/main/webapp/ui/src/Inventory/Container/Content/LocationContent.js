@@ -9,7 +9,7 @@ import { withStyles } from "Styles";
 import { makeStyles } from "tss-react/mui";
 import { observer, Observer } from "mobx-react-lite";
 import RelativeBox from "../../../components/RelativeBox";
-import { globalStyles } from "../../../theme";
+import { globalStyles } from "../../../theme.ts";
 import {
   type Location,
   type Container,

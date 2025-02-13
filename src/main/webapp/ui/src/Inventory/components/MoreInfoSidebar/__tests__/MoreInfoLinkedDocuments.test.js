@@ -11,7 +11,7 @@ import { mockFactory } from "../../../../stores/definitions/__tests__/Factory/mo
 import InvApiService from "../../../../common/InvApiService";
 import { newDocument } from "../../../../stores/models/Document";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { render, within } from "../../../../__tests__/customQueries";
 
 jest.mock("../../../../common/InvApiService", () => ({

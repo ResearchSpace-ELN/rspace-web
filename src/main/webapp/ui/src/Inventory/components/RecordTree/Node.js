@@ -17,7 +17,7 @@ import NameWithBadge from "../NameWithBadge";
 import { match } from "../../../util/Util";
 import NavigateToNode from "./NavigateToNode";
 import SearchContext from "../../../stores/contexts/Search";
-import { globalStyles } from "../../../theme";
+import { globalStyles } from "../../../theme.ts";
 import clsx from "clsx";
 import { type InventoryRecord } from "../../../stores/definitions/InventoryRecord";
 

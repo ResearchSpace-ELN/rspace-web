@@ -23,7 +23,7 @@ import Collapse from "@mui/material/Collapse";
 import * as ArrayUtils from "../../../../util/ArrayUtils";
 import { observable, makeObservable, action } from "mobx";
 import { type GlobalId } from "../../../../stores/definitions/BaseRecord";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import FormSectionsContext from "../../../../stores/contexts/FormSections";
 import userEvent from "@testing-library/user-event";

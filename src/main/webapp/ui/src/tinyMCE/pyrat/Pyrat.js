@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
 import CircularProgress from "@mui/material/CircularProgress";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import { AnimalType, AnimalState, ErrorReason, Order, Sex } from "./Enums";
 import ErrorView from "./ErrorView";
 import ResultsTable from "./ResultsTable";

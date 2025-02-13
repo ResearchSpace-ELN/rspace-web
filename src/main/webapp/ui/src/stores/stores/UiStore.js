@@ -5,7 +5,7 @@ import { isMobile } from "react-device-detect";
 import { type Alert } from "../contexts/Alert";
 import type { RootStore } from "./RootStore";
 import { match } from "../../util/Util";
-import theme from "../../theme";
+import theme from "../../theme.ts";
 import type { Node } from "react";
 import { type Panel } from "../../util/types";
 import { pick } from "../../util/unsafeUtils";

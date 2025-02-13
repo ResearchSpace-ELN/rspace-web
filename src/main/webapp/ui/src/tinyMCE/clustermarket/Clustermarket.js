@@ -18,7 +18,7 @@ import {
 import Grid from "@mui/material/Grid";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import { ErrorReason, Order, BookingType } from "./Enums";
 import ErrorView from "./ErrorView";
 import ResultsTable from "./ResultsTable";

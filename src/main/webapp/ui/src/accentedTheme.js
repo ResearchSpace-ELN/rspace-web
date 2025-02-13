@@ -1,7 +1,7 @@
 //@flow strict
 
 import { createTheme } from "@mui/material";
-import baseTheme from "./theme";
+import baseTheme from "./theme.ts";
 import { mergeThemes } from "./util/styles";
 import { darken, alpha, lighten } from "@mui/system";
 import { toolbarClasses } from "@mui/material/Toolbar";

@@ -8,7 +8,7 @@ import { search, type Article, type ArticleId } from "./JoveClient";
 import ErrorView from "./ErrorView";
 import { ErrorReason, Order, SearchParam } from "./Enums";
 import useLocalStorage from "../../util/useLocalStorage";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import ResultsTable from "./ResultsTable";
 import JoveSearchBar from "./JoveSearchBar";
 import { type Cell } from "../../components/EnhancedTableHead";

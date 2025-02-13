@@ -14,7 +14,7 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import Popover from "@mui/material/Popover";
 import Card from "@mui/material/Card";
 import Avatar from "@mui/material/Avatar";

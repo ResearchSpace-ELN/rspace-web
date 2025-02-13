@@ -17,7 +17,7 @@ import { storesContext } from "../../../../stores/stores-context";
 import { makeMockRootStore } from "../../../../stores/stores/__tests__/RootStore/mocking";
 import MoveDialog from "../MoveDialog";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { mockFactory } from "../../../../stores/definitions/__tests__/Factory/mocking";
 import Search from "../../../../stores/models/Search";
 import Dialog from "@mui/material/Dialog";

@@ -7,7 +7,7 @@
 import "@testing-library/jest-dom";
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import ExportDialog, { type ExportType } from "../ExportDialog";
 import { type InventoryRecord } from "../../../../stores/definitions/InventoryRecord";

@@ -10,7 +10,7 @@ import "@testing-library/jest-dom";
 import DMPToolMenuItem from "../DMPToolMenuItem";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 
 const mockAxios = new MockAdapter(axios);

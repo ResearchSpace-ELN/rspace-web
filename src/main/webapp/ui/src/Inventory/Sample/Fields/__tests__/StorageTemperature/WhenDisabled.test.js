@@ -12,7 +12,7 @@ import {
   FAHRENHEIT,
 } from "../../../../../stores/definitions/Units";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 
 import StorageTemperature from "../../StorageTemperature";
 import { type Temperature } from "../../../../../stores/definitions/Sample";

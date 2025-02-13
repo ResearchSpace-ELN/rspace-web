@@ -7,7 +7,7 @@ import App from "./App";
 import Alerts from "../../components/Alerts/Alerts";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme, { COLORS } from "../../theme";
+import materialTheme, { COLORS } from "../../theme.ts";
 import Analytics from "../../components/Analytics";
 import CssBaseline from "@mui/material/CssBaseline";
 import { hslToHex } from "../../util/colors.ts";

@@ -11,7 +11,7 @@ import Header from "../Header";
 import Sidebar from "../Sidebar";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 
 jest.mock("../Header", () => jest.fn(() => <></>));
 jest.mock("../Sidebar", () => jest.fn(() => <></>));

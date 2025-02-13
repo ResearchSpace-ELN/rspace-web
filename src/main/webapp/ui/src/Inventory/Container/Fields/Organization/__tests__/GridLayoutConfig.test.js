@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import GridLayoutConfig from "../GridLayoutConfig";
 import { makeMockContainer } from "../../../../../stores/models/__tests__/ContainerModel/mocking";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 import { axe, toHaveNoViolations } from "jest-axe";
 
 expect.extend(toHaveNoViolations);

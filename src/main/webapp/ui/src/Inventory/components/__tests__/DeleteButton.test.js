@@ -8,7 +8,7 @@ import { render, cleanup, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import DeleteButton from "../DeleteButton";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import userEvent from "@testing-library/user-event";
 
 beforeEach(() => {

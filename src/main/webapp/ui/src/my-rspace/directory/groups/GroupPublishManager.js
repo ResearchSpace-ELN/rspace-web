@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DialogContentText } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import AdditionalInfo from "./Autoshare/AdditionalInfo";
 import { makeStyles } from "tss-react/mui";
 import axios from "axios";
