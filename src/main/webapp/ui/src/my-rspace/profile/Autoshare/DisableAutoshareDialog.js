@@ -3,7 +3,7 @@ import React from "react";
 import { Switch, Tooltip } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import Button from "@mui/material/Button";
 import axios from "@/common/axios";
 import { withStyles } from "Styles";

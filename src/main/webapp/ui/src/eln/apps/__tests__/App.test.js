@@ -17,7 +17,7 @@ import App from "../App";
 import "../../../__tests__/assertSemanticHeadings";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import "../../../../__mocks__/matchMedia";
 import allIntegrationsAreDisabled from "./allIntegrationsAreDisabled.json";

@@ -6,7 +6,7 @@
 import React from "react";
 import { render, cleanup, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import StatusFilter from "../StatusFilter";
 import { ThemeProvider } from "@mui/material/styles";
 

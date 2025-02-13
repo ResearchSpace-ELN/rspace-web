@@ -10,7 +10,7 @@ import { CELSIUS } from "../../../../../stores/definitions/Units";
 import StorageTemperature from "../../StorageTemperature";
 import Button from "@mui/material/Button";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 import { type Temperature } from "../../../../../stores/definitions/Sample";
 
 jest.mock("@mui/material/Button", () => jest.fn(() => <></>));

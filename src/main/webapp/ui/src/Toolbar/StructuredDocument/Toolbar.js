@@ -4,7 +4,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";

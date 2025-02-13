@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "../FormControl";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 
 jest.mock("@mui/material/FormLabel", () => jest.fn(() => <div></div>));
 

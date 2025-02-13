@@ -11,7 +11,7 @@ import { subsampleAttrs } from "../../../stores/models/__tests__/SubSampleModel/
 import { ListOfMaterials } from "../../../stores/models/MaterialsModel";
 import MaterialsTable from "../MaterialsTable";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 
 jest.mock("../../../common/InvApiService", () => {});
 jest.mock("../../../stores/stores/RootStore", () => () => ({

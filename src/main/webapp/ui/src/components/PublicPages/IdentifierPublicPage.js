@@ -22,7 +22,7 @@ import React, {
 import { createRoot } from "react-dom/client";
 import { observer } from "mobx-react-lite";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import clsx from "clsx";
 import { makeStyles } from "tss-react/mui";
 import axios from "@/common/axios";

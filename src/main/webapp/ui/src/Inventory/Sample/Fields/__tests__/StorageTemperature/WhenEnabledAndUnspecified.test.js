@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import StorageTemperature from "../../StorageTemperature";
 import { CELSIUS } from "../../../../../stores/definitions/Units";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 import { type Temperature } from "../../../../../stores/definitions/Sample";
 import userEvent from "@testing-library/user-event";
 

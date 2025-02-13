@@ -5,7 +5,7 @@ import ChemCard from "./chemCard";
 import { makeStyles } from "tss-react/mui";
 import styled from "@emotion/styled";
 import { createRoot } from "react-dom/client";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
 

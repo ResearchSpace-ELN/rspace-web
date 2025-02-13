@@ -8,7 +8,7 @@ import { render, cleanup, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { makeMockContainer } from "../../../../../stores/models/__tests__/ContainerModel/mocking";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 import Organization from "../Organization";
 
 beforeEach(() => {

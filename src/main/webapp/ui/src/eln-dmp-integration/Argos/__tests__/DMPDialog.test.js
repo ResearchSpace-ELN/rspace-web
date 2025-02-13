@@ -11,7 +11,7 @@ import MockAdapter from "axios-mock-adapter";
 import DMPDialog from "../DMPDialog";
 import * as axios from "axios";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { within, render } from "../../../__tests__/customQueries";
 import { take, incrementForever } from "../../../util/iterators";
 import userEvent from "@testing-library/user-event";

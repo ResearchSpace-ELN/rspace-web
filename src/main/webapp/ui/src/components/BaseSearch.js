@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import { makeStyles } from "tss-react/mui";

@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect, type Node } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import UserSelect from "./UserBox";

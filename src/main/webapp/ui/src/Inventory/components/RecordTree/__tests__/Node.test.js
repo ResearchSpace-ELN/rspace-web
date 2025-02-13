@@ -12,7 +12,7 @@ import Search from "../../../../stores/models/Search";
 import { mockFactory } from "../../../../stores/definitions/__tests__/Factory/mocking";
 import NavigateToNode from "../NavigateToNode";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 
 import Node from "../Node";

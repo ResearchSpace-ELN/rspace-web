@@ -19,7 +19,7 @@ import Search from "../../../stores/models/Search";
 import SearchContext from "../../../stores/contexts/Search";
 import { menuIDs } from "../../../util/menuIDs";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { containerAttrs } from "../../../stores/models/__tests__/ContainerModel/mocking";
 import ApiServiceBase from "../../../common/ApiServiceBase";
 import MemoisedFactory from "../../../stores/models/Factory/MemoisedFactory";

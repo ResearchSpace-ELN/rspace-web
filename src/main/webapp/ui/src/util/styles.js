@@ -2,7 +2,7 @@
 
 import * as trm from "tss-react/mui";
 import { type ComponentType } from "react";
-import { type Theme } from "../theme";
+import { type Theme } from "../theme.ts";
 
 export function withStyles<Config, Classes: { ... }>(
   styles:

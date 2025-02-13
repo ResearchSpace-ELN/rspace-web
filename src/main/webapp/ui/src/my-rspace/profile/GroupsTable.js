@@ -12,8 +12,8 @@ import EnhancedTableHead from "../../components/EnhancedTableHead";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
 
-import materialTheme from "../../theme";
 import axios from "@/common/axios";
+import materialTheme from "../../theme.ts";
 import AutoshareStatus from "./Autoshare/AutoshareStatus";
 
 export default function GroupsTable(props) {

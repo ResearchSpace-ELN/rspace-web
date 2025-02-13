@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";

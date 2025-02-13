@@ -14,7 +14,7 @@ import { makeMockContainer } from "../../../../../stores/models/__tests__/Contai
 import "../../../../../../__mocks__/createObjectURL.js";
 import "../../../../../../__mocks__/matchMedia.js";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 
 beforeEach(() => {
   jest.clearAllMocks();

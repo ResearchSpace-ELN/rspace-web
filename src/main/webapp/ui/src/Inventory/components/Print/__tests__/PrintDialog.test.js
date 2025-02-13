@@ -8,7 +8,7 @@
 import "@testing-library/jest-dom";
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import PrintDialog, { type PrintType } from "../PrintDialog";
 import { generatedBarcode, persistedBarcode1 } from "./mocking";

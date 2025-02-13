@@ -3,7 +3,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 
 class CreateGroupStep1 extends React.Component {
   constructor(props) {

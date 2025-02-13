@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, forwardRef } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import clsx from "clsx";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";

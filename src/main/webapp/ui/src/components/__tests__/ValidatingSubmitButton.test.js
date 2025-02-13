@@ -11,7 +11,7 @@ import Result from "../../util/result";
 import "../../../__mocks__/matchMedia";
 import each from "jest-each";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 
 beforeEach(() => {
   jest.clearAllMocks();

@@ -27,7 +27,7 @@ import { makeMockTemplate } from "../../stores/models/__tests__/TemplateModel/mo
 import { makeMockSubSample } from "../../stores/models/__tests__/SubSampleModel/mocking";
 import { storesContext } from "../../stores/stores-context";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import SynchroniseFormSections from "../components/Stepper/SynchroniseFormSections";
 import { type InventoryRecord } from "../../stores/definitions/InventoryRecord";
 import { assertConsistentOrderOfLists } from "../../__tests__/assertConsistentOrderOfLists";

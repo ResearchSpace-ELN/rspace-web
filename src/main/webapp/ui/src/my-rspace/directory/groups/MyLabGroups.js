@@ -3,7 +3,7 @@ import React from "react";
 import Button from "@mui/material/Button";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import MyLabGroupsDialog from "./MyLabGroupsDialog";
 import GroupAutoshareManager from "./Autoshare/GroupAutoshareManager";
 import { createRoot } from "react-dom/client";

@@ -16,7 +16,7 @@ import {
 } from "../../../../stores/stores/__tests__/RootStore/mocking";
 import { makeMockContainer } from "../../../../stores/models/__tests__/ContainerModel/mocking";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 
 import LocationsImageField from "../LocationsImageField";
 import ImageField from "../../../../components/Inputs/ImageField";

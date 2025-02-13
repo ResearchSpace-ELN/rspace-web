@@ -11,7 +11,7 @@ import { storesContext } from "../../../../stores/stores-context";
 import { makeMockRootStore } from "../../../../stores/stores/__tests__/RootStore/mocking";
 import { makeMockContainer } from "../../../../stores/models/__tests__/ContainerModel/mocking";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { mockFactory } from "../../../../stores/definitions/__tests__/Factory/mocking";
 import Search from "../../../../stores/models/Search";
 import MoveAction from "../MoveAction";

@@ -22,7 +22,7 @@ import EnhancedTableHead from "../components/EnhancedTableHead";
 import Radio from "@mui/material/Radio";
 import { stableSort, getSorting, paginationOptions } from "../util/table";
 import { createRoot } from "react-dom/client";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
 

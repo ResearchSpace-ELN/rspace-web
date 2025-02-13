@@ -27,7 +27,7 @@ import ExportDialog from "../../components/Export/ExportDialog";
 import SettingsDialog from "../Settings/SettingsDialog";
 import { mapNullable } from "../../../util/Util";
 import { InvalidState } from "../../../util/error";
-import { type Theme } from "../../../theme";
+import { type Theme } from "../../../theme.ts";
 import RecordTypeIcon from "../../../components/RecordTypeIcon";
 import { useTheme, ThemeProvider } from "@mui/material/styles";
 import useNavigateHelpers from "../../useNavigateHelpers";

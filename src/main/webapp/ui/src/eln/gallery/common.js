@@ -1,7 +1,7 @@
 //@flow strict
 
 import React, { type Node } from "react";
-import { COLORS as baseThemeColors } from "../../theme";
+import { COLORS as baseThemeColors } from "../../theme.ts";
 import Result from "../../util/result";
 import * as Parsers from "../../util/parsers";
 import ChemistryIcon from "./chemistryIcon";

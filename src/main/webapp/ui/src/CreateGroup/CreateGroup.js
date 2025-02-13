@@ -6,7 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import MobileStepper from "@mui/material/MobileStepper";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import Step1 from "./CreateGroupStep1";
 import Step2 from "./CreateGroupStep2";
 import Step3 from "./CreateGroupStep3";

@@ -8,7 +8,7 @@ import { render, cleanup, screen, act, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import InvApiService from "../../../../common/InvApiService";
 import TemplatePicker from "../TemplatePicker";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import { templateAttrs } from "../../../../stores/models/__tests__/TemplateModel/mocking";
 import { makeMockRootStore } from "../../../../stores/stores/__tests__/RootStore/mocking";

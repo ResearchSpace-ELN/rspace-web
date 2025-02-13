@@ -18,7 +18,7 @@ import { storesContext } from "../../../../../stores/stores-context";
 import { makeMockRootStore } from "../../../../../stores/stores/__tests__/RootStore/mocking";
 import { makeMockContainer } from "../../../../../stores/models/__tests__/ContainerModel/mocking";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../../theme";
+import materialTheme from "../../../../../theme.ts";
 import GridDimensions from "../GridDimensions";
 import { parseInteger } from "../../../../../util/parsers";
 import { assertNotNull } from "../../../../../util/__tests__/helpers";
