@@ -3,7 +3,7 @@
 import { createTheme } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
 import { grey, red } from "@mui/material/colors";
-import { hslToHex } from "./util/colors";
+import { hslToHex } from "./util/colors.ts";
 
 export type RecordPalette = {|
   bg: string,
