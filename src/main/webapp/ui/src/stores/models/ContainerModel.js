@@ -5,7 +5,7 @@ import { type URL, type Point } from "../../util/types";
 import { type _LINK } from "../../common/ApiServiceBase";
 import { match, classMixin, clamp } from "../../util/Util";
 import * as ArrayUtils from "../../util/ArrayUtils";
-import { selectColor } from "../../util/colors";
+import { selectColor } from "../../util/colors.ts";
 import RsSet from "../../util/set";
 import { layoutToLabels } from "../../util/table";
 import {
