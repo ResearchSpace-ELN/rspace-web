@@ -26,7 +26,7 @@ import PhotoIcon from "@mui/icons-material/Photo";
 import ContentsChips from "../../Container/Content/ContentsChips";
 import SearchContext from "../../../stores/contexts/Search";
 import useStores from "../../../stores/use-stores";
-import { globalStyles, type Theme } from "../../../theme";
+import { globalStyles, type Theme } from "../../../theme.ts";
 import clsx from "clsx";
 import ImagePreview from "../../../components/ImagePreview";
 import { StyledMenu } from "../../../components/StyledMenu";

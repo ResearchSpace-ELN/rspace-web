@@ -7,7 +7,7 @@ import React from "react";
 import { render, cleanup, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ContextMenuSplitButton from "../ContextMenuSplitButton";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 
 beforeEach(() => {

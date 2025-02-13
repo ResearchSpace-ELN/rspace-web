@@ -14,7 +14,7 @@ import {
 } from "../../../stores/models/__tests__/ContainerModel/mocking";
 import { storesContext } from "../../../stores/stores-context";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import userEvent from "@testing-library/user-event";
 
 beforeEach(() => {

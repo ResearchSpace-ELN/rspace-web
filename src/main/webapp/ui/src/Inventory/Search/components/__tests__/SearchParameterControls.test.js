@@ -13,7 +13,7 @@ import SearchContext from "../../../../stores/contexts/Search";
 import { mockFactory } from "../../../../stores/definitions/__tests__/Factory/mocking";
 import SearchParameterControls from "../SearchParameterControls";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import "../../../../../__mocks__/matchMedia.js";
 import userEvent from "@testing-library/user-event";
 

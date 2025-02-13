@@ -20,7 +20,7 @@ import SubSampleBatchForm from "../Subsample/BatchForm";
 import MixedBatchForm from "../Mixed/BatchForm";
 import LoadingCircular from "../../components/LoadingCircular";
 import { type RecordType } from "../../stores/definitions/InventoryRecord";
-import { type Theme } from "../../theme";
+import { type Theme } from "../../theme.ts";
 import SynchroniseFormSections from "../components/Stepper/SynchroniseFormSections";
 import { useIsSingleColumnLayout } from "../components/Layout/Layout2x1";
 import { UserCancelledAction } from "../../util/error";

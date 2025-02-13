@@ -12,7 +12,7 @@ import { arbitraryRecord } from "../../../../stores/definitions/__tests__/Record
 import BatchEditingItemsTable from "../BatchEditingItemsTable";
 import "../../../../../__mocks__/matchMedia.js";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import userEvent from "@testing-library/user-event";
 
 beforeEach(() => {

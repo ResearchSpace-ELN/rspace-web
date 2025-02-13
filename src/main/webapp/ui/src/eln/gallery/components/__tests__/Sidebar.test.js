@@ -10,7 +10,7 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import Sidebar from "../Sidebar";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
 import { dummyId } from "../../useGalleryListing";

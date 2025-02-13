@@ -15,7 +15,7 @@ import {
 import "@testing-library/jest-dom";
 import { UsersPage } from "..";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
 import USER_LISTING from "./userListing";

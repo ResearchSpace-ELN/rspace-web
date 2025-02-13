@@ -16,7 +16,7 @@ import { mockFactory } from "../../../../stores/definitions/__tests__/Factory/mo
 import LocationModel from "../../../../stores/models/LocationModel";
 import ContainerModel from "../../../../stores/models/ContainerModel";
 import ContentContextMenu from "../ContentContextMenu";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import * as ArrayUtils from "../../../../util/ArrayUtils";

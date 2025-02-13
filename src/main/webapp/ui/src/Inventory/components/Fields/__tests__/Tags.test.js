@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import Tags from "../Tags";
 import fc from "fast-check";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { Optional } from "../../../../util/optional";
 import "../../../../../__mocks__/matchMedia.js";
 

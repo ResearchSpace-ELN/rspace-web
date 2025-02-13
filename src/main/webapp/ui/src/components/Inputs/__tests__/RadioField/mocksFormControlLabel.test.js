@@ -11,7 +11,7 @@ import RadioField from "../../RadioField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import each from "jest-each";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 
 jest.mock("@mui/material/FormControlLabel", () => jest.fn(() => <div></div>));
 

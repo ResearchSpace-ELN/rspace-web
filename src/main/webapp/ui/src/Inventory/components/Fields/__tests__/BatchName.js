@@ -10,7 +10,7 @@ import BatchName from "../BatchName";
 import { type BatchName as BatchNameType } from "../../../../stores/models/ResultCollection";
 import fc from "fast-check";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 
 function lengthOfSuffix(suffix: string): number {
   if (suffix === "NONE") return 0;

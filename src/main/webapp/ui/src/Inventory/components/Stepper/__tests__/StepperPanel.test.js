@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import StepperPanel from "../StepperPanel";
 import "../../../../../__mocks__/matchMedia.js";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import SynchroniseFormSections from "../SynchroniseFormSections";
 import FormSectionsContext, {
   type AllowedFormTypes,

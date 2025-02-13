@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import update from "immutability-helper";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";

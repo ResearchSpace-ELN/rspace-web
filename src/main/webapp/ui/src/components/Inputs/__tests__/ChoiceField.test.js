@@ -11,7 +11,7 @@ import ChoiceField from "../ChoiceField";
 import Checkbox from "@mui/material/Checkbox";
 import each from "jest-each";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 
 jest.mock("@mui/material/Checkbox", () => jest.fn(() => <div></div>));
 

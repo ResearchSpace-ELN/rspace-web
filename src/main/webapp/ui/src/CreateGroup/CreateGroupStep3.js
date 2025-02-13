@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import materialTheme from "../theme";
+import materialTheme from "../theme.ts";
 import axios from "axios";
 import Select from "react-select";
 import EmailValidator from "email-validator";

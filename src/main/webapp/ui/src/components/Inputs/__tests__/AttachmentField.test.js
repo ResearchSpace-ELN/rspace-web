@@ -13,7 +13,7 @@ import FileField from "../FileField";
 import { ExistingAttachment } from "../../../stores/models/AttachmentModel";
 import each from "jest-each";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { containerAttrs } from "../../../stores/models/__tests__/ContainerModel/mocking";
 import ContainerModel from "../../../stores/models/ContainerModel";
 import MemoisedFactory from "../../../stores/models/Factory/MemoisedFactory";

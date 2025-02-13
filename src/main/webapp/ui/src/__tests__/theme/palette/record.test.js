@@ -4,7 +4,7 @@
 //@flow
 /* eslint-env jest */
 
-import theme from "../../../theme";
+import theme from "../../../theme.ts";
 import { mapObject } from "../../../util/Util";
 
 type RGB = {|

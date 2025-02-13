@@ -10,7 +10,7 @@ import "@testing-library/jest-dom";
 import FileField from "../FileField";
 import Alert from "@mui/material/Alert";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 
 jest.mock("@mui/material/Alert", () =>
   jest.fn(() => {

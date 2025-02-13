@@ -12,7 +12,7 @@ import React, {
 import { createRoot } from "react-dom/client";
 import Router from "./Router";
 import useStores from "./stores/use-stores";
-import materialTheme from "./theme";
+import materialTheme from "./theme.ts";
 import { ERROR_MSG } from "./components/ErrorBoundary";
 import Analytics from "./components/Analytics";
 import { COLOR as INVENTORY_COLOR } from "./Inventory/components/Layout/Sidebar";

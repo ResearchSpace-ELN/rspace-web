@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButtonWithTooltip from "../IconButtonWithTooltip";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../theme";
+import materialTheme from "../../theme.ts";
 import userEvent from "@testing-library/user-event";
 
 beforeEach(() => {

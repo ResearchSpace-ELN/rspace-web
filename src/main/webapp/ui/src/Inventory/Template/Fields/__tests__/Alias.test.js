@@ -15,7 +15,7 @@ import {
 import "@testing-library/jest-dom";
 import Alias from "../Alias";
 import { ThemeProvider } from "@mui/material/styles";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { type Alias as AliasType } from "../../../../stores/definitions/Sample";
 import { type HasEditableFields } from "../../../../stores/definitions/Editable";
 

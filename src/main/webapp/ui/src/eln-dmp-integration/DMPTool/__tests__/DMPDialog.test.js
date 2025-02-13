@@ -14,7 +14,7 @@ import {
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import DMPDialog from "../DMPDialog";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";

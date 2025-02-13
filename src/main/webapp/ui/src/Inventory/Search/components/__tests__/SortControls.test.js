@@ -11,7 +11,7 @@ import { sortProperties } from "../../../../stores/models/Result";
 import SearchContext from "../../../../stores/contexts/Search";
 import Search from "../../../../stores/models/Search";
 import { mockFactory } from "../../../../stores/definitions/__tests__/Factory/mocking";
-import materialTheme from "../../../../theme";
+import materialTheme from "../../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 
 beforeEach(() => {

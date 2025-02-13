@@ -12,7 +12,7 @@ import FieldmarkImportDialog from "../FieldmarkImportDialog";
 import mockFieldmarkNotebooksJson from "./fieldmark_notebooks.json";
 import mockFieldmarkImportJson from "./fieldmark_import.json";
 import Alerts from "../../../components/Alerts/Alerts";
-import materialTheme from "../../../theme";
+import materialTheme from "../../../theme.ts";
 import { ThemeProvider } from "@mui/material/styles";
 import { axe, toHaveNoViolations } from "jest-axe";
 
