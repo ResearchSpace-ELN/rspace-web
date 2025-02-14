@@ -4,7 +4,7 @@
 //@flow
 /* eslint-env jest */
 import fc, { type Arbitrary } from "fast-check";
-import { Optional } from "../optional";
+import { Optional } from "../optional.ts";
 
 export const arbOptional = <T>(arb: Arbitrary<T>): Arbitrary<Optional<T>> =>
   fc.option(arb).map((x) => Optional.fromNullable(x));

@@ -23,7 +23,7 @@ import Alert from "../../../stores/models/Alert";
 import AlertContext, { mkAlert } from "../../../stores/contexts/Alert";
 import { runInAction, observable } from "mobx";
 import { observer, useLocalObservable } from "mobx-react-lite";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import { useGitHubEndpoint, type Repository } from "../useGitHubEndpoint";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";

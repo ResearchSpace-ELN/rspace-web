@@ -42,7 +42,7 @@ import BigIconButton from "../../../../components/BigIconButton";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import UploadIcon from "@mui/icons-material/Publish";
-import Result from "../../../../util/result";
+import Result from "../../../../util/result.ts";
 
 const GalleryPicker = React.lazy(() =>
   import("../../../../eln/gallery/picker")

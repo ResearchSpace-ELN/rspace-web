@@ -8,7 +8,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import ValidatingSubmitButton from "../../../components/ValidatingSubmitButton";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 import SubmitSpinnerButton from "../../../components/SubmitSpinnerButton";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";

@@ -10,7 +10,7 @@ import React, {
 import IntegrationCard from "../IntegrationCard";
 import { observable, runInAction } from "mobx";
 import { observer, useLocalObservable } from "mobx-react-lite";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import Alert from "../../../stores/models/Alert";
 import AlertContext, { mkAlert } from "../../../stores/contexts/Alert";
 import { useSlackEndpoint } from "../useSlackEndpoint";

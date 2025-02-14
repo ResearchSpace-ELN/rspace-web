@@ -9,7 +9,7 @@ import "@testing-library/jest-dom";
 import { useIntegrationsEndpoint } from "../useIntegrationsEndpoint";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import "../../../../__mocks__/matchMedia";
 
 beforeEach(() => {

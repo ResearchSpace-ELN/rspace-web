@@ -4,7 +4,7 @@
 //@flow
 /* eslint-env jest */
 
-import { Optional } from "../../optional";
+import { Optional } from "../../optional.ts";
 
 describe("orElseTry", () => {
   test("The types should be merged.", () => {

@@ -2,11 +2,11 @@
 
 import React, { useContext } from "react";
 import axios from "axios";
-import { getByKey, Optional } from "../../util/optional";
+import { getByKey, Optional } from "../../util/optional.ts";
 import AlertContext, { mkAlert } from "../../stores/contexts/Alert";
 import * as ArrayUtils from "../../util/ArrayUtils";
 import { parseString } from "../../util/parsers";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import * as Parsers from "../../util/parsers";
 
 /*

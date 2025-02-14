@@ -18,7 +18,7 @@ import Collapse from "@mui/material/Collapse";
 import { grey } from "@mui/material/colors";
 import DescriptionList from "../../../components/DescriptionList";
 import { formatFileSize, filenameExceptExtension } from "../../../util/files";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 import { observer } from "mobx-react-lite";
 import { useGalleryActions } from "../useGalleryActions";
 import ImagePreview, {
@@ -31,7 +31,7 @@ import usePrimaryAction from "../primaryActionHooks";
 import { useImagePreview } from "./CallableImagePreview";
 import { usePdfPreview } from "./CallablePdfPreview";
 import { useAsposePreview } from "./CallableAsposePreview";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import { useFolderOpen } from "./OpenFolderProvider";
 import AnalyticsContext from "../../../stores/contexts/Analytics";
 

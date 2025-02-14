@@ -1,6 +1,6 @@
 //@flow strict
 
-import { Optional } from "./optional";
+import { Optional } from "./optional.ts";
 
 export const get = <K, V>(map: Map<K, V>, key: K): Optional<V> => {
   const v = map.get(key);

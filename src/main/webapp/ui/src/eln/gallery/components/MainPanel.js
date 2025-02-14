@@ -76,7 +76,7 @@ import { useImagePreview } from "./CallableImagePreview";
 import { usePdfPreview } from "./CallablePdfPreview";
 import { useAsposePreview } from "./CallableAsposePreview";
 import usePrimaryAction from "../primaryActionHooks";
-import { Optional, getByKey } from "../../../util/optional";
+import { Optional, getByKey } from "../../../util/optional.ts";
 import LoadMoreButton from "./LoadMoreButton";
 import Carousel from "./Carousel";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
@@ -314,53 +314,59 @@ const BreadcrumbLink = React.forwardRef<
 );
 BreadcrumbLink.displayName = "BreadcrumbLink";
 
-const Path = observer(({
-  section,
-  path,
-  setSelectedSection,
-}: {|
-  section: GallerySection,
-  path: $ReadOnlyArray<GalleryFile>,
-  setSelectedSection: (GallerySection) => void,
-|}) => {
-  const {
-    eventHandlers: { onFocus, onBlur, onKeyDown },
-    getTabIndex,
-    getRef,
-  } = useOneDimensionalRovingTabIndex<typeof Link>({
-    max: path.length,
-    direction: "row",
-  });
-  const selection = useGallerySelection();
+const Path = observer(
+  ({
+    section,
+    path,
+    setSelectedSection,
+  }: {|
+    section: GallerySection,
+    path: $ReadOnlyArray<GalleryFile>,
+    setSelectedSection: (GallerySection) => void,
+  |}) => {
+    const {
+      eventHandlers: { onFocus, onBlur, onKeyDown },
+      getTabIndex,
+      getRef,
+    } = useOneDimensionalRovingTabIndex<typeof Link>({
+      max: path.length,
+      direction: "row",
+    });
+    const selection = useGallerySelection();
 
-  return (
-    <StyledBreadcrumbs onFocus={onFocus} onBlur={onBlur} onKeyDown={onKeyDown}>
-      <BreadcrumbLink
-        section={section}
-        setSelectedSection={setSelectedSection}
-        sx={{
-          pl: 1,
-        }}
-        ref={getRef(0)}
-        tabIndex={getTabIndex(0)}
-      />
-      {selection
-        .asSet()
-        .only.map((f) => f.path)
-        .orElse(path)
-        .map((f, i) => (
-          <BreadcrumbLink
-            key={f.key}
-            folder={f}
-            section={section}
-            setSelectedSection={setSelectedSection}
-            ref={getRef(i + 1)}
-            tabIndex={getTabIndex(i + 1)}
-          />
-        ))}
-    </StyledBreadcrumbs>
-  );
-});
+    return (
+      <StyledBreadcrumbs
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+      >
+        <BreadcrumbLink
+          section={section}
+          setSelectedSection={setSelectedSection}
+          sx={{
+            pl: 1,
+          }}
+          ref={getRef(0)}
+          tabIndex={getTabIndex(0)}
+        />
+        {selection
+          .asSet()
+          .only.map((f) => f.path)
+          .orElse(path)
+          .map((f, i) => (
+            <BreadcrumbLink
+              key={f.key}
+              folder={f}
+              section={section}
+              setSelectedSection={setSelectedSection}
+              ref={getRef(i + 1)}
+              tabIndex={getTabIndex(i + 1)}
+            />
+          ))}
+      </StyledBreadcrumbs>
+    );
+  }
+);
 
 const StyledMenu = styled(Menu)(({ open }) => ({
   "& .MuiPaper-root": {

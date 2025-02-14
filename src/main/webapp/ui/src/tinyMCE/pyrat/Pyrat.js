@@ -19,7 +19,7 @@ import { parseInteger } from "../../util/parsers";
 import { useDeploymentProperty } from "../../eln/useDeploymentProperty";
 import * as FetchingData from "../../util/fetchingData";
 import * as Parsers from "../../util/parsers";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -383,9 +383,9 @@ function PyratListing({ serverAlias }) {
       }
     });
 
-    return `serverAlias=${serverAlias}&l=${rowsPerPage}&o=${page * rowsPerPage}&${params.join(
-      ""
-    )}&s=${orderBy}:${order}`;
+    return `serverAlias=${serverAlias}&l=${rowsPerPage}&o=${
+      page * rowsPerPage
+    }&${params.join("")}&s=${orderBy}:${order}`;
   }, [filterCounter, order, orderBy, rowsPerPage, page]);
 
   VISIBLE_HEADER_CELLS = useMemo(
@@ -526,7 +526,7 @@ function Pyrat() {
   FetchingData.getSuccessValue(servers).do((servers) => {
     if (servers.length === 1) {
       PYRAT_URL = servers[0].url;
-      PYRAT_ALIAS = servers[0].alias
+      PYRAT_ALIAS = servers[0].alias;
     }
   });
 
@@ -615,7 +615,9 @@ function createTinyMceTable() {
   linkCell.appendChild(document.createTextNode(" on "));
   linkCell.appendChild(document.createTextNode(new Date().toDateString()));
   linkCell.appendChild(document.createTextNode(" "));
-  linkCell.appendChild(document.createTextNode(new Date().toLocaleTimeString()));
+  linkCell.appendChild(
+    document.createTextNode(new Date().toLocaleTimeString())
+  );
   linkCell.setAttribute("colspan", VISIBLE_HEADER_CELLS.length);
   linkCell.style = "font-weight: 400";
   linkRow.appendChild(linkCell);

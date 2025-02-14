@@ -26,7 +26,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import TextField from "@mui/material/TextField";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import TeamsIcon from "../icons/teams.svg";
 import Link from "@mui/material/Link";
 import docLinks from "../../../assets/DocLinks";

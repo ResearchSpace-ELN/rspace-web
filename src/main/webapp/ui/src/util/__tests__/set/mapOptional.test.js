@@ -3,7 +3,7 @@
 import "@testing-library/jest-dom";
 import fc from "fast-check";
 import { arbRsSet } from "./helpers";
-import { Optional } from "../../optional";
+import { Optional } from "../../optional.ts";
 import RsSet from "../../set";
 
 const presentIfTrue =
@@ -42,7 +42,9 @@ describe("mapOptional", () => {
   test("A function that always returns Optional.present will always result in an unchanged set.", () => {
     fc.assert(
       fc.property(arbRsSet(fc.anything()), (set) => {
-        expect(set.mapOptional((x) => Optional.present(x)).size).toEqual(set.size);
+        expect(set.mapOptional((x) => Optional.present(x)).size).toEqual(
+          set.size
+        );
       })
     );
   });
@@ -76,5 +78,4 @@ describe("mapOptional", () => {
       )
     );
   });
-
 });

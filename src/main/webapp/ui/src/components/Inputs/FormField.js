@@ -4,7 +4,7 @@ import React, { type Node } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import FormHelperText from "@mui/material/FormHelperText";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 import Typography from "@mui/material/Typography";
 import { Heading } from "../DynamicHeadingLevel";
 

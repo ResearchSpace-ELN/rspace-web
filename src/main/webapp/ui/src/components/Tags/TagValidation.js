@@ -10,7 +10,7 @@
  * ================
  */
 
-import { lift2 } from "../../util/optional";
+import { lift2 } from "../../util/optional.ts";
 import { type Tag } from "../../stores/definitions/Tag";
 
 /*

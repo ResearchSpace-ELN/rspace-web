@@ -2,7 +2,7 @@
 /* eslint-env jest */
 
 import { match } from "../util/Util";
-import { Optional } from "../util/optional";
+import { Optional } from "../util/optional.ts";
 import * as ArrayUtils from "../util/ArrayUtils";
 
 type HeadingsSpec = Array<{|

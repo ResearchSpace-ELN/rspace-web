@@ -4,7 +4,7 @@
 //@flow
 /* eslint-env jest */
 import * as ArrayUtils from "../../ArrayUtils";
-import { Optional } from "../../optional";
+import { Optional } from "../../optional.ts";
 import fc from "fast-check";
 
 const presentIfTrue =

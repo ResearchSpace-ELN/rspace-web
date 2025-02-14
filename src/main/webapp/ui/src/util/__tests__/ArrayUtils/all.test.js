@@ -5,7 +5,7 @@
 /* eslint-env jest */
 import "@testing-library/jest-dom";
 import fc from "fast-check";
-import { Optional } from "../../optional";
+import { Optional } from "../../optional.ts";
 import * as ArrayUtils from "../../ArrayUtils";
 
 describe("all", () => {

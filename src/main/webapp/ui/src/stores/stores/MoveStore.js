@@ -29,7 +29,7 @@ import {
   recordTypeToApiRecordType,
 } from "../definitions/InventoryRecord";
 import { type Panel } from "../../util/types";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 
 type SerialisedRecord =
   | {|

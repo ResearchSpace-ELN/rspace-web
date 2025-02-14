@@ -27,7 +27,7 @@ import AlertContext, {
   mkAlert,
   type AlertDetails,
 } from "../../stores/contexts/Alert";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 import docLinks from "../../assets/DocLinks";
 
 export default function Wrapper(): Node {
