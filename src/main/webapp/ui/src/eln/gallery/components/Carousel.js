@@ -2,7 +2,7 @@
 
 import React, { type Node } from "react";
 import { type GalleryFile, idToString } from "../useGalleryListing";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { useGallerySelection } from "../useGallerySelection";

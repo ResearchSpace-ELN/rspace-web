@@ -7,7 +7,7 @@ import React from "react";
 import { cleanup, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import GitHub from "../GitHub";
-import { Optional } from "../../../../util/optional";
+import { Optional } from "../../../../util/optional.ts";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
 import { observable } from "mobx";

@@ -7,7 +7,7 @@ import axios from "@/common/axios";
 import AlertContext, { mkAlert } from "../../../stores/contexts/Alert";
 import * as Parsers from "../../../util/parsers";
 import * as ArrayUtils from "../../../util/ArrayUtils";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 
 /*
  * If aspose is configured, then users can preview the contents of various

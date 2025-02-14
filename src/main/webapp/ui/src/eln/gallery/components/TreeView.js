@@ -25,7 +25,7 @@ import { useLocalObservable, observer } from "mobx-react-lite";
 import { useFileImportDropZone } from "../../../components/useFileImportDragAndDrop";
 import AlertContext, { mkAlert } from "../../../stores/contexts/Alert";
 import PlaceholderLabel from "./PlaceholderLabel";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import LoadMoreButton from "./LoadMoreButton";
 import { useImagePreview } from "./CallableImagePreview";
 import { usePdfPreview } from "./CallablePdfPreview";

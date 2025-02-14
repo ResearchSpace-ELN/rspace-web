@@ -12,7 +12,7 @@ import Grow from "@mui/material/Grow";
 import useViewportDimensions from "../../../util/useViewportDimensions";
 import { useGalleryListing, type GalleryFile } from "../useGalleryListing";
 import ValidatingSubmitButton from "../../../components/ValidatingSubmitButton";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 import { observer } from "mobx-react-lite";
 import Sidebar from "../components/Sidebar";
 import MainPanel from "../components/MainPanel";

@@ -29,7 +29,7 @@ import Alert from "@mui/lab/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import * as FetchingData from "../../../util/fetchingData";
 import ValidatingSubmitButton from "../../../components/ValidatingSubmitButton";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 import docLinks from "../../../assets/DocLinks";
 import AnalyticsContext from "../../../stores/contexts/Analytics";
 

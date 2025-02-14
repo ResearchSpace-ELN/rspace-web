@@ -15,7 +15,7 @@ import {
 import "@testing-library/jest-dom";
 import fc, { type Command } from "fast-check";
 import Zenodo from "../Zenodo";
-import { Optional } from "../../../../util/optional";
+import { Optional } from "../../../../util/optional.ts";
 import "../../../../../__mocks__/matchMedia";
 
 beforeEach(() => {

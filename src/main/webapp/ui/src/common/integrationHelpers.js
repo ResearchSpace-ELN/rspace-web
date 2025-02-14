@@ -10,7 +10,7 @@ import * as FetchingData from "../util/fetchingData";
 import { doNotAwait } from "../util/Util";
 import React from "react";
 import * as Parsers from "../util/parsers";
-import Result from "../util/result";
+import Result from "../util/result.ts";
 
 /**
  * A title-case name for displaying in the UI.

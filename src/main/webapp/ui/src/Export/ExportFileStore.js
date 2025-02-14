@@ -15,7 +15,7 @@ import LinkAvailabilityScan from "./fileStoreComponents/LinkAvailabilityScan";
 import { type UseState } from "../util/types";
 import { type Validator } from "../util/Validator";
 import useConfirm from "../util/useConfirm";
-import { Optional } from "../util/optional";
+import { Optional } from "../util/optional.ts";
 import { runInAction, observable } from "mobx";
 import { type ExportSelection } from "./ExportDialog";
 

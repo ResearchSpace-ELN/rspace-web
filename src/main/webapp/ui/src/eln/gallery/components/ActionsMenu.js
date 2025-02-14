@@ -34,7 +34,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import ValidatingSubmitButton from "../../../components/ValidatingSubmitButton";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 import MoveToIrods, { COLOR as IRODS_COLOR } from "./MoveToIrods";
 import IrodsLogo from "./IrodsLogo.svg";
 import Typography from "@mui/material/Typography";
@@ -64,7 +64,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { useFolderOpen } from "./OpenFolderProvider";
 import { type URL } from "../../../util/types";
 import AnalyticsContext from "../../../stores/contexts/Analytics";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import LogoutIcon from "@mui/icons-material/Logout";
 import useFilestoresEndpoint from "../useFilestoresEndpoint";
 

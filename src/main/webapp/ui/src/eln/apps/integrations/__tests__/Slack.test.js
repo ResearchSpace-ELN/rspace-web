@@ -18,7 +18,7 @@ import * as axios from "axios";
 import { observable } from "mobx";
 import Alerts from "../../../../components/Alerts/Alerts";
 import { type IntegrationStates } from "../../useIntegrationsEndpoint";
-import { Optional } from "../../../../util/optional";
+import { Optional } from "../../../../util/optional.ts";
 import { axe, toHaveNoViolations } from "jest-axe";
 import "../../../../../__mocks__/matchMedia";
 

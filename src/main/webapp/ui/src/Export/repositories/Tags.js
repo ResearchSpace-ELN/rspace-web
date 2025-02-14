@@ -12,7 +12,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import docLinks from "../../assets/DocLinks";
 import Button from "@mui/material/Button";
 import TagListing from "../../components/Tags/TagListing";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 
 export type Tag = {|
   value: string,

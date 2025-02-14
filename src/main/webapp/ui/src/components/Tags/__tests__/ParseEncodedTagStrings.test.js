@@ -5,7 +5,7 @@
 /* eslint-env jest */
 import "@testing-library/jest-dom";
 import { encodeTags } from "../ParseEncodedTagStrings";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 
 describe("ParseEncodedTagStrings", () => {
   describe("encodeTags", () => {

@@ -5,7 +5,7 @@ import axios from "@/common/axios";
 import * as ArrayUtils from "../../util/ArrayUtils";
 import * as Parsers from "../../util/parsers";
 import RsSet from "../../util/set";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import {
   type GalleryFile,
   LocalGalleryFile,

@@ -13,7 +13,7 @@ import {
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Dataverse from "../Dataverse";
-import { Optional } from "../../../../util/optional";
+import { Optional } from "../../../../util/optional.ts";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
 import Alerts from "../../../../components/Alerts/Alerts";

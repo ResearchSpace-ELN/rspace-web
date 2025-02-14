@@ -2,7 +2,7 @@
 
 import React, { type Node } from "react";
 import axios, { type Axios } from "@/common/axios";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import * as Parsers from "../../util/parsers";
 import AlertContext, { mkAlert } from "../../stores/contexts/Alert";
 import * as FetchingData from "../../util/fetchingData";
@@ -19,7 +19,7 @@ import {
 } from "../../util/files";
 import { useGallerySelection } from "./useGallerySelection";
 import { observable, action, makeObservable } from "mobx";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 import { type URL as UrlType } from "../../util/types";
 import { take, incrementForever } from "../../util/iterators";
 import useOauthToken from "../../common/useOauthToken";
@@ -1332,7 +1332,9 @@ export function useGalleryListing({
         )
         .do(clearAndSetGalleryListing);
 
-      setParentId(Result.Error([new Error("Remote filesystems don't have parent ids") ]));
+      setParentId(
+        Result.Error([new Error("Remote filesystems don't have parent ids")])
+      );
 
       Parsers.isArray(data)
         .map((filestores) => filestores.length)
@@ -1444,7 +1446,9 @@ export function useGalleryListing({
         )
         .do(clearAndSetGalleryListing);
 
-      setParentId(Result.Error([new Error("Remote filesystems don't have parent ids") ]));
+      setParentId(
+        Result.Error([new Error("Remote filesystems don't have parent ids")])
+      );
 
       Parsers.isObject(data)
         .flatMap(Parsers.isNotNull)

@@ -24,7 +24,7 @@ import createAccentedTheme from "../../accentedTheme";
 import { ThemeProvider, styled } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import { doNotAwait } from "../../util/Util";
-import { getByKey } from "../../util/optional";
+import { getByKey } from "../../util/optional.ts";
 import Box from "@mui/material/Box";
 import UserDetails from "../../Inventory/components/UserDetails";
 import CircularProgress from "@mui/material/CircularProgress";

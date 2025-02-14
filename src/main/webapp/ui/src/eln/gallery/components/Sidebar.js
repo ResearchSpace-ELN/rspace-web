@@ -44,7 +44,7 @@ import ValidatingSubmitButton, {
   IsValid,
   IsInvalid,
 } from "../../../components/ValidatingSubmitButton";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 import DnsIcon from "@mui/icons-material/Dns";
 import axios, { type Axios } from "@/common/axios";
 import useOauthToken from "../../../common/useOauthToken";

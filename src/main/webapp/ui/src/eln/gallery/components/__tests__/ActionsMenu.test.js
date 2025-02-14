@@ -22,7 +22,7 @@ import createAccentedTheme from "../../../../accentedTheme";
 import "../../../../../__mocks__/matchMedia";
 import MockAdapter from "axios-mock-adapter";
 import * as axios from "axios";
-import Result from "../../../../util/result";
+import Result from "../../../../util/result.ts";
 
 jest.mock("../CallablePdfPreview", () => ({
   usePdfPreview: () => ({

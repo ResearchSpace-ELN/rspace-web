@@ -5,7 +5,7 @@ import React, { type Node, useState, type AbstractComponent } from "react";
 import IntegrationCard from "../IntegrationCard";
 import { type IntegrationStates } from "../useIntegrationsEndpoint";
 import TextField from "@mui/material/TextField";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";

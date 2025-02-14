@@ -5,7 +5,7 @@ import * as FetchingData from "../../util/fetchingData";
 import axios from "@/common/axios";
 import useOauthToken from "../../common/useOauthToken";
 import * as Parsers from "../../util/parsers";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 
 /**
  * The state requried to display the conditional parts of the AppBar.
@@ -71,7 +71,7 @@ export default function useUiNavigationData(): FetchingData.Fetched<UiNavigation
           orcidId: event.detail.orcidId,
         },
       });
-    }
+    };
     window.addEventListener("USER_SET_ORCID", handleUserSetOrcid);
     return () => {
       window.removeEventListener("USER_SET_ORCID", handleUserSetOrcid);
@@ -90,7 +90,7 @@ export default function useUiNavigationData(): FetchingData.Fetched<UiNavigation
           email: event.detail.email,
         },
       });
-    }
+    };
     window.addEventListener("USER_SET_EMAIL", handleUserSetEmail);
     return () => {
       window.removeEventListener("USER_SET_EMAIL", handleUserSetEmail);

@@ -1,6 +1,6 @@
 //@flow strict
 
-import { getByKey } from "./optional";
+import { getByKey } from "./optional.ts";
 import Result from "./result";
 import { match } from "./Util";
 
