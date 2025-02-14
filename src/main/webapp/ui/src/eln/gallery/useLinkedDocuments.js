@@ -3,7 +3,7 @@
 import React from "react";
 import axios from "axios";
 import { type GalleryFile, idToString } from "./useGalleryListing";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import * as Parsers from "../../util/parsers";
 import { type LinkableRecord } from "../../stores/definitions/LinkableRecord";
 

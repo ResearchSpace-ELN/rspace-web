@@ -11,7 +11,7 @@ import SampleModel from "../../../stores/models/SampleModel";
 import FormField from "../../components/Inputs/FormField";
 import NavigateContext from "../../../stores/contexts/Navigate";
 import Link from "@mui/material/Link";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import { styled } from "@mui/material/styles";
 import { textFieldClasses } from "@mui/material/TextField";
 

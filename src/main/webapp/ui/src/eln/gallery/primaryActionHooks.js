@@ -1,6 +1,6 @@
 //@flow
 
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import * as Parsers from "../../util/parsers";
 import * as FetchingData from "../../util/fetchingData";
 import { type GalleryFile, chemistryFilePreview } from "./useGalleryListing";

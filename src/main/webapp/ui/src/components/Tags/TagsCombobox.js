@@ -29,7 +29,7 @@ import {
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { makeStyles } from "tss-react/mui";
-import { Optional, lift3 } from "../../util/optional";
+import { Optional, lift3 } from "../../util/optional.ts";
 import { stableSort } from "../../util/table";
 import { type Tag } from "../../stores/definitions/Tag";
 import RsSet from "../../util/set";

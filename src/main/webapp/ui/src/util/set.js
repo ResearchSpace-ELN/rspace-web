@@ -1,7 +1,7 @@
 //@flow strict
 import { computed, makeObservable } from "mobx";
 import { filterMap } from "./Util";
-import { Optional } from "./optional";
+import { Optional } from "./optional.ts";
 
 /*
  * This is an extension of the standard Set data structure, with the addition

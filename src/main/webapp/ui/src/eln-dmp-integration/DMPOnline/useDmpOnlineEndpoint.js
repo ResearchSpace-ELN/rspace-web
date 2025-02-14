@@ -5,7 +5,7 @@ import axios from "axios";
 import { isoToLocale } from "../../util/Util";
 import AlertContext, { mkAlert, type Alert } from "../../stores/contexts/Alert";
 import * as FetchingData from "../../util/fetchingData";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 
 /**
  * This module provides the functionality for interacting with the

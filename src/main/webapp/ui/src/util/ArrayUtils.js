@@ -1,7 +1,7 @@
 //@flow strict
 
 import Result from "./result";
-import { Optional, lift2 } from "./optional";
+import { Optional, lift2 } from "./optional.ts";
 
 /**
  * Given two arrays of equal length, create a new array by applying a function

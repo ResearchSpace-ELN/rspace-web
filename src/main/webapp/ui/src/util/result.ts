@@ -1,17 +1,16 @@
-//@flow strict
 /* eslint no-use-before-define: 0 */
 
 import { Optional } from "./optional";
 
 type ResultInternals<T> =
-  | {|
-      key: "ok",
-      value: T,
-    |}
-  | {|
-      key: "error",
-      errors: Array<Error>,
-    |};
+  | {
+      key: "ok";
+      value: T;
+    }
+  | {
+      key: "error";
+      errors: Array<Error>;
+    };
 
 /**
  * This class is for modeling the results of computations that can fail with
@@ -27,7 +26,7 @@ type ResultInternals<T> =
  * an OK state.
  */
 export default class Result<T> {
-  +#state: ResultInternals<T>;
+  #state: ResultInternals<T>;
 
   /**
    * DO NOT call directly from outside this module, call the smart constructors
@@ -51,16 +50,21 @@ export default class Result<T> {
    * outside of this module from altering the behaviour of these functions.
    */
 
-  static +Ok: <U>(U) => Result<U> = (value) => {
+  static Ok: <U>(value: U) => Result<U> = (value) => {
     return new Result({ key: "ok", value });
   };
 
-  static +Error: <U>(Array<Error>) => Result<U> = <U>(errors): Result<U> => {
+  static Error: <U>(errors: Array<Error>) => Result<U> = <U>(
+    errors: Array<Error>
+  ): Result<U> => {
     return new Result<U>({ key: "error", errors });
   };
 
-  static +fromNullable: <U>(?U, Error) => Result<U> = <U>(
-    value: ?U,
+  static fromNullable: <U>(
+    value: U | null | undefined,
+    error: Error
+  ) => Result<U> = <U>(
+    value: U | null | undefined,
     error: Error
   ): Result<U> => {
     if (value === null || typeof value === "undefined")
@@ -87,7 +91,7 @@ export default class Result<T> {
   /**
    * Just like any other functor, transform the value wrapped by the OK branch.
    */
-  map<U>(f: (T) => U): Result<U> {
+  map<U>(f: (value: T) => U): Result<U> {
     if (this.#state.key === "error") return Result.Error(this.#state.errors);
     return Result.Ok(f(this.#state.value));
   }
@@ -99,7 +103,7 @@ export default class Result<T> {
    * only be OK if the result of both the original and passed computations is
    * OK.
    */
-  flatMap<U>(f: (T) => Result<U>): Result<U> {
+  flatMap<U>(f: (value: T) => Result<U>): Result<U> {
     if (this.#state.key === "error") return Result.Error(this.#state.errors);
     return f(this.#state.value);
   }
@@ -108,7 +112,7 @@ export default class Result<T> {
    * Just like `flatMap`, but discard the result of the function and return the
    * input instead.
    */
-  flatMapDiscarding<U>(f: (T) => Result<U>): Result<T> {
+  flatMapDiscarding<U>(f: (value: T) => Result<U>): Result<T> {
     if (this.#state.key === "error") return Result.Error(this.#state.errors);
     const value = this.#state.value;
     return f(value).map(() => value);
@@ -118,7 +122,7 @@ export default class Result<T> {
    * Perform a side-effect on the value if the result is in an OK state.
    * Otherwise the error(s) are discarded.
    */
-  do(f: (T) => void): void {
+  do(f: (value: T) => void): void {
     if (this.#state.key === "error") return;
     f(this.#state.value);
   }
@@ -144,7 +148,7 @@ export default class Result<T> {
    * convert this errors-as-values based logic into using exception handling
    * instead.
    */
-  orElseGet<U>(f: (Array<Error>) => U): T | U {
+  orElseGet<U>(f: (errors: Array<Error>) => U): T | U {
     if (this.#state.key === "error") return f(this.#state.errors);
     return this.#state.value;
   }
@@ -157,7 +161,7 @@ export default class Result<T> {
    * results in an Error state then the errors are accumulated. Across
    * functional programming, this is known as the Alternative typeclass.
    */
-  orElseTry<U>(func: (Array<Error>) => Result<U>): Result<T | U> {
+  orElseTry<U>(func: (errors: Array<Error>) => Result<U>): Result<T | U> {
     /*
      * We take the Result apart and put it back together to satisfy to flow
      * that `Result<T> | Result<U>` is the same as `Result<T | U>`
@@ -194,7 +198,7 @@ export default class Result<T> {
    *      `cause` as its second parameter to keep a reference to the original
    *      error(s).
    */
-  mapError(f: (Array<Error>) => Error): Result<T> {
+  mapError(f: (errors: Array<Error>) => Error): Result<T> {
     if (this.#state.key === "error")
       return Result.Error([f(this.#state.errors)]);
     return Result.Ok(this.#state.value);
@@ -252,22 +256,22 @@ export default class Result<T> {
    * series of possible options, of which any one suffices; should none pass
    * then a full error report of each branch being tried can be displayed.
    */
-  static any(
-    r: Result<T>,
-    ...rest: $ReadOnlyArray<Result<T>>
-  ): Result<$ReadOnlyArray<T>> {
+  static any<U>(
+    r: Result<U>,
+    ...rest: ReadonlyArray<Result<U>>
+  ): Result<ReadonlyArray<U>> {
     if (rest.length > 0) {
       return (
-        Result.any(...rest)
-          .flatMap<$ReadOnlyArray<T>>((restOfT: $ReadOnlyArray<T>) =>
+        Result.any(rest[0], ...rest.slice(1))
+          .flatMap<ReadonlyArray<U>>((restOfT: ReadonlyArray<U>) =>
             r
               // if `r` and `rest` are both OK, then concatenate,
-              .map((t: T) => ([t, ...restOfT]: $ReadOnlyArray<T>))
+              .map((t: U) => [t, ...restOfT])
               // else if `r` is Error and `rest` OK, then return `rest`
               .orElseTry(() => Result.Ok(restOfT))
           )
           // if `rest` is Error, then return `r`
-          .orElseTry(() => r.map((t) => ([t]: $ReadOnlyArray<T>)))
+          .orElseTry(() => r.map((t) => [t]))
       );
     }
     return r.map((t) => [t]);
@@ -277,7 +281,7 @@ export default class Result<T> {
    * A simple helper wrapped around `any` above, that should multiple succeed
    * then only the first is returned.
    */
-  static first<U>(r: Result<U>, ...rest: $ReadOnlyArray<Result<U>>): Result<U> {
+  static first<U>(r: Result<U>, ...rest: ReadonlyArray<Result<U>>): Result<U> {
     return Result.any(r, ...rest).map((oks) => oks[0]);
   }
 
@@ -293,16 +297,16 @@ export default class Result<T> {
    */
   static all<U>(
     r: Result<U>,
-    ...rest: $ReadOnlyArray<Result<U>>
-  ): Result<$ReadOnlyArray<U>> {
+    ...rest: ReadonlyArray<Result<U>>
+  ): Result<ReadonlyArray<U>> {
     if (typeof r === "undefined") return Result.Ok([]);
     if (rest.length > 0) {
-      return Result.all(...rest)
-        .orElseTry<$ReadOnlyArray<U>>(() =>
-          r.flatMap<$ReadOnlyArray<U>>(() => Result.Error([]))
+      return Result.all(rest[0], ...rest.slice(1))
+        .orElseTry<ReadonlyArray<U>>(() =>
+          r.flatMap<ReadonlyArray<U>>(() => Result.Error([]))
         )
-        .flatMap<$ReadOnlyArray<U>>((restOfT) =>
-          r.map<$ReadOnlyArray<U>>((t: U) => [t, ...restOfT])
+        .flatMap<ReadonlyArray<U>>((restOfT) =>
+          r.map<ReadonlyArray<U>>((t: U) => [t, ...restOfT])
         );
     }
     return r.map((t) => [t]);
@@ -325,20 +329,20 @@ export default class Result<T> {
    * where required. Don't preempt that though.
    */
 
-  static lift<A, B>(func: (A) => B): (Result<A>) => Result<B> {
+  static lift<A, B>(func: (a: A) => B): (resultA: Result<A>) => Result<B> {
     return (resultA) => resultA.map(func);
   }
 
   static lift2<A, B, C>(
-    func: (A, B) => C
-  ): (Result<A>, Result<B>) => Result<C> {
+    func: (a: A, b: B) => C
+  ): (resultA: Result<A>, resultB: Result<B>) => Result<C> {
     return (resultA, resultB) =>
       resultA.flatMap((a) => Result.lift((b: B) => func(a, b))(resultB));
   }
 
   static lift3<A, B, C, D>(
-    func: (A, B, C) => D
-  ): (Result<A>, Result<B>, Result<C>) => Result<D> {
+    func: (a: A, b: B, c: C) => D
+  ): (resultA: Result<A>, resultB: Result<B>, resultC: Result<C>) => Result<D> {
     return (resultA, resultB, resultC) =>
       resultA.flatMap((a) =>
         Result.lift2((b: B, c: C) => func(a, b, c))(resultB, resultC)
@@ -346,8 +350,13 @@ export default class Result<T> {
   }
 
   static lift4<A, B, C, D, E>(
-    func: (A, B, C, D) => E
-  ): (Result<A>, Result<B>, Result<C>, Result<D>) => Result<E> {
+    func: (a: A, b: B, c: C, d: D) => E
+  ): (
+    resultA: Result<A>,
+    resultB: Result<B>,
+    resultC: Result<C>,
+    resultD: Result<D>
+  ) => Result<E> {
     return (resultA, resultB, resultC, resultD) =>
       resultA.flatMap((a) =>
         Result.lift3((b: B, c: C, d: D) => func(a, b, c, d))(
@@ -359,8 +368,14 @@ export default class Result<T> {
   }
 
   static lift5<A, B, C, D, E, F>(
-    func: (A, B, C, D, E) => F
-  ): (Result<A>, Result<B>, Result<C>, Result<D>, Result<E>) => Result<F> {
+    func: (a: A, b: B, c: C, d: D, e: E) => F
+  ): (
+    resultA: Result<A>,
+    resultB: Result<B>,
+    resultC: Result<C>,
+    resultD: Result<D>,
+    resultE: Result<E>
+  ) => Result<F> {
     return (resultA, resultB, resultC, resultD, resultE) =>
       resultA.flatMap((a) =>
         Result.lift4((b: B, c: C, d: D, e: E) => func(a, b, c, d, e))(
@@ -373,14 +388,14 @@ export default class Result<T> {
   }
 
   static lift6<A, B, C, D, E, F, G>(
-    func: (A, B, C, D, E, F) => G
+    func: (a: A, b: B, c: C, d: D, e: E, f: F) => G
   ): (
-    Result<A>,
-    Result<B>,
-    Result<C>,
-    Result<D>,
-    Result<E>,
-    Result<F>
+    resultA: Result<A>,
+    resultB: Result<B>,
+    resultC: Result<C>,
+    resultD: Result<D>,
+    resultE: Result<E>,
+    resultF: Result<F>
   ) => Result<G> {
     return (resultA, resultB, resultC, resultD, resultE, resultF) =>
       resultA.flatMap((a) =>

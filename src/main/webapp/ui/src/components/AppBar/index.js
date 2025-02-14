@@ -55,7 +55,7 @@ import MaintenanceIcon from "@mui/icons-material/Construction";
 import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
 import { getRelativeTime } from "../../util/conversions";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import useSessionStorage from "../../util/useSessionStorage";
 
 const IncomingMaintenancePopup = ({ startDate }: {| startDate: Date |}) => {

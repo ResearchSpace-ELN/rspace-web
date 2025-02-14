@@ -71,7 +71,7 @@ import {
 } from "../definitions/Identifier";
 import IdentifierModel from "./IdentifierModel";
 import { type Tag } from "../definitions/Tag";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 import {
   encodeTagString,
   decodeTagString,

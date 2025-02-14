@@ -23,7 +23,7 @@ import type { Attachment } from "../../stores/definitions/Attachment";
 import { type GalleryFile } from "../../eln/gallery/useGalleryListing";
 import UploadIcon from "@mui/icons-material/Publish";
 import BigIconButton from "../BigIconButton";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 
 const GalleryPicker = React.lazy(() => import("../../eln/gallery/picker"));
 

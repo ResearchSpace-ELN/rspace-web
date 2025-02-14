@@ -26,7 +26,7 @@ import { DialogBoundary } from "../../components/DialogBoundary";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import AnalyticsContext from "../../stores/contexts/Analytics";
-import { getByKey } from "../../util/optional";
+import { getByKey } from "../../util/optional.ts";
 import AppBar from "../../components/AppBar";
 import { ThemeProvider } from "@mui/material/styles";
 import createAccentedTheme from "../../accentedTheme";

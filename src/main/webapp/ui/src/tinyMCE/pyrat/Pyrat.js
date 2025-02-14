@@ -17,7 +17,7 @@ import { getHeader } from "../../util/axios";
 import { parseInteger } from "../../util/parsers";
 import * as FetchingData from "../../util/fetchingData";
 import * as Parsers from "../../util/parsers";
-import Result from "../../util/result";
+import Result from "../../util/result.ts";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";

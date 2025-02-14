@@ -12,7 +12,7 @@ import { type ExportSelection } from "./ExportDialog";
 import { type Validator } from "../util/Validator";
 import { observer } from "mobx-react-lite";
 import { type Repo } from "./repositories/common";
-import { Optional } from "../util/optional";
+import { Optional } from "../util/optional.ts";
 import { useDeploymentProperty } from "../eln/useDeploymentProperty";
 import * as FetchingData from "../util/fetchingData";
 import * as Parsers from "../util/parsers";

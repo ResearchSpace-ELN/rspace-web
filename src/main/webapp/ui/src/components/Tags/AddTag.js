@@ -5,7 +5,7 @@ import Chip from "@mui/material/Chip";
 import AddIcon from "@mui/icons-material/Add";
 import TagsCombobox from "./TagsCombobox";
 import RsSet from "../../util/set";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 
 type AddTagArgs<
   Toggle:

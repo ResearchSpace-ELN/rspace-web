@@ -7,7 +7,7 @@ import React from "react";
 import { render, cleanup, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Figshare from "../Figshare";
-import { Optional } from "../../../../util/optional";
+import { Optional } from "../../../../util/optional.ts";
 import { axe, toHaveNoViolations } from "jest-axe";
 import "../../../../../__mocks__/matchMedia";
 

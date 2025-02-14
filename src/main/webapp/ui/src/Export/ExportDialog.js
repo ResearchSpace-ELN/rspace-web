@@ -27,11 +27,11 @@ import {
   getPaneByKey,
 } from "./WizardPanes";
 import { type Person, type Repo } from "./repositories/common";
-import { lift3 } from "../util/optional";
+import { lift3 } from "../util/optional.ts";
 import { type Tag } from "./repositories/Tags";
 import * as ArrayUtils from "../util/ArrayUtils";
 import * as Parsers from "../util/parsers";
-import Result from "../util/result";
+import Result from "../util/result.ts";
 import { parseEncodedTags } from "../components/Tags/ParseEncodedTagStrings";
 import Divider from "@mui/material/Divider";
 import AlertContext, { mkAlert } from "../stores/contexts/Alert";

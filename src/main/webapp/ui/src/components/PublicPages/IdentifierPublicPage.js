@@ -41,7 +41,7 @@ import {
 } from "../../stores/definitions/Identifier";
 import Description from "../../Inventory/components/Fields/Description";
 import Tags from "../../Inventory/components/Fields/Tags";
-import { Optional } from "../../util/optional";
+import { Optional } from "../../util/optional.ts";
 import { decodeTagString } from "../../components/Tags/ParseEncodedTagStrings";
 import AlwaysNewWindowNavigationContext from "../AlwaysNewWindowNavigationContext";
 import { type Tag } from "../../stores/definitions/Tag";

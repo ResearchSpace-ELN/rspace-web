@@ -2,11 +2,11 @@
 
 import axios from "axios";
 import React from "react";
-import Result from "../../../util/result";
+import Result from "../../../util/result.ts";
 import * as Parsers from "../../../util/parsers";
 import * as FetchingData from "../../../util/fetchingData";
 import useOauthToken from "../../../common/useOauthToken";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import AlertContext, {
   mkAlert,
   type Alert,

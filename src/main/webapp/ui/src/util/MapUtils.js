@@ -1,6 +1,6 @@
 //@flow strict
 
-import { Optional } from "./optional";
+import { Optional } from "./optional.ts";
 
 /**
  * Safely get a value from a map, returning an optional value.

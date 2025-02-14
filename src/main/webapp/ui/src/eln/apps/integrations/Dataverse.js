@@ -15,7 +15,7 @@ import {
   type OptionsId,
 } from "../useIntegrationsEndpoint";
 import Button from "@mui/material/Button";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";

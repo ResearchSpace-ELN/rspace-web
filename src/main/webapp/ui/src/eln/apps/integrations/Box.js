@@ -13,7 +13,7 @@ import Radio from "@mui/material/Radio";
 import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
-import { Optional } from "../../../util/optional";
+import { Optional } from "../../../util/optional.ts";
 
 type BoxArgs = {|
   integrationState: IntegrationStates["BOX"],

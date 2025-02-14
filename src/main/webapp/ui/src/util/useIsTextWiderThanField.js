@@ -1,7 +1,7 @@
 //@flow
 
 import { useRef, useState, useLayoutEffect, type Ref } from "react";
-import { Optional } from "./optional";
+import { Optional } from "./optional.ts";
 
 /*
  * This custom hook is for detecting when the text within an input field is

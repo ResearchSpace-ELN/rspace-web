@@ -3,7 +3,7 @@
 import "@testing-library/jest-dom";
 import fc from "fast-check";
 import { arbRsSet } from "./helpers";
-import { Optional } from "../../optional";
+import { Optional } from "../../optional.ts";
 import RsSet from "../../set";
 
 const presentIfTrue =
