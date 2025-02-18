@@ -5,7 +5,7 @@ import React, { type Node, type ElementProps } from "react";
 import IconButton from "@mui/material/IconButton";
 import HelpIcon from "@mui/icons-material/Help";
 import { withStyles } from "Styles";
-import CustomTooltip from "./CustomTooltip";
+import CustomTooltip from "./CustomTooltip.tsx";
 
 type HelpIconProps = {|
   link: URL,

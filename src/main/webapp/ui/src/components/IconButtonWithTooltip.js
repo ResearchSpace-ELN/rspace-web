@@ -2,7 +2,7 @@
 
 import React, { type Node, type ComponentType, forwardRef } from "react";
 import { observer } from "mobx-react-lite";
-import CustomTooltip from "./CustomTooltip";
+import CustomTooltip from "./CustomTooltip.tsx";
 import IconButton from "@mui/material/IconButton";
 import { type Sx } from "../util/styles";
 

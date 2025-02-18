@@ -4,7 +4,7 @@ import React, { type Node, type ComponentType } from "react";
 import Button from "@mui/material/Button";
 import { observer } from "mobx-react-lite";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import CustomTooltip from "../../../../components/CustomTooltip";
+import CustomTooltip from "../../../../components/CustomTooltip.tsx";
 import FormControl from "../../../../components/Inputs/FormControl";
 import { type InventoryRecord } from "../../../../stores/definitions/InventoryRecord";
 

@@ -10,7 +10,7 @@ import { observer } from "mobx-react-lite";
 import FileField from "../../../../components/Inputs/FileField";
 import InputWrapper from "../../../../components/Inputs/InputWrapper";
 import docLinks from "../../../../assets/DocLinks";
-import CustomTooltip from "../../../../components/CustomTooltip";
+import CustomTooltip from "../../../../components/CustomTooltip.tsx";
 import ExpandCollapseIcon from "../../../../components/ExpandCollapseIcon";
 import {
   newAttachment,

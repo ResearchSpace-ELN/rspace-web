@@ -20,7 +20,7 @@ import { withStyles } from "Styles";
 import NameDialog from "../../../Inventory/Search/components/NameDialog";
 import { type SavedItem } from "../../../Inventory/Search/components/SearchParameterControls";
 import BasketModel from "../../../stores/models/Basket";
-import CustomTooltip from "../../../components/CustomTooltip";
+import CustomTooltip from "../../../components/CustomTooltip.tsx";
 import Alert from "@mui/material/Alert";
 import { makeStyles } from "tss-react/mui";
 

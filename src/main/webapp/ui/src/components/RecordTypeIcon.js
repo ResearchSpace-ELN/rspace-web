@@ -1,7 +1,7 @@
 // @flow strict
 
 import React, { type Node } from "react";
-import CustomTooltip from "./CustomTooltip";
+import CustomTooltip from "./CustomTooltip.tsx";
 import { toTitleCase } from "../util/Util";
 import { useTheme } from "@mui/material/styles";
 import BenchIcon from "../assets/graphics/RecordTypeGraphics/Icons/Bench";
