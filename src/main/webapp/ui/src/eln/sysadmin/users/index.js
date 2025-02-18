@@ -40,7 +40,7 @@ import {
 import TextField from "@mui/material/TextField";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ChecklistIcon from "@mui/icons-material/Checklist";
-import CustomTooltip from "../../../components/CustomTooltip";
+import CustomTooltip from "../../../components/CustomTooltip.tsx";
 import {
   useUserListing,
   type User,

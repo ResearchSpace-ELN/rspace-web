@@ -20,7 +20,7 @@ import {
 import docLinks from "../../../../assets/DocLinks";
 import InputWrapper from "../../../../components/Inputs/InputWrapper";
 import AddButton from "../../../../components/AddButton";
-import CustomTooltip from "../../../../components/CustomTooltip";
+import CustomTooltip from "../../../../components/CustomTooltip.tsx";
 import ExpandCollapseIcon from "../../../../components/ExpandCollapseIcon";
 import Alert from "@mui/material/Alert";
 import Badge from "@mui/material/Badge";

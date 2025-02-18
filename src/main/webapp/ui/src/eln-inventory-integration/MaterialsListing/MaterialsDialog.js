@@ -3,7 +3,7 @@
 import InventoryPicker from "../../Inventory/components/Picker/Picker";
 import Alerts from "../../Inventory/components/Alerts";
 import Confirm from "../../components/Confirm";
-import CustomTooltip from "../../components/CustomTooltip";
+import CustomTooltip from "../../components/CustomTooltip.tsx";
 import ErrorBoundary from "../../components/ErrorBoundary";
 import Exporter from "../../Inventory/components/Export/Exporter";
 import { type ExportOptions } from "../../stores/definitions/Search";

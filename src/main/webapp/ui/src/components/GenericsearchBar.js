@@ -2,7 +2,7 @@
 
 import styled from "@emotion/styled";
 import IconButton from "@mui/material/IconButton";
-import CustomTooltip from "./CustomTooltip";
+import CustomTooltip from "./CustomTooltip.tsx";
 import InputBase from "@mui/material/InputBase";
 import Paper from "@mui/material/Paper";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";

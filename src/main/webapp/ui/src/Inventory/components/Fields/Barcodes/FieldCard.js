@@ -9,7 +9,7 @@ import React, {
 import { type HasEditableFields } from "../../../../stores/definitions/Editable";
 import { observer } from "mobx-react-lite";
 import AddButton from "../../../../components/AddButton";
-import CustomTooltip from "../../../../components/CustomTooltip";
+import CustomTooltip from "../../../../components/CustomTooltip.tsx";
 import ExpandCollapseIcon from "../../../../components/ExpandCollapseIcon";
 import { match, doNotAwait } from "../../../../util/Util";
 import * as ArrayUtils from "../../../../util/ArrayUtils";

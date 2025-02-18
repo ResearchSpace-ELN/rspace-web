@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { withStyles } from "Styles";
-import CustomTooltip from "./CustomTooltip";
+import CustomTooltip from "./CustomTooltip.tsx";
 
 type DropdownButtonArgs = {|
   name: Node,

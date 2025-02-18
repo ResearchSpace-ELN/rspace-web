@@ -16,7 +16,7 @@ import HelpLinkIcon from "../../components/HelpLinkIcon";
 import docLinks from "../../assets/DocLinks";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import CustomTooltip from "../../components/CustomTooltip";
+import CustomTooltip from "../../components/CustomTooltip.tsx";
 import { type ImportRecordType } from "../../stores/stores/ImportStore";
 import NavigateContext from "../../stores/contexts/Navigate";
 import { makeStyles } from "tss-react/mui";

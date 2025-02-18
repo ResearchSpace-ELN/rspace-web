@@ -4,7 +4,7 @@ import React, { useState, type ComponentType, type ElementProps } from "react";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import Collapse from "@mui/material/Collapse";
-import CustomTooltip from "../../../components/CustomTooltip";
+import CustomTooltip from "../../../components/CustomTooltip.tsx";
 import ExpandCollapseIcon from "../../../components/ExpandCollapseIcon";
 import FieldMenuItem from "./FieldSelectMenuItem";
 import FieldNameStringField from "./FieldNameStringField";
