@@ -2801,7 +2801,7 @@
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>run build</arguments>
+                  <arguments>run debugBuild</arguments>
                 </configuration>
               </execution>
             </executions>

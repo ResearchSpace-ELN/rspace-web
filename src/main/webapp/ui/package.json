@@ -9,6 +9,7 @@
     "clustermarket-test": "node_modules/.bin/jest --runInBand   --roots ./src/tinyMCE/clustermarket",
     "omero-test": "node_modules/.bin/jest --runInBand   --roots ./src/tinyMCE/omero",
     "build": "webpack --mode production",
+    "debugBuild": "webpack --mode development --devtool eval-cheap-module-source-map",
     "serve": "webpack --watch --mode development --devtool eval-cheap-module-source-map",
     "flow": "flow",
     "flow-typed": "flow-typed",
