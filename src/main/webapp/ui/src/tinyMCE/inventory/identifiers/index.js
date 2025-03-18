@@ -11,6 +11,7 @@ import AppBar from "../../../components/AppBar";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
 import { COLOR } from "../../../Inventory/components/Layout/Sidebar";
 import { Optional } from "../../../util/optional";
+import IgsnManagementPage from "../../../Inventory/Identifiers/IGSN/IgsnManagementPage";
 
 type Editor = {
   ui: {
@@ -47,7 +48,7 @@ function IdentifiersDialog({
         accessibilityTips={{}}
       />
       <DialogTitle>Insert Identifiers Table</DialogTitle>
-      <DialogContent>hi</DialogContent>
+      <DialogContent><IgsnManagementPage /></DialogContent>
     </Dialog>
   );
 }
