@@ -28,8 +28,7 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
 
   private User user;
 
-  @Autowired
-  private DigitalObjectIdentifierDao doiDao;
+  @Autowired private DigitalObjectIdentifierDao doiDao;
 
   @Before
   public void setUp() throws Exception {
@@ -128,8 +127,10 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
 
     assertEquals(initialDbSize + 3, doiDao.getAll().size()); // make sure they are saved to DB
 
-    // TODO[nik]: cleanup
-    //    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi()
+    // cleanup datacite
+    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(result.get(0).getDoi());
+    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(result.get(1).getDoi());
+    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(result.get(2).getDoi());
   }
 
   @Test
@@ -194,9 +195,11 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
     // cleanup datacite
     inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(userNotAssociated.get(0).getDoi());
     inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(userNotAssociated.get(1).getDoi());
-    inventoryIdentifierApiMgr.getDataCiteConnector()
+    inventoryIdentifierApiMgr
+        .getDataCiteConnector()
         .deleteDoi(anotherUserNotAssociated.get(0).getDoi());
-    inventoryIdentifierApiMgr.getDataCiteConnector()
+    inventoryIdentifierApiMgr
+        .getDataCiteConnector()
         .deleteDoi(anotherUserNotAssociated.get(1).getDoi());
   }
 
