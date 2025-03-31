@@ -62,6 +62,11 @@ public class InventoryIdentifierApiManagerImpl implements InventoryIdentifierApi
   }
 
   @Override
+  public ApiInventoryDOI getIdentifierById(Long id) {
+    return new ApiInventoryDOI(doiDao.get(id));
+  }
+
+  @Override
   public ApiInventoryRecordInfo findPublishedItemVersionByPublicLink(String publicLink) {
     Optional<DigitalObjectIdentifier> doiOptional =
         doiDao.getLastPublishedIdentifierByPublicLink(publicLink);
@@ -128,7 +133,7 @@ public class InventoryIdentifierApiManagerImpl implements InventoryIdentifierApi
   }
 
   @Override
-  public ApiInventoryRecordInfo deleteIdentifier(GlobalIdentifier invRecOid, User user) {
+  public ApiInventoryRecordInfo deleteAssociatedIdentifier(GlobalIdentifier invRecOid, User user) {
     InventoryRecord invRec = invRecRetriever.getInvRecordByGlobalId(invRecOid);
     if (invRec.getActiveIdentifiers().isEmpty()) {
       throw new IllegalArgumentException(
@@ -136,6 +141,14 @@ public class InventoryIdentifierApiManagerImpl implements InventoryIdentifierApi
     }
     return updateInventoryRecordWithDoiUpdate(
         user, invRec, createUpdateWithDeleteDoi(invRec, user));
+  }
+
+  @Override
+  public boolean deleteUnassociatedIdentifier(ApiInventoryDOI identifier, User user) {
+    DigitalObjectIdentifier doi = doiDao.get(identifier.getId());
+    doi.setDeleted(true);
+    doi = doiDao.save(doi);
+    return deleteFromDatacite(doi);
   }
 
   @Override
@@ -232,6 +245,15 @@ public class InventoryIdentifierApiManagerImpl implements InventoryIdentifierApi
   private ApiInventoryDOI createUpdateWithDeleteDoi(InventoryRecord invRec, User user) {
 
     DigitalObjectIdentifier doi = invRec.getActiveIdentifiers().get(0);
+    deleteFromDatacite(doi);
+
+    ApiInventoryDOI deleteDoi = new ApiInventoryDOI();
+    deleteDoi.setId(invRec.getActiveIdentifiers().get(0).getId());
+    deleteDoi.setDeleteIdentifierRequest(true);
+    return deleteDoi;
+  }
+
+  private boolean deleteFromDatacite(DigitalObjectIdentifier doi) {
     boolean dataCiteDeleteResult;
     try {
       dataCiteDeleteResult = dataCiteConnector.deleteDoi(doi.getIdentifier());
@@ -244,11 +266,7 @@ public class InventoryIdentifierApiManagerImpl implements InventoryIdentifierApi
     if (!dataCiteDeleteResult) {
       throw new IllegalStateException("DataCite delete failed");
     }
-
-    ApiInventoryDOI deleteDoi = new ApiInventoryDOI();
-    deleteDoi.setId(invRec.getActiveIdentifiers().get(0).getId());
-    deleteDoi.setDeleteIdentifierRequest(true);
-    return deleteDoi;
+    return dataCiteDeleteResult;
   }
 
   @SneakyThrows
@@ -320,10 +338,5 @@ public class InventoryIdentifierApiManagerImpl implements InventoryIdentifierApi
   @Autowired
   public void setDataCiteConnector(DataCiteConnector dataCiteConnector) {
     this.dataCiteConnector = dataCiteConnector;
-  }
-
-  @Override
-  public DataCiteConnector getDataCiteConnector() {
-    return dataCiteConnector;
   }
 }

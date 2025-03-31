@@ -12,7 +12,6 @@ import com.researchspace.api.v1.model.ApiInventoryDOI;
 import com.researchspace.api.v1.model.ApiInventorySystemSettings;
 import com.researchspace.model.User;
 import com.researchspace.service.impl.ConditionalTestRunner;
-import com.researchspace.service.impl.RunIfSystemPropertyDefined;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.After;
@@ -71,7 +70,6 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
   }
 
   @Test
-  @RunIfSystemPropertyDefined("nightly")
   public void realConnectionRegisterUpdateDeleteDataciteIdentifier() throws Exception {
     User anyUser = createInitAndLoginAnyUser();
     String apiKey = createNewApiKeyForUser(anyUser);
@@ -97,7 +95,6 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
   }
 
   @Test
-  @RunIfSystemPropertyDefined("nightly")
   public void realConnectionBulkCreateFindAndDeleteDataciteIdentifier() throws Exception {
     User anyUser = createInitAndLoginAnyUser();
     String apiKey = createNewApiKeyForUser(anyUser);
@@ -122,12 +119,11 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
     assertTrue(fetchedUserAssociated.isEmpty());
 
     // cleanup datacite
-    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(registeredDoiList.get(0).getDoi());
-    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(registeredDoiList.get(1).getDoi());
+    assertTrue(deleteDraftDataCiteDoiForItem(anyUser, apiKey, registeredDoiList.get(0).getId()));
+    assertTrue(deleteDraftDataCiteDoiForItem(anyUser, apiKey, registeredDoiList.get(1).getId()));
   }
 
   @Test
-  @RunIfSystemPropertyDefined("nightly")
   public void realConnectionRegisterPublishRetractDataciteIdentifier() throws Exception {
     User anyUser = createInitAndLoginAnyUser();
     String apiKey = createNewApiKeyForUser(anyUser);
@@ -219,12 +215,15 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
     return Arrays.asList(getFromJsonResponseBody(result, ApiInventoryDOI[].class));
   }
 
-  private void deleteDraftDataCiteDoiForItem(User anyUser, String apiKey, Long identifierId)
+  private Boolean deleteDraftDataCiteDoiForItem(User anyUser, String apiKey, Long identifierId)
       throws Exception {
-    mockMvc
-        .perform(createBuilderForDelete(apiKey, "/identifiers/{id}", anyUser, identifierId))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn();
+    MvcResult result =
+        mockMvc
+            .perform(createBuilderForDelete(apiKey, "/identifiers/{id}", anyUser, identifierId))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
+    assertNull(result.getResolvedException());
+    return getFromJsonResponseBody(result, Boolean.class);
   }
 
   private ApiInventoryDOI publishDraftIdentifier(User anyUser, String apiKey, Long identifierId)

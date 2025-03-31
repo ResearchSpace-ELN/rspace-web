@@ -615,4 +615,9 @@ public class ApiInventoryDOI extends LinkableApiObject {
     }
     return dataCiteDoi;
   }
+
+  @JsonIgnore
+  public boolean isAssociated() {
+    return associatedGlobalId != null;
+  }
 }

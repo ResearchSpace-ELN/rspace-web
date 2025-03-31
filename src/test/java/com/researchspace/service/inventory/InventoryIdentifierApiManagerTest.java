@@ -97,7 +97,8 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
     assertNotNull(sampleDoi.getGeoLocations().get(1).getGeoLocationInPolygonPoint());
 
     // delete the identifier
-    updatedSample = inventoryIdentifierApiMgr.deleteIdentifier(createdSample.getOid(), user);
+    updatedSample =
+        inventoryIdentifierApiMgr.deleteAssociatedIdentifier(createdSample.getOid(), user);
     assertEquals(0, updatedSample.getIdentifiers().size());
 
     // confirm with subsample/container
@@ -127,10 +128,10 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
 
     assertEquals(initialDbSize + 3, doiDao.getAll().size()); // make sure they are saved to DB
 
-    // cleanup datacite
-    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(result.get(0).getDoi());
-    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(result.get(1).getDoi());
-    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(result.get(2).getDoi());
+    // cleanup identifiers
+    inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(result.get(0), user);
+    inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(result.get(1), user);
+    inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(result.get(2), user);
   }
 
   @Test
@@ -190,17 +191,23 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
 
     assertEquals(initialDbSize + 5, doiDao.getAll().size());
 
-    // retract
-    inventoryIdentifierApiMgr.retractIdentifier(createdSample.getOid(), user);
-    // cleanup datacite
-    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(userNotAssociated.get(0).getDoi());
-    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(userNotAssociated.get(1).getDoi());
-    inventoryIdentifierApiMgr
-        .getDataCiteConnector()
-        .deleteDoi(anotherUserNotAssociated.get(0).getDoi());
-    inventoryIdentifierApiMgr
-        .getDataCiteConnector()
-        .deleteDoi(anotherUserNotAssociated.get(1).getDoi());
+    // delete associated identifiers
+    assertTrue(
+        inventoryIdentifierApiMgr
+            .deleteAssociatedIdentifier(createdSample.getOid(), user)
+            .getIdentifiers()
+            .isEmpty());
+    // delete Unassociated identifiers
+    assertTrue(
+        inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(userNotAssociated.get(0), user));
+    assertTrue(
+        inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(userNotAssociated.get(1), user));
+    assertTrue(
+        inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(
+            anotherUserNotAssociated.get(0), user));
+    assertTrue(
+        inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(
+            anotherUserNotAssociated.get(1), user));
   }
 
   private void addOptionalPropertiesToIncomingDoi(ApiInventoryDOI doiUpdate) {

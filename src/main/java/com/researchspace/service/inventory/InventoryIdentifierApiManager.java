@@ -13,6 +13,8 @@ public interface InventoryIdentifierApiManager {
 
   InventoryRecord getInventoryRecordByIdentifierId(Long id);
 
+  ApiInventoryDOI getIdentifierById(Long id);
+
   ApiInventoryRecordInfo findPublishedItemVersionByPublicLink(String publicLink);
 
   List<ApiInventoryDOI> findIdentifiersByStateAndOwner(
@@ -22,7 +24,9 @@ public interface InventoryIdentifierApiManager {
 
   List<ApiInventoryDOI> registerBulkIdentifiers(Integer igsnsToAllocate, User user);
 
-  ApiInventoryRecordInfo deleteIdentifier(GlobalIdentifier invRecOid, User user);
+  ApiInventoryRecordInfo deleteAssociatedIdentifier(GlobalIdentifier invRecOid, User user);
+
+  boolean deleteUnassociatedIdentifier(ApiInventoryDOI identifier, User user);
 
   ApiInventoryRecordInfo publishIdentifier(GlobalIdentifier invRecOid, User user);
 
@@ -30,6 +34,4 @@ public interface InventoryIdentifierApiManager {
 
   /* for testing */
   void setDataCiteConnector(DataCiteConnector dataCiteConnector);
-
-  DataCiteConnector getDataCiteConnector();
 }

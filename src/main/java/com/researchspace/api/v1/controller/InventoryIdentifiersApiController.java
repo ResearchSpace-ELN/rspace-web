@@ -79,10 +79,20 @@ public class InventoryIdentifiersApiController extends BaseApiInventoryControlle
   @Override
   public boolean deleteIdentifier(
       @PathVariable Long identifierId, @RequestAttribute(name = "user") User user) {
-
+    boolean result = false;
     assertDataCiteConnectorEnabled();
-    InventoryRecord invRec = retrieveInvRecByIdentifierId(identifierId, user);
-    return identifierMgr.deleteIdentifier(invRec.getOid(), user).getIdentifiers().isEmpty();
+    ApiInventoryDOI identifier = identifierMgr.getIdentifierById(identifierId);
+    if (identifier.isAssociated()) {
+      InventoryRecord invRec = retrieveInvRecByIdentifierId(identifierId, user);
+      result =
+          identifierMgr
+              .deleteAssociatedIdentifier(invRec.getOid(), user)
+              .getIdentifiers()
+              .isEmpty();
+    } else {
+      result = identifierMgr.deleteUnassociatedIdentifier(identifier, user);
+    }
+    return result;
   }
 
   @Override
