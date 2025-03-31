@@ -2190,7 +2190,7 @@ paths:
 
 
     get:
-      summary: Get all the identifiers created bu the `user` with a given `state`
+      summary: Get all the identifiers created by the `user` with a given `state`
       description: >
         It will return a list of identifiers that are created by the specific `user` 
         and having the specific `state`. 
@@ -2211,7 +2211,7 @@ paths:
         - name: isAssociated
           in: query
           type: boolean
-          required: true
+          required: false
           description: Filter only the Identifiers that are already associated to a record
       responses:
         '200':

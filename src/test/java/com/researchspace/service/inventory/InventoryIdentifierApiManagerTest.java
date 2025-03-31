@@ -28,7 +28,8 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
 
   private User user;
 
-  @Autowired private DigitalObjectIdentifierDao doiDao;
+  @Autowired
+  private DigitalObjectIdentifierDao doiDao;
 
   @Before
   public void setUp() throws Exception {
@@ -144,6 +145,8 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
     inventoryIdentifierApiMgr.registerBulkIdentifiers(2, anotherUser);
 
     // WHEN
+    List<ApiInventoryDOI> userAll =
+        inventoryIdentifierApiMgr.findIdentifiersByStateAndOwner(null, user, null);
     List<ApiInventoryDOI> userAssociated =
         inventoryIdentifierApiMgr.findIdentifiersByStateAndOwner(null, user, true);
     List<ApiInventoryDOI> userAssociatedAndDraft =
@@ -158,14 +161,17 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
     List<ApiInventoryDOI> userNotAssociatedAndRegisterd =
         inventoryIdentifierApiMgr.findIdentifiersByStateAndOwner("registered", user, false);
 
+    List<ApiInventoryDOI> anotherUserAll =
+        inventoryIdentifierApiMgr.findIdentifiersByStateAndOwner(null, anotherUser, null);
     List<ApiInventoryDOI> anotherUserAssociated =
         inventoryIdentifierApiMgr.findIdentifiersByStateAndOwner(null, anotherUser, true);
     List<ApiInventoryDOI> anotherUserNotAssociated =
         inventoryIdentifierApiMgr.findIdentifiersByStateAndOwner(null, anotherUser, false);
 
     // THEN
+    assertEquals(3, userAll.size());
     assertEquals(1, userAssociated.size());
-    assertEquals(user, userNotAssociated.get(1).getOwner());
+    assertEquals(user, userAssociated.get(0).getOwner());
     assertEquals(1, userAssociatedAndDraft.size());
     assertTrue(userAssociatedAndRegistered.isEmpty());
 
@@ -175,6 +181,7 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
     assertEquals(2, userNotAssociatedAndDraft.size());
     assertTrue(userNotAssociatedAndRegisterd.isEmpty());
 
+    assertEquals(2, anotherUserAll.size());
     assertTrue(anotherUserAssociated.isEmpty());
     assertEquals(2, anotherUserNotAssociated.size());
     assertEquals(anotherUser, anotherUserNotAssociated.get(0).getOwner());
@@ -182,8 +189,15 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
 
     assertEquals(initialDbSize + 5, doiDao.getAll().size());
 
-    // TODO[nik]: cleanup
-    //    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi()
+    // retract
+    inventoryIdentifierApiMgr.retractIdentifier(createdSample.getOid(), user);
+    // cleanup datacite
+    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(userNotAssociated.get(0).getDoi());
+    inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(userNotAssociated.get(1).getDoi());
+    inventoryIdentifierApiMgr.getDataCiteConnector()
+        .deleteDoi(anotherUserNotAssociated.get(0).getDoi());
+    inventoryIdentifierApiMgr.getDataCiteConnector()
+        .deleteDoi(anotherUserNotAssociated.get(1).getDoi());
   }
 
   private void addOptionalPropertiesToIncomingDoi(ApiInventoryDOI doiUpdate) {

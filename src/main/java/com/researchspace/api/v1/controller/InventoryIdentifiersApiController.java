@@ -49,7 +49,7 @@ public class InventoryIdentifiersApiController extends BaseApiInventoryControlle
   @Override
   public List<ApiInventoryDOI> getUserIdentifiers(
       @RequestParam(value = "state", required = false) String state,
-      @RequestParam(value = "isAssociated") Boolean isAssociated,
+      @RequestParam(value = "isAssociated", required = false) Boolean isAssociated,
       @RequestAttribute(name = "user") User user) {
     return identifierMgr.findIdentifiersByStateAndOwner(state, user, isAssociated);
   }

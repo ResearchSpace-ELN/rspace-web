@@ -3,6 +3,7 @@ package com.researchspace.api.v1.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
@@ -96,7 +98,7 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
 
   @Test
   @RunIfSystemPropertyDefined("nightly")
-  public void realConnectionBulkCreateAndDeleteDataciteIdentifier() throws Exception {
+  public void realConnectionBulkCreateFindAndDeleteDataciteIdentifier() throws Exception {
     User anyUser = createInitAndLoginAnyUser();
     String apiKey = createNewApiKeyForUser(anyUser);
 
@@ -107,6 +109,17 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
     assertNull(registeredDoiList.get(0).getAssociatedGlobalId());
     assertEquals("draft", registeredDoiList.get(1).getState());
     assertNull(registeredDoiList.get(1).getAssociatedGlobalId());
+
+    List<ApiInventoryDOI> fetchedUserAll = findIdentifiers(anyUser, apiKey, null, null);
+    List<ApiInventoryDOI> fetchedUserDraftNotAssociated =
+        findIdentifiers(anyUser, apiKey, "draft", false);
+    List<ApiInventoryDOI> fetchedUserFindableNotAssociated =
+        findIdentifiers(anyUser, apiKey, "findable", false);
+    List<ApiInventoryDOI> fetchedUserAssociated = findIdentifiers(anyUser, apiKey, null, true);
+    assertEquals(2, fetchedUserAll.size());
+    assertEquals(2, fetchedUserDraftNotAssociated.size());
+    assertTrue(fetchedUserFindableNotAssociated.isEmpty());
+    assertTrue(fetchedUserAssociated.isEmpty());
 
     // cleanup datacite
     inventoryIdentifierApiMgr.getDataCiteConnector().deleteDoi(registeredDoiList.get(0).getDoi());
@@ -149,10 +162,6 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
     assertEquals("registered", retractedDoi.getState());
   }
 
-  // TODO[nik]: add @GetMapping("/{state}") test
-
-  // TODO[nik]: add @PostMapping(value = "/bulk/{count}") test
-
   private void addRecommendedFieldsToDOi(ApiInventoryDOI registeredDoi) {
     ApiInventoryDOI.ApiInventoryDOISubject testSubject =
         new ApiInventoryDOI.ApiInventoryDOISubject("test subject", "", "", "", "");
@@ -183,12 +192,28 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
     return registeredDoi;
   }
 
+  private List<ApiInventoryDOI> findIdentifiers(
+      User user, String apiKey, String state, Boolean isAssociated) throws Exception {
+    MvcResult result =
+        this.mockMvc
+            .perform(
+                createBuilderForInventoryGet(API_VERSION.ONE, apiKey, "/identifiers", user)
+                    // mix up from and to date
+                    .param("isAssociated", isAssociated == null ? null : isAssociated.toString())
+                    .param("state", state))
+            .andExpect(status().is(HttpStatus.OK.value()))
+            .andReturn();
+    assertNull(result.getResolvedException());
+    return Arrays.asList(getFromJsonResponseBody(result, ApiInventoryDOI[].class));
+  }
+
   private List<ApiInventoryDOI> bulkRegisterIdentifiers(User user, String apiKey, Integer count)
       throws Exception {
     MvcResult result =
         this.mockMvc
             .perform(
                 createBuilderForPost(API_VERSION.ONE, apiKey, "/identifiers/bulk/" + count, user))
+            .andExpect(status().is(HttpStatus.CREATED.value()))
             .andReturn();
     assertNull(result.getResolvedException());
     return Arrays.asList(getFromJsonResponseBody(result, ApiInventoryDOI[].class));

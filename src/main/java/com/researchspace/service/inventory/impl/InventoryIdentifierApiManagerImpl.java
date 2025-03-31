@@ -76,7 +76,7 @@ public class InventoryIdentifierApiManagerImpl implements InventoryIdentifierApi
   public List<ApiInventoryDOI> findIdentifiersByStateAndOwner(
       String state, User owner, Boolean isAssociated) {
     return doiDao.getActiveIdentifiersByOwner(owner).stream()
-        .filter(r -> isAssociated.equals(r.isAssociated()))
+        .filter(r -> (isAssociated == null) || isAssociated.equals(r.isAssociated()))
         .filter(r -> isBlank(state) || (isNotBlank(state) && state.equals(r.getState())))
         .map(ApiInventoryDOI::new)
         .collect(Collectors.toList());
