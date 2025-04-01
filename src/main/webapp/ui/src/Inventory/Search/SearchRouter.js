@@ -13,9 +13,6 @@ import RightPanelView from "./RightPanelView";
 import SearchContext from "../../stores/contexts/Search";
 import { parseCoreFetcherArgsFromUrl } from "../../stores/models/Fetcher/CoreFetcher";
 import { type CoreFetcherArgs } from "../../stores/definitions/Search";
-import Header from "../components/Layout/Header";
-import Sidebar from "../components/Layout/Sidebar";
-import Main from "../Main";
 import NavigateContext, {
   type UseLocation,
 } from "../../stores/contexts/Navigate";
@@ -24,7 +21,6 @@ import { UserCancelledAction } from "../../util/error";
 import MainSearchNavigationContext from "./MainSearchNavigationContext";
 import { UiPreferences } from "../../util/useUiPreference";
 import LeftPanelView from "./LeftPanelView";
-import Box from "@mui/material/Box";
 
 type SearchRouterArgs = {|
   paramsOverride?: CoreFetcherArgs,
@@ -82,19 +78,7 @@ const SearchRouter = observer(({ paramsOverride }: SearchRouterArgs) => {
     };
   }, [search]);
 
-  const sidebarId = React.useId();
-
-  return (
-    <>
-      <Header sidebarId={sidebarId} />
-      <Box sx={{ display: "flex", height: "calc(100% - 48px)" }}>
-        <Sidebar id={sidebarId} />
-        <Main>
-          <Layout colLeft={<LeftPanelView />} colRight={<RightPanelView />} />
-        </Main>
-      </Box>
-    </>
-  );
+  return <Layout colLeft={<LeftPanelView />} colRight={<RightPanelView />} />;
 });
 
 /*

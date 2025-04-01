@@ -16,6 +16,9 @@ import Alerts from "./components/Alerts";
 import Analytics from "./Analytics";
 import Box from "@mui/material/Box";
 import IdentifiersRouter from "./Identifiers/Router";
+import Header from "./components/Layout/Header";
+import Sidebar from "./components/Layout/Sidebar";
+import Main from "./Main";
 
 const RedirectToBench = () => {
   const {
@@ -33,40 +36,55 @@ const RedirectToBench = () => {
 function InventoryRouter(): Node {
   const { uiStore } = useStores();
 
+  const sidebarId = React.useId();
+
   return (
     <Analytics>
       <ErrorBoundary>
         <Alerts>
           <Box height="100%">
-            <Routes>
-              <Route
-                exact
-                path="/"
-                element={
-                  !uiStore.isVerySmall ? <RedirectToBench /> : <InitialScreen />
-                }
-              />
-              <Route
-                path="/container/:id"
-                element={<PermalinkRouter type="container" />}
-              />
-              <Route
-                path="/sample/:id"
-                element={<PermalinkRouter type="sample" />}
-              />
-              <Route
-                path="/subsample/:id"
-                element={<PermalinkRouter type="subsample" />}
-              />
-              <Route
-                path="/sampletemplate/:id"
-                element={<PermalinkRouter type="sampletemplate" />}
-              />
-              <Route path="/search/*" element={<SearchRouter />} />
-              <Route path="/import/*" element={<ImportRouter />} />
-              <Route path="/identifiers/*" element={<IdentifiersRouter />} />
-              <Route path="*" element={<PageNotFoundScreen />} />
-            </Routes>
+            <Header sidebarId={sidebarId} />
+            <Box sx={{ display: "flex", height: "calc(100% - 48px)" }}>
+              <Sidebar id={sidebarId} />
+              <Main>
+                <Routes>
+                  <Route
+                    exact
+                    path="/"
+                    element={
+                      !uiStore.isVerySmall ? (
+                        <RedirectToBench />
+                      ) : (
+                        <InitialScreen />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/container/:id"
+                    element={<PermalinkRouter type="container" />}
+                  />
+                  <Route
+                    path="/sample/:id"
+                    element={<PermalinkRouter type="sample" />}
+                  />
+                  <Route
+                    path="/subsample/:id"
+                    element={<PermalinkRouter type="subsample" />}
+                  />
+                  <Route
+                    path="/sampletemplate/:id"
+                    element={<PermalinkRouter type="sampletemplate" />}
+                  />
+                  <Route path="/search/*" element={<SearchRouter />} />
+                  <Route path="/import/*" element={<ImportRouter />} />
+                  <Route
+                    path="/identifiers/*"
+                    element={<IdentifiersRouter />}
+                  />
+                  <Route path="*" element={<PageNotFoundScreen />} />
+                </Routes>
+              </Main>
+            </Box>
           </Box>
           <MoveDialog />
         </Alerts>
