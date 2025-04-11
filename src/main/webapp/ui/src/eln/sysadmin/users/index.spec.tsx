@@ -12,11 +12,22 @@ import fs from "fs/promises";
 const feature = test.extend<{
   Given: {
     "the sysadmin is on the users page": () => Promise<void>;
+    "checkVerificationPasswordNeeded endpoint returns {value}": ({
+      value,
+    }: {
+      value: boolean;
+    }) => Promise<void>;
   };
   When: {
     "one row is selected": () => Promise<void>;
     "a CSV export is downloaded": () => Promise<Download>;
     "a CSV export of the selected rows is downloaded": () => Promise<Download>;
+    "user {username} is selected": ({
+      username,
+    }: {
+      username: string;
+    }) => Promise<void>;
+    "Grant PI role action is performed": () => Promise<void>;
   };
   Then: {
     "{CSV} should have a precise usage column": ({
@@ -36,9 +47,11 @@ const feature = test.extend<{
       csv: Download;
       count: number;
     }) => Promise<void>;
+    "A request to set a verification password is shown": () => Promise<void>;
+    "A request to set a verification password is not shown": () => Promise<void>;
   };
 }>({
-  Given: async ({ mount }, use) => {
+  Given: async ({ mount, router }, use) => {
     await use({
       "the sysadmin is on the users page": async () => {
         await mount(
@@ -47,6 +60,20 @@ const feature = test.extend<{
               <UsersPage />
             </ThemeProvider>
           </StyledEngineProvider>
+        );
+      },
+      "checkVerificationPasswordNeeded endpoint returns {value}": async ({
+        value,
+      }) => {
+        await router.route(
+          "/vfpwd/ajax/checkVerificationPasswordNeeded",
+          async (route) => {
+            await route.fulfill({
+              status: 200,
+              contentType: "application/json",
+              body: JSON.stringify({ data: value }),
+            });
+          }
         );
       },
     });
@@ -85,6 +112,15 @@ const feature = test.extend<{
           ]);
           return download;
         },
+      "user {username} is selected": async ({ username }): Promise<void> => {
+        const row = page.getByRole("row", { name: new RegExp(username) });
+        const checkbox = row.getByRole("checkbox");
+        await checkbox.click();
+      },
+      "Grant PI role action is performed": async (): Promise<void> => {
+        await page.getByRole("button", { name: /Actions/ }).click();
+        await page.getByRole("menuitem", { name: /Grant PI role/ }).click();
+      },
     });
   },
   Then: async ({ page }, use) => {
@@ -114,6 +150,20 @@ const feature = test.extend<{
         const fileContents = await fs.readFile(path, "utf8");
         const lines = fileContents.split("\n");
         expect(lines.length).toBe(count + 1);
+      },
+      "A request to set a verification password is not shown": async () => {
+        await expect(
+          page.getByText(
+            "Please set your verification password in My RSpace before performing this action."
+          )
+        ).not.toBeVisible();
+      },
+      "A request to set a verification password is shown": async () => {
+        await expect(
+          page.getByText(
+            "Please set your verification password in My RSpace before performing this action."
+          )
+        ).toBeVisible();
       },
     });
   },
@@ -145,81 +195,34 @@ test.beforeEach(async ({ page, router }) => {
 });
 
 test.describe("Grant User PI role", () => {
-  test("When `checkVerificationPasswordNeeded` returns true, a message should be shown.", async ({
-    mount,
-    page,
-    router,
-  }) => {
-    await router.route(
-      "/vfpwd/ajax/checkVerificationPasswordNeeded",
-      async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ data: true }),
-        });
-      }
-    );
-
-    await mount(
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={materialTheme}>
-          <UsersPage />
-        </ThemeProvider>
-      </StyledEngineProvider>
-    );
-
-    const row = page.getByRole("row", { name: /user8h/ });
-    const checkbox = row.getByRole("checkbox");
-    await checkbox.click();
-
-    await page.getByRole("button", { name: /Actions/ }).click();
-    await page.getByRole("menuitem", { name: /Grant PI role/ }).click();
-
-    await expect(
-      page.getByText(
-        "Please set your verification password in My RSpace before performing this action."
-      )
-    ).toBeVisible();
-  });
-
-  test("When `checkVerificationPasswordNeeded` returns false, the message should not be shown.", async ({
-    mount,
-    page,
-    router,
-  }) => {
-    await router.route(
-      "/vfpwd/ajax/checkVerificationPasswordNeeded",
-      async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ data: false }),
-        });
-      }
-    );
-
-    await mount(
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={materialTheme}>
-          <UsersPage />
-        </ThemeProvider>
-      </StyledEngineProvider>
-    );
-
-    const row = page.getByRole("row", { name: /user8h/ });
-    const checkbox = row.getByRole("checkbox");
-    await checkbox.click();
-
-    await page.getByRole("button", { name: /Actions/ }).click();
-    await page.getByRole("menuitem", { name: /Grant PI role/ }).click();
-
-    await expect(
-      page.getByText(
-        "Please set your verification password in My RSpace before performing this action."
-      )
-    ).not.toBeVisible();
-  });
+  feature(
+    "When `checkVerificationPasswordNeeded` returns true, the message should not be shown.",
+    async ({ Given, When, Then }) => {
+      await Given["checkVerificationPasswordNeeded endpoint returns {value}"]({
+        value: true,
+      });
+      await Given["the sysadmin is on the users page"]();
+      await When["user {username} is selected"]({
+        username: "user8h",
+      });
+      await When["Grant PI role action is performed"]();
+      await Then["A request to set a verification password is shown"]();
+    }
+  );
+  feature(
+    "When `checkVerificationPasswordNeeded` returns false, the message should not be shown.",
+    async ({ Given, When, Then }) => {
+      await Given["checkVerificationPasswordNeeded endpoint returns {value}"]({
+        value: false,
+      });
+      await Given["the sysadmin is on the users page"]();
+      await When["user {username} is selected"]({
+        username: "user8h",
+      });
+      await When["Grant PI role action is performed"]();
+      await Then["A request to set a verification password is not shown"]();
+    }
+  );
 });
 
 test.describe("CSV Export", () => {
