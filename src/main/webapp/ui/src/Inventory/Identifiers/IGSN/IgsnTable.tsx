@@ -24,6 +24,8 @@ declare module "@mui/x-data-grid" {
     setColumnsMenuAnchorEl: (anchorEl: HTMLElement | null) => void;
     state: "draft" | "findable" | "registered" | null;
     setState: (newState: "draft" | "findable" | "registered" | null) => void;
+    isAssociated: boolean | null;
+    setIsAssociated: (newIsAssociated: boolean | null) => void;
   }
 }
 
@@ -31,6 +33,8 @@ function Toolbar({
   setColumnsMenuAnchorEl,
   state,
   setState,
+  isAssociated,
+  setIsAssociated,
 }: GridSlotProps["toolbar"]): React.ReactNode {
   const apiRef = useGridApiContext();
 
@@ -47,6 +51,12 @@ function Toolbar({
   React.useEffect(() => {
     if (columnMenuRef.current) setColumnsMenuAnchorEl(columnMenuRef.current);
   }, [setColumnsMenuAnchorEl]);
+
+  const linkedItemStateLabel = (() => {
+    if (isAssociated === null) return "All";
+    if (isAssociated === true) return "Yes";
+    return "No";
+  })();
 
   return (
     <GridToolbarContainer sx={{ width: "100%" }}>
@@ -84,6 +94,32 @@ function Toolbar({
           current={state === "registered"}
         />
       </MenuWithSelectedState>
+      <MenuWithSelectedState
+        label="Linked Item"
+        currentState={linkedItemStateLabel}
+      >
+        <AccentMenuItem
+          title="All Identifiers"
+          onClick={() => {
+            setIsAssociated(null);
+          }}
+          current={isAssociated === null}
+        />
+        <AccentMenuItem
+          title="No Linked Item"
+          onClick={() => {
+            setIsAssociated(false);
+          }}
+          current={isAssociated === false}
+        />
+        <AccentMenuItem
+          title="Has Linked Item"
+          onClick={() => {
+            setIsAssociated(true);
+          }}
+          current={isAssociated === true}
+        />
+      </MenuWithSelectedState>
       <Box flexGrow={1}></Box>
       <GridToolbarColumnsButton
         ref={(node) => {
@@ -118,7 +154,7 @@ export default function IgsnTable({
   const [state, setState] = React.useState<
     "draft" | "findable" | "registered" | null
   >(null);
-  const [isAssociated] = React.useState<boolean | null>(null);
+  const [isAssociated, setIsAssociated] = React.useState<boolean | null>(null);
   const { identifiers, loading } = useIdentifiersListing({
     state,
     isAssociated,
@@ -226,6 +262,8 @@ export default function IgsnTable({
           setColumnsMenuAnchorEl,
           state,
           setState,
+          isAssociated,
+          setIsAssociated,
         },
         panel: {
           anchorEl: columnsMenuAnchorEl,
