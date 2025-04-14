@@ -1,6 +1,6 @@
 import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { type Identifier } from "../../useIdentifiers";
+import { type Identifier, useIdentifiersListing } from "../../useIdentifiers";
 import Checkbox from "@mui/material/Checkbox";
 import RsSet from "../../../util/set";
 import { DataGridColumn } from "../../../util/table";
@@ -18,9 +18,17 @@ export default function IgsnTable({
   selectedIgsns: RsSet<Identifier>;
   setSelectedIgsns: (newSet: RsSet<Identifier>) => void;
 }): React.ReactNode {
+  const [state] = React.useState<"draft" | "findable" | "registered" | null>(
+    null
+  );
+  const [isAssociated] = React.useState<boolean | null>(null);
+  const { identifiers, loading } = useIdentifiersListing({
+    state,
+    isAssociated,
+  });
   return (
     <DataGrid
-      rows={[]}
+      rows={identifiers}
       columns={[
         {
           field: "checkbox",
@@ -100,6 +108,7 @@ export default function IgsnTable({
           }
         ),
       ]}
+      loading={loading}
     />
   );
 }

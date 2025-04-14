@@ -52,7 +52,27 @@ const feature = test.extend<{
   },
 });
 
-test.beforeEach(async ({ page, router }) => {});
+test.beforeEach(async ({ router }) => {
+  await router.route("/userform/ajax/inventoryOauthToken", (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        data: "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJpYXQiOjE3MzQzNDI5NTYsImV4cCI6MTczNDM0NjU1NiwicmVmcmVzaFRva2VuSGFzaCI6ImZlMTVmYTNkNWUzZDVhNDdlMzNlOWUzNDIyOWIxZWEyMzE0YWQ2ZTZmMTNmYTQyYWRkY2E0ZjE0Mzk1ODJhNGQifQ.HCKre3g_P1wmGrrrnQncvFeT9pAePFSc4UPuyP5oehI",
+      }),
+    });
+  });
+
+  await router.route("/api/inventory/v1/identifiers", (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        data: [],
+      }),
+    });
+  });
+});
 
 test.describe("IGSN Table", () => {
   feature(
