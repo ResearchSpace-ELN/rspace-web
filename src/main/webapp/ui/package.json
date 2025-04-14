@@ -13,7 +13,8 @@
     "flow": "flow",
     "flow-typed": "flow-typed",
     "depcruise": "npx depcruise src",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "test-ct": "playwright test -c playwright-ct.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,8 @@
     "@babel/preset-flow": "=7.18.6",
     "@babel/preset-react": "=7.18.6",
     "@babel/runtime": "=7.24.6",
+    "@playwright/experimental-ct-react": "^1.51.0",
+    "@playwright/test": "^1.51.1",
     "@testing-library/jest-dom": "=6.2.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.5.2",
@@ -36,6 +39,7 @@
     "@types/dompurify": "^3.0.5",
     "@types/jest": "^29.5.14",
     "@types/jest-axe": "^3.5.9",
+    "@types/node": "^22.13.9",
     "axios-mock-adapter": "^1.20.0",
     "babel-loader": "=9.1.2",
     "babel-plugin-transform-import-meta": "^2.2.1",
@@ -69,6 +73,7 @@
     "webpack-cli": "=5.1.4"
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
     "@date-io/date-fns": "^1.3.13",
     "@dnd-kit/core": "^6.1.0",
     "@emotion/core": "=11.0.0",
@@ -88,6 +93,7 @@
     "@mui/x-tree-view": "^7.6.1",
     "@tinymce/tinymce-react": "=4.3.2",
     "@toast-ui/react-image-editor": "=3.15.2",
+    "@types/react-window-infinite-loader": "^1.0.9",
     "autosuggest-highlight": "=3.2.1",
     "axios": "=1.6.5",
     "babel-plugin-syntax-hermes-parser": "^0.22.0",
