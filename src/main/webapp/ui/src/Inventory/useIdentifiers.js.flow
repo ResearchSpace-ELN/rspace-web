@@ -1,0 +1,23 @@
+// @flow
+
+import RsSet from "../util/set";
+
+export type Identifier = {|
+  id: number,
+  doiType: string,
+  doi: string,
+  associatedGlobalId: string | null,
+  creatorName: string,
+  state: string,
+|};
+
+declare export function useIdentifiers({|
+  state?: "draft" | "findable" | "registered" | null,
+  isAssociated?: boolean | null,
+|}): {|
+  identifiers: $ReadOnlyArray<Identifier>,
+  loading: boolean,
+  error: Error | null,
+  bulkRegister: ({| count: number |}) => Promise<void>,
+  deleteIdentifiers: (RsSet<Identifier>) => Promise<void>,
+|};
