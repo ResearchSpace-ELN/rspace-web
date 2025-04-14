@@ -1,8 +1,10 @@
 import React from "react";
 import {
   DataGrid,
+  useGridApiContext,
   GridToolbarContainer,
   GridToolbarColumnsButton,
+  GridToolbarExportContainer,
   GridSlotProps,
 } from "@mui/x-data-grid";
 import { type Identifier, useIdentifiersListing } from "../../useIdentifiers";
@@ -13,6 +15,7 @@ import { toTitleCase } from "../../../util/Util";
 import GlobalId from "../../../components/GlobalId";
 import LinkableRecordFromGlobalId from "../../../stores/models/LinkableRecordFromGlobalId";
 import Box from "@mui/material/Box";
+import MenuItem from "@mui/material/MenuItem";
 
 declare module "@mui/x-data-grid" {
   interface ToolbarPropsOverrides {
@@ -23,6 +26,8 @@ declare module "@mui/x-data-grid" {
 function Toolbar({
   setColumnsMenuAnchorEl,
 }: GridSlotProps["toolbar"]): React.ReactNode {
+  const apiRef = useGridApiContext();
+
   /**
    * The columns menu can be opened by either tapping the "Columns" toolbar
    * button or by tapping the "Manage columns" menu item in each column's menu,
@@ -45,6 +50,17 @@ function Toolbar({
           if (node) columnMenuRef.current = node;
         }}
       />
+      <GridToolbarExportContainer>
+        <MenuItem
+          onClick={() => {
+            apiRef.current?.exportDataAsCsv({
+              allColumns: true,
+            });
+          }}
+        >
+          Export to CSV
+        </MenuItem>
+      </GridToolbarExportContainer>
     </GridToolbarContainer>
   );
 }
