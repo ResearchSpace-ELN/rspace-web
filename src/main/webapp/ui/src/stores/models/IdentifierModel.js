@@ -66,46 +66,6 @@ export type IdentifierGeoLocation = {
   geoLocationPolygon: GeoLocationPolygon,
 };
 
-export const newGeoLocation = {
-  geoLocationBox: {
-    eastBoundLongitude: "",
-    northBoundLatitude: "",
-    southBoundLatitude: "",
-    westBoundLongitude: "",
-  },
-  geoLocationPlace: "",
-  geoLocationPoint: {
-    pointLatitude: "",
-    pointLongitude: "",
-  },
-  geoLocationPolygon: [
-    {
-      polygonPoint: {
-        pointLatitude: "",
-        pointLongitude: "",
-      },
-    },
-    {
-      polygonPoint: {
-        pointLatitude: "",
-        pointLongitude: "",
-      },
-    },
-    {
-      polygonPoint: {
-        pointLatitude: "",
-        pointLongitude: "",
-      },
-    },
-    {
-      polygonPoint: {
-        pointLatitude: "",
-        pointLongitude: "",
-      },
-    },
-  ],
-};
-
 const creatorTypeOptions: Array<RadioOption<string>> = [
   {
     value: "Personal",
