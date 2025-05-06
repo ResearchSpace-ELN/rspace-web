@@ -79,8 +79,9 @@ class GalaxyPlugin {
               <GalaxyDialog
                 open={newProps.open}
                 onClose={newProps.onClose ?? (() => {})}
-                documentId={155}
-                fieldId={34}
+                documentId={155} // TODO: Get from editor somehow
+                fieldId={34} // TODO: Get from  somehow
+                editor={editor}
               />
             </ThemeProvider>
           </StyledEngineProvider>

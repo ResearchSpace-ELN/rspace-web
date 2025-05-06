@@ -42,6 +42,7 @@ interface GalaxyDialogProps {
   onClose: () => void;
   documentId: number;
   fieldId: number;
+  editor: any;
 }
 
 /**
@@ -53,6 +54,7 @@ export default function GalaxyDialog({
   onClose,
   documentId,
   fieldId,
+  editor,
 }: GalaxyDialogProps) {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
