@@ -62,6 +62,7 @@ module.exports = {
     tinymceOmero: "./src/tinyMCE/omero/index.js",
     tinymceJove: "./src/tinyMCE/jove/index.js",
     tinymceIdentifiers: "./src/tinyMCE/inventory/identifiers/index.js",
+    tinymceGalaxy: "./src/tinyMCE/galaxy/index.tsx",
     baseSearch: "./src/components/BaseSearch.js",
     confirmationDialog: "./src/components/ConfirmationDialog.js",
     imageEditor: "./src/Gallery/imageEditorDialog.js",
