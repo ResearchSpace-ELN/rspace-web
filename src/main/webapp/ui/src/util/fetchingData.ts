@@ -46,6 +46,14 @@ export function map<A, B>(
   return fetched;
 }
 
+export function flatMap<A, B>(
+  fetched: Fetched<A>,
+  func: (loadedValue: A) => Fetched<B>
+): Fetched<B> {
+  if (fetched.tag === "success") return func(fetched.value);
+  return fetched;
+}
+
 /**
  * Transform the wrapped fetched data into a Result, collapsing the loading and
  * error states into the Result's Error type. For those intersested functional

@@ -11,46 +11,55 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import CircularProgress from "@mui/material/CircularProgress";
 import AppBar from "../../components/AppBar";
+import * as FetchingData from "../../util/fetchingData";
+import { useGetDocument } from "../../eln/documents/useGetDocument";
+import Alert from "@mui/material/Alert";
 
-// Mock data for file list
-const MOCK_FILES = [
-  {
-    id: "file1",
-    name: "sample_rnaseq_1.fastq",
-  },
-  {
-    id: "file2",
-    name: "sample_rnaseq_2.fastq",
-  },
-  {
-    id: "file3",
-    name: "human_genome_reads.fastq",
-  },
-  {
-    id: "file4",
-    name: "mouse_genome_reads.fastq",
-  },
-  {
-    id: "file5",
-    name: "experiment_results.fastq",
-  },
-];
+function useGetFieldAttachments(
+  documentId: number,
+  fieldId: number
+): FetchingData.Fetched<
+  ReadonlyArray<{
+    id: number;
+    globalId: string;
+    name: string;
+  }>
+> {
+  const doc = useGetDocument(documentId);
+  const attachments = React.useMemo(() => {
+    return FetchingData.flatMap(doc, (d) => {
+      const field = d.fields.find(({ id }) => id === fieldId);
+      if (!field) return { tag: "error", error: "Field not found" };
+      return { tag: "success", value: field.files };
+    });
+  }, [doc, fieldId]);
+
+  return attachments;
+}
 
 interface GalaxyDialogProps {
   open: boolean;
   onClose: () => void;
+  documentId: number;
+  fieldId: number;
 }
 
 /**
  * GalaxyDialog component for selecting a file attached to the current document
  * field and executing an RNAseq workflow.
  */
-export default function GalaxyDialog({ open, onClose }: GalaxyDialogProps) {
+export default function GalaxyDialog({
+  open,
+  onClose,
+  documentId,
+  fieldId,
+}: GalaxyDialogProps) {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const files = useGetFieldAttachments(documentId, fieldId);
 
-  const handleFileSelect = (fileId: string) => {
-    setSelectedFile(fileId);
+  const handleFileSelect = (fileGlobalId: string) => {
+    setSelectedFile(fileGlobalId);
   };
 
   const handleRunWorkflow = () => {
@@ -71,43 +80,55 @@ export default function GalaxyDialog({ open, onClose }: GalaxyDialogProps) {
       <AppBar variant="dialog" currentPage="Galaxy" accessibilityTips={{}} />
       <DialogTitle>Execute Galaxy RNAseq Workflow</DialogTitle>
       <DialogContent>
-        {loading ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "2rem",
-            }}
-          >
-            <CircularProgress />
-          </div>
-        ) : (
-          <>
-            <Typography variant="body1" paragraph>
-              This integration allows you to trigger an RNAseq workflow in
-              Galaxy. The workflow will process your selected file and analyze
-              RNA sequencing data. Please select a file from the list below to
-              use as input for the Galaxy RNAseq workflow.
-            </Typography>
+        <Typography variant="body1" paragraph>
+          This integration allows you to trigger an RNAseq workflow in Galaxy.
+          The workflow will process your selected file and analyze RNA
+          sequencing data. Please select a file from the list below to use as
+          input for the Galaxy RNAseq workflow.
+        </Typography>
 
-            <Typography variant="h6" gutterBottom>
-              Available Files
-            </Typography>
+        <Typography variant="h6" gutterBottom>
+          Available Files
+        </Typography>
 
+        {FetchingData.match(files, {
+          loading: () => (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "2rem",
+              }}
+            >
+              <CircularProgress />
+            </div>
+          ),
+          error: (error) => (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "2rem",
+              }}
+            >
+              <Alert severity="error">{error}</Alert>
+            </div>
+          ),
+          success: (files) => (
             <List>
-              {MOCK_FILES.map((file) => (
+              {files.map((file) => (
                 <ListItem key={file.id}>
                   <ListItemButton
-                    onClick={() => handleFileSelect(file.id)}
-                    selected={selectedFile === file.id}
+                    onClick={() => handleFileSelect(file.globalId)}
+                    selected={selectedFile === file.globalId}
                   >
                     <ListItemText primary={file.name} />
                   </ListItemButton>
                 </ListItem>
               ))}
             </List>
-          </>
-        )}
+          ),
+        })}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

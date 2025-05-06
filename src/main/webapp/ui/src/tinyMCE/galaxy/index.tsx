@@ -79,6 +79,8 @@ class GalaxyPlugin {
               <GalaxyDialog
                 open={newProps.open}
                 onClose={newProps.onClose ?? (() => {})}
+                documentId={155}
+                fieldId={34}
               />
             </ThemeProvider>
           </StyledEngineProvider>
