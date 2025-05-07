@@ -10,14 +10,9 @@ import AppBar from "../../components/AppBar";
 import * as FetchingData from "../../util/fetchingData";
 import { useGetDocument } from "../../eln/documents/useGetDocument";
 import Alert from "@mui/material/Alert";
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GRID_CHECKBOX_SELECTION_COL_DEF,
-  GridRenderCellParams,
-} from "@mui/x-data-grid";
+import { GridRowId } from "@mui/x-data-grid";
 import { DataGridColumn } from "../../util/table";
-import Radio from "@mui/material/Radio";
+import { DataGridWithRadioSelection } from "../../components/DataGridWithRadioSelection";
 
 // Type definition for file attachments
 type FileAttachment = {
@@ -74,29 +69,11 @@ export default function GalaxyDialog({
   fieldId,
   editor,
 }: GalaxyDialogProps) {
-  const [selectedRowId, setSelectedRowId] = useState<GridRowSelectionModel>([]);
+  const [selectedRowId, setSelectedRowId] = useState<GridRowId | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const files = useGetFieldAttachments(documentId, fieldId);
 
   const columns = [
-    {
-      ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      renderHeader: () => "Select",
-      renderCell: (colProps: GridRenderCellParams<FileAttachment>) => {
-        return (
-          <Radio
-            color="primary"
-            checked={selectedRowId.includes(colProps.row.id)}
-            onChange={(event, selected) => {
-              if (!selected) setSelectedRowId([]);
-              setSelectedRowId([colProps.row.id]);
-            }}
-            aria-label={`Select ${colProps.row.name}`}
-          />
-        );
-      },
-      width: 100,
-    },
     DataGridColumn.newColumnWithFieldName<"name", FileAttachment>("name", {
       headerName: "File Name",
       flex: 2,
@@ -112,7 +89,7 @@ export default function GalaxyDialog({
 
   const handleRunWorkflow = () => {
     // Get the selected file globalId from the selectedRowId
-    if (selectedRowId.length === 0) return;
+    if (selectedRowId !== null) return;
 
     try {
       setLoading(true);
@@ -121,7 +98,7 @@ export default function GalaxyDialog({
         loading: () => null,
         error: () => null,
         success: (fileList) =>
-          fileList.find((file) => file.id === selectedRowId[0]),
+          fileList.find((file) => file.id === selectedRowId),
       });
 
       // Simulating the workflow execution
@@ -175,21 +152,22 @@ export default function GalaxyDialog({
           ),
           success: (filesList) => (
             <div style={{ height: 400, width: "100%" }}>
-              <DataGrid
+              <DataGridWithRadioSelection
                 rows={filesList}
                 columns={columns}
                 getRowId={(row) => row.id}
                 autoHeight
-                checkboxSelection={true}
                 disableRowSelectionOnClick={false}
-                disableMultipleRowSelection
-                rowSelectionModel={selectedRowId}
-                onRowSelectionModelChange={(newSelection) => {
+                selectedRowId={selectedRowId}
+                onSelectionChange={(newSelection) => {
                   setSelectedRowId(newSelection);
                 }}
                 hideFooter
                 hideFooterSelectedRowCount
                 disableColumnFilter
+                selectRadioAriaLabelFunc={(row: FileAttachment) =>
+                  `Select ${row.name}`
+                }
               />
             </div>
           ),
@@ -198,7 +176,7 @@ export default function GalaxyDialog({
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button
-          disabled={selectedRowId.length === 0 || loading}
+          disabled={selectedRowId === null || loading}
           color="primary"
           variant="contained"
           onClick={handleRunWorkflow}
