@@ -35,6 +35,7 @@ interface TinyMCEEditor {
         config: {
           tooltip: string;
           icon: string;
+          text: string;
           onAction: () => void;
         }
       ) => void;
@@ -101,6 +102,7 @@ class GalaxyPlugin {
     editor.ui.registry.addButton("galaxy", {
       tooltip: "Execute Galaxy workflow",
       icon: "galaxy",
+      text: "Galaxy",
       onAction() {
         galaxyRenderer.next({
           open: true,
