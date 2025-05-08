@@ -1,4 +1,4 @@
-import { type URL as URLType } from "../../util/types";
+import { type URL as URLType, type BlobUrl } from "../../util/types";
 import ApiService from "../../common/InvApiService";
 import { sameKeysAndValues, match, isoToLocale } from "../../util/Util";
 import * as ArrayUtils from "../../util/ArrayUtils";
@@ -28,7 +28,6 @@ import {
   type AdjustableTableRow,
   type AdjustableTableRowOptions,
 } from "../definitions/Tables";
-import { type BlobUrl } from "../../util/types";
 import getRootStore from "../stores/RootStore";
 import { mkAlert, type Alert } from "../contexts/Alert";
 import { newExistingAttachment } from "./AttachmentModel";
@@ -93,18 +92,18 @@ export type ResultEditableFields = {
    * development servers or where the records have been created directly from
    * the API as thus has a higher probability of bugs.
    */
-  description: ?string,
-  name: string,
-  tags: Array<Tag>,
-  image: ?BlobUrl,
-  newBase64Image: ?string,
-  barcodes: Array<BarcodeRecord>,
-  sharingMode: SharingMode,
-  sharedWith: ?Array<SharedWithGroup>,
+  description: string | null;
+  name: string;
+  tags: Array<Tag>;
+  image: BlobUrl | null;
+  newBase64Image: string | null;
+  barcodes: Array<BarcodeRecord>;
+  sharingMode: SharingMode;
+  sharedWith: Array<SharedWithGroup> | null;
 };
 
 export type ResultUneditableFields = {
-  owner: ?Person,
+  owner: Person | null;
 };
 
 export const sortProperties: Array<SortProperty> = [
@@ -127,9 +126,9 @@ const calculateUploadProgress = (soFar: number, total: number): number =>
   Math.floor((soFar / total) * 10) * 10;
 
 type LockOwner = {
-  firstName: string,
-  lastName: string,
-  username: string,
+  firstName: string;
+  lastName: string;
+  username: string;
 };
 
 export class RecordLockedError extends Error {
@@ -204,12 +203,12 @@ export default class Result
   modifiedByFullName: string;
   owner: ?Person;
   deleted: boolean = false;
-  _links: { [string]: URLType };
+  _links: { [_: string]: URLType };
   uploadProgress: Progress;
   lastEditInput: Date;
   lockExpiry: Date;
   lockExpired: boolean = false;
-  expiryCheckInterval: IntervalID;
+  expiryCheckInterval: NodeJS.Timeout | undefined;
   permittedActions: Set<Action>;
   newBase64Image: ResultEditableFields["newBase64Image"] = null;
   attachments: Array<Attachment> = [];
@@ -219,7 +218,7 @@ export default class Result
   factory: Factory;
   fetchingAdditionalInfo: Promise<{ data: unknown }> | null = null;
   sharingMode: SharingMode;
-  sharedWith: ?Array<SharedWithGroup>;
+  sharedWith: Array<SharedWithGroup> | null;
 
   constructor(factory: Factory) {
     makeObservable(this, {
@@ -359,11 +358,10 @@ export default class Result
     this.owner = params.owner ? factory.newPerson(params.owner) : null;
     this.deleted = params.deleted;
     this.permittedActions = new Set(params.permittedActions);
-    this.attachments = (params.attachments ?? []).map(
-      (a) =>
-        newExistingAttachment(a, this.permalinkURL, () =>
-          this.setAttributesDirty({})
-        )
+    this.attachments = (params.attachments ?? []).map((a) =>
+      newExistingAttachment(a, this.permalinkURL, () =>
+        this.setAttributesDirty({})
+      )
     );
     this.iconId = params.iconId;
     this.sharingMode = params.sharingMode;
@@ -410,7 +408,7 @@ export default class Result
    * as a nested object. This difference of around 2KB may seem small but it
    * compounds when there are many thousands of search results in memory.
    */
-  processLinks(_links: [{ link: URLType, rel: string }]): void {
+  processLinks(_links: [{ link: URLType; rel: string }]): void {
     this._links = Object.fromEntries(
       _links.map(({ link, rel }) => [rel, link])
     );
@@ -470,7 +468,7 @@ export default class Result
   }
 
   get state(): State {
-    return match<{ editing: boolean, id: ?Id }, State>([
+    return match<{ editing: boolean; id: ?Id }, State>([
       [({ editing }) => editing, "edit"],
       [({ id }) => Boolean(id), "preview"],
       [() => true, "create"],
@@ -495,22 +493,22 @@ export default class Result
     }));
 
     const params: {
-      id: Id,
-      globalId: GlobalId | null,
-      name?: string,
-      description?: ?string,
-      extraFields?: typeof extraFields,
+      id: Id;
+      globalId: GlobalId | null;
+      name?: string;
+      description?: string | null;
+      extraFields?: typeof extraFields;
       tags?: Array<{
-        value: string,
-        uri: ?string,
-        ontologyName: ?string,
-        ontologyVersion: ?string,
-      }>,
-      newBase64Image?: ?string,
-      barcodes?: Array<object>,
-      identifiers?: unknown,
-      sharingMode?: SharingMode,
-      sharedWith?: ?Array<SharedWithGroup>,
+        value: string;
+        uri: string | null;
+        ontologyName: string | null;
+        ontologyVersion: string | null;
+      }>;
+      newBase64Image?: string | null;
+      barcodes?: Array<object>;
+      identifiers?: unknown;
+      sharingMode?: SharingMode;
+      sharedWith?: Array<SharedWithGroup> | null;
     } = {
       id: this.id,
       globalId: this.globalId,
@@ -537,7 +535,7 @@ export default class Result
         this.barcodes
       ).map((b) => b.paramsForBackend);
     if (this.currentlyEditableFields.has("identifiers"))
-      params.identifiers = this.identifiers.map(i => i.toJson());
+      params.identifiers = this.identifiers.map((i) => i.toJson());
     if (this.currentlyEditableFields.has("sharingMode"))
       params.sharingMode = this.sharingMode;
     if (this.currentlyEditableFields.has("sharedWith"))
@@ -688,7 +686,10 @@ export default class Result
         this.lastEditInput.getTime() + remainingSeconds * 1000
       );
       void this.expiryCheck();
-      this.expiryCheckInterval = setInterval(() => this.expiryCheck(), 5000);
+      this.expiryCheckInterval = setInterval(
+        () => void this.expiryCheck(),
+        5000
+      );
     } else {
       clearInterval(this.expiryCheckInterval);
     }
@@ -738,21 +739,19 @@ export default class Result
   }
 
   async checkLock(silent: boolean = false): Promise<{
-    status: LockStatus,
-    remainingTimeInSeconds: number,
-    lockOwner: LockOwner,
+    status: LockStatus;
+    remainingTimeInSeconds: number;
+    lockOwner: LockOwner;
   }> {
     if (!this.globalId) throw new Error("globalId is required.");
     const globalId = this.globalId;
     try {
       return (
-        await ApiService.post<
-          {
-            status: LockStatus,
-            remainingTimeInSeconds: number,
-            lockOwner: LockOwner,
-          }
-        >(`editLocks/${globalId}`, {})
+        await ApiService.post<{
+          status: LockStatus;
+          remainingTimeInSeconds: number;
+          lockOwner: LockOwner;
+        }>(`editLocks/${globalId}`, {})
       ).data;
     } catch (error) {
       if (!silent) {
@@ -887,7 +886,10 @@ export default class Result
   }
 
   // to be implemented by the classes that extend this abtract one (and can be created inside a container)
-  get inContainerParams(): ?ContainerInContainerParams | ?SampleInContainerParams {
+  get inContainerParams():
+    | ContainerInContainerParams
+    | SampleInContainerParams
+    | null {
     return null;
   }
 
@@ -898,7 +900,7 @@ export default class Result
    * that a selection made in list view is maintained which switching to image
    * or grid view.
    */
-  toggleSelected(value: ?boolean) {
+  toggleSelected(value: boolean | null) {
     value = value ?? !this.selected;
     this.selected = value;
 
@@ -919,7 +921,9 @@ export default class Result
      * selection across different searches. Note the use of `this` rather
      * than comparing IDs.
      */
-    const parentLocation = locations.find(({ content }) => content as Result | null === this);
+    const parentLocation = locations.find(
+      ({ content }) => (content as Result | null) === this
+    );
 
     // this check is necessary to avoid stack overflow
     if (parentLocation?.selected !== value) {
@@ -988,10 +992,10 @@ export default class Result
         ...this.paramsForBackend,
         ...(this.beingCreatedInContainer ? this.inContainerParams : {}),
       };
-      const { data } = await ApiService.post<
-        typeof params,
-        { globalId: GlobalId, attachments: Array<Attachment> }
-      >(`${this.recordType}s?`, params, {
+      const { data } = await ApiService.post<{
+        globalId: GlobalId;
+        attachments: Array<Attachment>;
+      }>(`${this.recordType}s?`, params, {
         onUploadProgress: (progressEvent) =>
           this.setAttributes({
             uploadProgress: calculateProgress({
@@ -1030,7 +1034,7 @@ export default class Result
           variant: "success",
         })
       );
-      await trackingStore.trackEvent(
+      trackingStore.trackEvent(
         "InventoryRecordCreated",
         this.dataAttachedToRecordCreatedAnaylticsEvent
       );
@@ -1091,7 +1095,7 @@ export default class Result
     try {
       const params = { ...this.paramsForBackend };
       if (!this.id) throw new Error("id is required.");
-      const { data } = await ApiService.update<typeof params, mixed>(
+      const { data } = await ApiService.update<unknown>(
         `${this.recordType}s`,
         this.id,
         params,
@@ -1182,8 +1186,7 @@ export default class Result
    * After changes to a record have been saved, any associated attachments must
    * also be saved via the API.
    */
-  // eslint-disable-next-line no-unused-vars
-  async saveAttachments(newRecord?: InventoryRecord): Promise<void> {
+  async saveAttachments(_newRecord?: InventoryRecord): Promise<void> {
     await this.submitAttachmentChanges();
   }
 
@@ -1193,7 +1196,6 @@ export default class Result
     }
     return (
       this.currentlyVisibleFields.has(field) &&
-      // $FlowExpectedError[prop-missing] Record properties can be accessed by indexing
       this[field] !== "" &&
       this[field] !== null &&
       typeof this[field] !== "undefined"
@@ -1207,7 +1209,7 @@ export default class Result
   }
 
   setVisible(fields: Set<string>, value: boolean) {
-    [...fields].map((field) => {
+    [...fields].forEach((field) => {
       if (value) {
         this.currentlyVisibleFields.add(field);
       } else {
@@ -1217,7 +1219,7 @@ export default class Result
   }
 
   setEditable(fields: Set<string>, value: boolean) {
-    [...fields].map((field) => {
+    [...fields].forEach((field) => {
       if (value) {
         this.currentlyEditableFields.add(field);
       } else {
@@ -1257,7 +1259,7 @@ export default class Result
     });
   }
 
-  removeExtraField(id: ?number, index: number) {
+  removeExtraField(id: number | null, index: number) {
     if (!this.id || !id) {
       this.extraFields.splice(index, 1);
     } else {
@@ -1271,7 +1273,7 @@ export default class Result
 
   updateExtraField(
     oldFieldName: string,
-    updatedField: { name: string, type: string }
+    updatedField: { name: string; type: string }
   ) {
     const field = this.extraFields.find((ef) => ef.name === oldFieldName);
 
@@ -1311,13 +1313,17 @@ export default class Result
       ) {
         const globalId = this.globalId;
         if (!globalId) throw new Error("Global Id is required.");
-        const response = await ApiService.post<
-          { parentGlobalId: GlobalId },
-          IdentifierAttrs
-        >(`/identifiers`, {
-          parentGlobalId: globalId,
-        });
-        const newIGSN = new IdentifierModel(response.data, globalId, ApiService);
+        const response = await ApiService.post<IdentifierAttrs>(
+          `/identifiers`,
+          {
+            parentGlobalId: globalId,
+          }
+        );
+        const newIGSN = new IdentifierModel(
+          response.data,
+          globalId,
+          ApiService
+        );
         this.identifiers = this.identifiers.concat(newIGSN);
         getRootStore().searchStore.search.replaceResult(this);
         getRootStore().uiStore.addAlert(
@@ -1403,15 +1409,16 @@ export default class Result
 
   fetchImage(
     name: "image" | "locationsImage" | "thumbnail"
-  ): Promise<?BlobUrl> {
+  ): Promise<BlobUrl | null> {
     const link = this._links[name];
-    if (!link) return Promise.resolve();
+    if (!link) return Promise.resolve(null);
     return getRootStore()
       .imageStore.fetchImage(link)
       .then(
         action((blobUrl) => {
-          // $FlowExpectedError[prop-missing] Result can be indexed
+          // @ts-expect-error locationsImage is container-specific
           this[name] = blobUrl;
+          return null;
         })
       );
   }
@@ -1419,28 +1426,22 @@ export default class Result
   setImage(
     imageName: "image" | "locationsImage",
     canvasId: string
-  ): ({ dataURL: string, file: Blob }) => Promise<void> {
-    return async ({ dataURL, file }: { dataURL: string, file: Blob }) => {
+  ): ({ dataURL, file }: { dataURL: string; file: Blob }) => Promise<void> {
+    return async ({ dataURL, file }: { dataURL: string; file: Blob }) => {
       const scaledImage = await capImageAt1MB(file, dataURL, canvasId);
       this.setAttributesDirty({
-        ...((imageName === "image"
+        ...(imageName === "image"
           ? {
               newBase64Image: scaledImage,
               image: scaledImage,
             }
-          : {}): {|
-          newBase64Image?: string,
-          image?: string,
-        |}),
-        ...((imageName === "locationsImage"
+          : {}),
+        ...(imageName === "locationsImage"
           ? {
               newBase64LocationsImage: scaledImage,
               locationsImage: scaledImage,
             }
-          : {}): {|
-          newBase64LocationsImage?: string,
-          locationsImage?: string,
-        |}),
+          : {}),
       });
     };
   }
@@ -1464,21 +1465,21 @@ export default class Result
     return "";
   }
 
-  contextMenuDisabled(): ?string {
+  contextMenuDisabled(): string | null {
     return null;
   }
 
-  get permalinkURL(): ?URLType {
+  get permalinkURL(): URLType | null {
     const permalinkType = this.recordType.toLowerCase();
     if (!this.id) return null;
     return `/inventory/${permalinkType}/${this.id}`;
   }
 
-  get ownerLabel(): ?string {
+  get ownerLabel(): string | null {
     return this.owner?.fullName;
   }
 
-  get currentUserIsOwner(): ?boolean {
+  get currentUserIsOwner(): boolean | null {
     if (this.isWorkbench) return true;
     const currentUser = getRootStore().peopleStore.currentUser;
     if (!currentUser || !this.owner) return null;
@@ -1603,7 +1604,7 @@ export default class Result
   async submitAttachmentChanges(): Promise<void> {
     if (!this.globalId) throw new Error("Global Id not known");
     const g = this.globalId;
-    await Promise.all(this.attachments.map(a => a.save(g)));
+    await Promise.all(this.attachments.map((a) => a.save(g)));
   }
 
   get iconName(): string {
@@ -1637,7 +1638,7 @@ export default class Result
     return false;
   }
 
-  get illustration(): Node {
+  get illustration(): React.ReactNode {
     throw new Error("Abstract method; not implemented.");
   }
 
@@ -1668,7 +1669,9 @@ export default class Result
   }
 
   //eslint-disable-next-line no-unused-vars
-  get noValueLabel(): {[key in keyof ResultEditableFields]: ?string} & {[key in keyof ResultUneditableFields]: ?string} {
+  get noValueLabel(): { [key in keyof ResultEditableFields]: string | null } & {
+    [key in keyof ResultUneditableFields]: string | null;
+  } {
     return {
       name: null,
       description: null,
@@ -1686,8 +1689,7 @@ export default class Result
     // do nothing; there is no search associated with all Results
   }
 
-  //eslint-disable-next-line no-unused-vars
-  updateBecauseRecordsChanged(recordIds: Set<GlobalId>) {
+  updateBecauseRecordsChanged(_recordIds: Set<GlobalId>) {
     // to be implemented by the classes that extend this abstract one
   }
 
@@ -1699,7 +1701,7 @@ export default class Result
     return true;
   }
 
-  get createOptions(): $ReadOnlyArray<CreateOption> {
+  get createOptions(): ReadonlyArray<CreateOption> {
     return [];
   }
 }
