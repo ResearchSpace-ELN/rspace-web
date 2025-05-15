@@ -491,7 +491,7 @@ export default class SubSampleModel
 classMixin(SubSampleModel, Movable);
 
 type BatchSubSampleEditableFields = ResultCollectionEditableFields &
-  Omit<SubSampleEditableFields, "name">;
+  Omit<SubSampleEditableFields, "name" | "identifiers">;
 
 /*
  * This is a wrapper class around a set of SubSamples, making it easier to
