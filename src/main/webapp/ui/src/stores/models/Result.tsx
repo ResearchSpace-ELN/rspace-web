@@ -107,6 +107,7 @@ export type ResultEditableFields = {
   barcodes: Array<BarcodeRecord>;
   sharingMode: SharingMode;
   sharedWith: Array<SharedWithGroup> | null;
+  identifiers: Array<Identifier>;
 };
 
 export type ResultUneditableFields = {
@@ -1769,6 +1770,7 @@ export default class Result
       owner: this.owner,
       sharingMode: this.sharingMode,
       sharedWith: this.sharedWith,
+      identifiers: this.identifiers,
     };
   }
 
@@ -1790,6 +1792,7 @@ export default class Result
       owner: null,
       sharingMode: null,
       sharedWith: null,
+      identifiers: null,
     };
   }
 

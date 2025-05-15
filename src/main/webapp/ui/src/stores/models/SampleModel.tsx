@@ -214,7 +214,7 @@ export default class SampleModel
   // @ts-expect-error expiryDate is initialised by populateFromJson
   expiryDate: SampleEditableFields["expiryDate"];
   // @ts-expect-error template is initialised by populateFromJson
-  template: ?Template;
+  template: Template | null;
   // @ts-expect-error sampleSource is initialised by populateFromJson
   sampleSource: SampleEditableFields["sampleSource"];
   search: Search;
@@ -318,7 +318,7 @@ export default class SampleModel
     const params = {
       ...defaultParams,
       ...passedParams,
-    } as SampleAttrs & { template: Template | null };
+    } as SampleAttrs & { template: Template | null | false };
     if (typeof params.subSamplesCount === "number")
       this.subSamplesCount = params.subSamplesCount;
     this.subSamples = (params.subSamples ?? []).map((s) => {
@@ -333,7 +333,7 @@ export default class SampleModel
     this.storageTempMax = params.storageTempMax;
     this.overrideFields(params.fields ?? []);
     this.expiryDate = params.expiryDate;
-    this.template = params.template;
+    this.template = params.template || null;
     this.sampleSource = params.sampleSource;
     this.subSampleAlias = params.subSampleAlias;
     this.templateId = params.templateId;
@@ -1061,7 +1061,7 @@ export default class SampleModel
 }
 
 type BatchSampleEditableFields = ResultCollectionEditableFields &
-  Omit<SampleEditableFields, "name">;
+  Omit<SampleEditableFields, "name" | "identifiers">;
 
 /*
  * This is a wrapper class around a set of Samples, making it easier to perform
