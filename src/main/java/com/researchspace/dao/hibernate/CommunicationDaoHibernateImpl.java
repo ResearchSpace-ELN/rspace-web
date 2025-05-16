@@ -200,24 +200,23 @@ public class CommunicationDaoHibernateImpl extends GenericDaoHibernate<Communica
     return !query.list().isEmpty();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public int markAllNotificationsAsRead(String subjectUserName, Date before) {
-    Criteria criteria = createNotificationCriteria(getSession());
-    criteria.add(Restrictions.eq("recipient.username", subjectUserName));
-    criteria.add(Restrictions.le("communication.creationTime", before));
-    List<Notification> res = criteria.list();
-    int size = 0;
-    for (Notification not : res) {
-      for (CommunicationTarget ct : not.getRecipients()) {
-        if (ct.getRecipient().getUsername().equals(subjectUserName)) {
-          size++;
-          ct.setStatus(CommunicationStatus.COMPLETED);
-          ct.setLastStatusUpdate(new Date());
-        }
-      }
-    }
-    return size;
+    String sql =
+            "UPDATE CommunicationTarget ct " +
+                    "JOIN rspace.User u on ct.recipient_id = u.id " +
+                    "JOIN Notification n on ct.communication_id = n.id " +
+                    "SET ct.status = :status, ct.lastStatusUpdate = :currentTime " +
+                    "WHERE u.username = :username " +
+                    "AND n.creationTime <= :cutoffDate";
+
+    return getSession().createNativeQuery(sql)
+            .setParameter("status", 4)
+            .setParameter("currentTime", new Date())
+            .setParameter("username", subjectUserName)
+            .setParameter("cutoffDate", before)
+            .executeUpdate();
+
   }
 
   @SuppressWarnings("unchecked")
