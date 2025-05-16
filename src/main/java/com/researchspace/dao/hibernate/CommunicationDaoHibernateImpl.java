@@ -203,20 +203,20 @@ public class CommunicationDaoHibernateImpl extends GenericDaoHibernate<Communica
   @Override
   public int markAllNotificationsAsRead(String subjectUserName, Date before) {
     String sql =
-            "UPDATE CommunicationTarget ct " +
-                    "JOIN rspace.User u on ct.recipient_id = u.id " +
-                    "JOIN Notification n on ct.communication_id = n.id " +
-                    "SET ct.status = :status, ct.lastStatusUpdate = :currentTime " +
-                    "WHERE u.username = :username " +
-                    "AND n.creationTime <= :cutoffDate";
+        "UPDATE CommunicationTarget ct "
+            + "JOIN User u on ct.recipient_id = u.id "
+            + "JOIN Notification n on ct.communication_id = n.id "
+            + "SET ct.status = :status, ct.lastStatusUpdate = :currentTime "
+            + "WHERE u.username = :username "
+            + "AND n.creationTime <= :cutoffDate";
 
-    return getSession().createNativeQuery(sql)
-            .setParameter("status", 4)
-            .setParameter("currentTime", new Date())
-            .setParameter("username", subjectUserName)
-            .setParameter("cutoffDate", before)
-            .executeUpdate();
-
+    return getSession()
+        .createNativeQuery(sql)
+        .setParameter("status", 4) // CommunicationStatus.COMPLETED enum maps to 4 in the db
+        .setParameter("currentTime", new Date())
+        .setParameter("username", subjectUserName)
+        .setParameter("cutoffDate", before)
+        .executeUpdate();
   }
 
   @SuppressWarnings("unchecked")
