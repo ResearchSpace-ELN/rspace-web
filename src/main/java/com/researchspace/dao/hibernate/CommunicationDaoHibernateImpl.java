@@ -208,14 +208,14 @@ public class CommunicationDaoHibernateImpl extends GenericDaoHibernate<Communica
             + "JOIN Notification n on ct.communication_id = n.id "
             + "SET ct.status = :status, ct.lastStatusUpdate = :currentTime "
             + "WHERE u.username = :username "
-            + "AND n.creationTime <= :cutoffDate";
+            + "AND n.creationTime <= :cutoff";
 
     return getSession()
         .createNativeQuery(sql)
         .setParameter("status", 4) // CommunicationStatus.COMPLETED enum maps to 4 in the db
         .setParameter("currentTime", new Date())
         .setParameter("username", subjectUserName)
-        .setParameter("cutoffDate", before)
+        .setParameter("cutoff", before)
         .executeUpdate();
   }
 
