@@ -508,7 +508,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
     // date, so
     // they won't be deleted
     assertEquals(0, dao.deleteReadNotificationsOlderThanDate(past));
-
+    flush();
     // now, they are all deleted, and deletions are cascaded
     assertEquals(NUM_NOTIFICATIONS, dao.deleteReadNotificationsOlderThanDate(future));
     assertEquals(0, getNotificationCount() - initialNotificanCount);

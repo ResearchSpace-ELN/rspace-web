@@ -240,7 +240,14 @@ public class CommunicationDaoHibernateImpl extends GenericDaoHibernate<Communica
         }
       }
       if (allDeleted) {
-        commsToDelete.add(not);
+        boolean added = commsToDelete.add(not);
+        System.out.println("Notification added to set: " + added);
+        System.out.println("creationTime: " + not.getCreationTime());
+        System.out.println("creationTime (ms): " + not.getCreationTime().getTime());
+        System.out.println("message: " + not.getMessage());
+        System.out.println("originator: " + not.getOriginator());
+        System.out.println("record: " + not.getRecord());
+        System.out.println("-------------------");
       }
     }
     if (commsToDelete.size() == 0) {
