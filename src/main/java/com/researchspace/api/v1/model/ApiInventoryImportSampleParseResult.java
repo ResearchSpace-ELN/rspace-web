@@ -24,10 +24,6 @@ public class ApiInventoryImportSampleParseResult extends ApiInventoryImportParse
   @JsonProperty("templateInfo")
   private ApiSampleTemplatePost templateInfo;
 
-  // fieldNamePerCsvColumnName
-  @JsonProperty("fieldNameForColumnName")
-  private Map<String, String> fieldNameForColumnName = new HashMap<>();
-
   // enumerateValuesPerColumn
   @JsonProperty("radioOptionsForColumn")
   private Map<String, List<String>> radioOptionsForColumn = new HashMap<>();
