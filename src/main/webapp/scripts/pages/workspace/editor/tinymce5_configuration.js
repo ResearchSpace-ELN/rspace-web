@@ -398,6 +398,7 @@ var initTinyMCE_cachedIntegrationsResponse;
 
 function initTinyMCE(selector) {
 	var localTinymcesetup = tinymcesetup;
+	localTinymcesetup.recordId = recordId;
 	localTinymcesetup.selector = selector;
 	var toolbarRequest, propertiesRequest, integrationsRequest;
 
@@ -455,6 +456,7 @@ function initTinyMCE(selector) {
 		const omeroEnabled =  integrations.OMERO.enabled && integrations.OMERO.available && properties["omero.api.url"] !== "";
 		const joveEnabled =  integrations.JOVE.enabled && integrations.JOVE.available;
 		const identifiersEnabled = true; // TODO: check if Inventory is enabled
+		const galaxyEnabled = integrations.GALAXY.enabled && integrations.GALAXY.available;
 
 		chemistryAvailable = integrations.CHEMISTRY.available;
 
@@ -472,6 +474,13 @@ function initTinyMCE(selector) {
 			localTinymcesetup.clustermarket_web_url = properties["clustermarket.web.url"];
 			enabledFileRepositories += " clustermarket";
 			fileRepositoriesMenu += " optClustermarket";
+		}
+		if (galaxyEnabled) {
+			localTinymcesetup.external_plugins["galaxy"] = "/scripts/externalTinymcePlugins/galaxy/plugin.min.js";
+			localTinymcesetup.galaxy_url = properties["galaxy.api.url"];
+			localTinymcesetup.galaxy_web_url = properties["galaxy.web.url"];
+			enabledFileRepositories += " galaxy";
+			fileRepositoriesMenu += " optGalaxy";
 		}
 		if (omeroEnabled) {
 			localTinymcesetup.external_plugins["omero"] = "/scripts/externalTinymcePlugins/omero/plugin.min.js";
