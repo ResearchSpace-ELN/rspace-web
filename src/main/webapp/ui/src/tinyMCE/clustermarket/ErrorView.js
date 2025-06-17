@@ -12,9 +12,9 @@ export default function ErrorView({ errorReason, errorMessage }) {
         <>
           The Clustermarket server at{" "}
           <a
-            href={parent.tinymce.activeEditor.settings.clustermarket_url}
-            target="_blank"
-            rel="noreferrer"
+              href={parent.tinymce.activeEditor.settings.clustermarket_url}
+              target="_blank"
+              rel="noreferrer"
           >
             {" "}
             {parent.tinymce.activeEditor.settings.clustermarket_url}
