@@ -71,7 +71,7 @@ module.exports = {
     imageEditor: "./src/Gallery/imageEditorDialog.js",
     materialsListing:
       "./src/eln-inventory-integration/MaterialsListing/MaterialsListing.js",
-    galaxyWorkFlows: "./src/eln/eln-galaxy-workflows/index.js",
+    externalWorkFlows: "./src/eln/eln-external-workflows/index.js",
     associatedInventoryRecords:
       "./src/eln-inventory-integration/AssociatedInventoryRecords/index.js",
     sysadminUsers: "./src/eln/sysadmin/users/index.tsx",
