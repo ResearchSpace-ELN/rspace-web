@@ -164,6 +164,9 @@
     "setupFiles": [
       "<rootDir>/__tests__/setup.js"
     ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/setupAfterEnv.js"
+    ],
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest",
       "^.+\\.(ts|tsx)$": [
@@ -199,6 +202,7 @@
       "jest-junit",
       "<rootDir>/__tests__/reporters/slowest"
     ],
+    "testEnvironment": "jest-environment-jsdom",
     "testEnvironmentOptions": {
       "resources": "usable"
     }
