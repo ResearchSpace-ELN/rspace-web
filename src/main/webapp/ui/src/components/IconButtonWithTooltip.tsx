@@ -2,53 +2,63 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import CustomTooltip from "./CustomTooltip";
 import IconButton from "@mui/material/IconButton";
-import { SxProps, Theme } from "@mui/system";
+import { IconButtonProps } from "@mui/material";
 
-type RemainingIconButtonProps = {
+type IconButtonWithTooltipProps = {
+  title: string;
+  icon: React.ReactNode;
+  disabled?: boolean;
   className?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   "data-test-id"?: string;
   size?: "small" | "medium" | "large";
-  color?: "primary" | "secondary" | "standardIcon";
+  color?: "primary" | "secondary" | "standardIcon" | "inherit";
   "aria-haspopup"?: "true" | "menu" | "listbox" | "tree" | "grid" | "dialog";
-  sx?: SxProps<Theme>;
   classes?: { [key: string]: string };
   ariaLabel?: string;
   "aria-controls"?: string;
-  "aria-expanded"?: "true";
+  "aria-expanded"?: boolean | "true" | "false";
   id?: string;
   tabIndex?: number;
   component?: React.ElementType;
   href?: string;
+  sx?: IconButtonProps["sx"];
 };
-
-type IconButtonWithTooltipArgs = {
-  title: string;
-  icon: React.ReactNode;
-  disabled?: boolean;
-} & RemainingIconButtonProps;
 
 const IconButtonWithTooltip = React.forwardRef<
   HTMLButtonElement,
-  IconButtonWithTooltipArgs
->(({ title, icon, ariaLabel, ...rest }: IconButtonWithTooltipArgs, ref) => {
-  return (
-    <CustomTooltip title={title} aria-label="">
+  IconButtonWithTooltipProps
+>(
+  (
+    { title, icon, ariaLabel, disabled, ...rest }: IconButtonWithTooltipProps,
+    ref,
+  ) => {
+    // When button is disabled, we need to use a wrapper span to show the tooltip
+    const buttonElement = (
       <IconButton
         color="inherit"
         aria-label={ariaLabel ?? title}
+        disabled={disabled}
         {...rest}
         ref={ref}
       >
         {icon}
       </IconButton>
-    </CustomTooltip>
-  );
-});
+    );
+
+    return disabled ? (
+      <span style={{ display: "inline-flex" }}>
+        <CustomTooltip title={title}>{buttonElement}</CustomTooltip>
+      </span>
+    ) : (
+      <CustomTooltip title={title}>{buttonElement}</CustomTooltip>
+    );
+  },
+);
 
 IconButtonWithTooltip.displayName = "IconButtonWithTooltip";
 /**
- * This components provided a clickable icon button with a tooltip. The tooltip
+ * This component provides a clickable icon button with a tooltip. The tooltip
  * is then used as the aria-label for the button.
  */
 export default observer(IconButtonWithTooltip);
