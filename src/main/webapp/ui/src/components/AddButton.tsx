@@ -19,7 +19,7 @@ const AddButton = ({
   id,
 }: AddButtonArgs): React.ReactNode => {
   return (
-    <CustomTooltip title={title} aria-label="">
+    <CustomTooltip title={title}>
       <IconButton
         color="primary"
         component="span" // why not leaving it a button, who knows ?

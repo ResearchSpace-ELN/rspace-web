@@ -22,12 +22,11 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 type CustomTooltipArgs = {
-  title: string,
-  enterDelay?: number,
-  children: React.ReactNode,
-  block?: boolean,
-  "aria-hidden"?: boolean,
-  "aria-label"?: string,
+  title: string;
+  enterDelay?: number;
+  children: React.ReactNode;
+  block?: boolean;
+  "aria-hidden"?: boolean;
 };
 
 export default function CustomTooltip({
@@ -36,19 +35,18 @@ export default function CustomTooltip({
   children,
   block = false,
   ["aria-hidden"]: ariaHidden,
-  ["aria-label"]: ariaLabel,
 }: CustomTooltipArgs): React.ReactNode {
   const { classes } = useStyles();
 
   return (
     <Tooltip
       aria-hidden={ariaHidden}
-      aria-label={ariaLabel ?? title}
       title={title}
       enterDelay={enterDelay}
       classes={{ tooltip: classes.tooltip }}
       className={clsx(block && classes.block)}
       role="tooltip"
+      aria-label="" // the aria-label should be set on the child element, not the tooltip itself
     >
       <span>{children}</span>
     </Tooltip>
