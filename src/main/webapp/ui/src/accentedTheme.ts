@@ -2,12 +2,13 @@ import {
   createTheme,
   PaletteOptions,
   SimplePaletteColorOptions,
+  Theme as MaterialTheme,
 } from "@mui/material";
 import { ThemeOptions } from "@mui/material/styles/createTheme";
 import { PaletteColorOptions } from "@mui/material/styles/createPalette";
 import baseTheme from "./theme";
 import { mergeThemes } from "./util/styles";
-import { darken, alpha, lighten, Theme } from "@mui/system";
+import { darken, alpha, lighten } from "@mui/system";
 import { toolbarClasses } from "@mui/material/Toolbar";
 import { typographyClasses } from "@mui/material/Typography";
 import { svgIconClasses } from "@mui/material/SvgIcon";
@@ -128,12 +129,14 @@ export type AccentColor = {
  * This function creates a new theme, given an accent colour.
  */
 // eslint-disable-next-line complexity -- This is going to be complex because it's defining a lot of styles and a lot of those styles are conditioned on the user's preferences.
-export default function createAccentedTheme(accent: AccentColor): Theme {
+export default function createAccentedTheme(
+  accent: AccentColor,
+): MaterialTheme {
   const prefersMoreContrast = window.matchMedia(
-    "(prefers-contrast: more)"
+    "(prefers-contrast: more)",
   ).matches;
   const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
+    "(prefers-reduced-motion: reduce)",
   ).matches;
 
   // All of these strings are formatted specifically so MUI can parse them and perform its own arithmetic
@@ -143,14 +146,14 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
     : `hsl(${accent.main.hue}deg, ${accent.main.saturation}%, ${accent.main.lightness}%)`;
   const disabledColor = lighten(
     `hsl(${accent.main.hue}deg, 10%, ${accent.main.lightness}%)`,
-    0.5
+    0.5,
   );
 
   const linkButtonText = prefersMoreContrast
     ? "rgb(0,0,0)"
     : darken(
         `hsl(${accent.main.hue}deg, ${accent.main.saturation}%, ${accent.main.lightness}%)`,
-        0.5
+        0.5,
       );
 
   /**
@@ -194,7 +197,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
     ? "rgb(0,0,0)"
     : darken(
         `hsl(${accent.main.hue}deg, ${accent.main.saturation}%, ${accent.main.lightness}%)`,
-        0.375
+        0.375,
       );
   // Interactive elements: text fields in app bar, chips
   const lighterInteractiveColor = prefersMoreContrast
@@ -467,7 +470,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
                 "&:hover": {
                   backgroundColor: darken(
                     secondaryBackground,
-                    hoverDarkenCoefficient
+                    hoverDarkenCoefficient,
                   ),
                 },
                 "& .MuiTouchRipple-root": {
@@ -501,7 +504,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
                   backgroundColor: "white",
                   borderColor: darken(
                     accentedBackground,
-                    hoverDarkenCoefficient
+                    hoverDarkenCoefficient,
                   ),
                 },
               },
@@ -568,7 +571,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
                 borderColor: darken(mainAccentColor, hoverDarkenCoefficient),
                 backgroundColor: darken(
                   mainAccentColor,
-                  hoverDarkenCoefficient
+                  hoverDarkenCoefficient,
                 ),
               },
               [`&.${buttonClasses.disabled}`]: {
@@ -632,7 +635,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
                   border: `${accentedBorder} !important`,
                   borderColor: `${darken(
                     accentedBackground,
-                    hoverDarkenCoefficient
+                    hoverDarkenCoefficient,
                   )} !important`,
                 },
               },
@@ -691,7 +694,9 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
         },
         MuiDataGrid: {
           defaultProps: {
-            getRowClassName: (params: { indexRelativeToCurrentPage: number }) =>
+            getRowClassName: (params: {
+              indexRelativeToCurrentPage: number;
+            }) =>
               params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd",
           },
           styleOverrides: {
@@ -748,7 +753,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
                   border: accentedBorder,
                   borderColor: darken(
                     accentedBackground,
-                    hoverDarkenCoefficient
+                    hoverDarkenCoefficient,
                   ),
                 },
               },
@@ -758,7 +763,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
                 "&:hover": {
                   borderColor: darken(
                     accentedBackground,
-                    hoverDarkenCoefficient
+                    hoverDarkenCoefficient,
                   ),
                 },
               },
@@ -791,7 +796,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
               "&:focus-visible": {
                 backgroundColor: darken(
                   secondaryBackground,
-                  hoverDarkenCoefficient
+                  hoverDarkenCoefficient,
                 ),
               },
             },
@@ -910,7 +915,7 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
                 "&:hover": {
                   backgroundColor: darken(
                     lighterInteractiveColor,
-                    hoverDarkenCoefficient
+                    hoverDarkenCoefficient,
                   ),
                 },
               },
@@ -1073,6 +1078,6 @@ export default function createAccentedTheme(accent: AccentColor): Theme {
           },
         },
       },
-    })
+    }),
   );
 }
