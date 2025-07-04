@@ -15,9 +15,12 @@ import com.researchspace.model.dtos.fieldmark.FieldmarkRecordDTO;
 import com.researchspace.model.oauth.UserConnection;
 import com.researchspace.service.UserConnectionManager;
 import com.researchspace.service.fieldmark.FieldmarkServiceClientAdapter;
+import com.researchspace.service.inventory.InventoryImportManager;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,6 +39,7 @@ public class FieldmarkServiceClientAdapterImpl implements FieldmarkServiceClient
   private static final String CSV_RECORD_IDENTIFIER = "identifier";
   @Autowired private FieldmarkClient fieldmarkClient;
   @Autowired private UserConnectionManager userConnectionManager;
+  @Autowired private InventoryImportManager importManager;
 
   public static Set<String> RESERVED_FIELD_NAMES =
       Set.of("name", "description", "tags", "source", "expiry date");
@@ -46,6 +50,33 @@ public class FieldmarkServiceClientAdapterImpl implements FieldmarkServiceClient
     UserConnection existingConnection = getExistingConnection(user);
 
     return fieldmarkClient.getNotebooks(existingConnection.getAccessToken());
+  }
+
+  @Override
+  public List<String> getIgsnCandidateFields(User user, String notebookId)
+      throws IOException, HttpServerErrorException {
+    UserConnection existingConnection =
+        getExistingConnection(user); // 1726126204618-rspace-igsn-demo
+    String formId =
+        fieldmarkClient
+            .getNotebookRecords(existingConnection.getAccessToken(), notebookId)
+            .getFormId();
+    FieldmarkRecordsCsvExport fieldmarkCsvExport =
+        fieldmarkClient.getNotebookCsv(existingConnection.getAccessToken(), notebookId, formId);
+
+    InputStream fieldmarkCsv = fieldmarkCsvExport.getCsvFile();
+
+    Map<String, String> typeByFieldNameMap =
+        importManager
+            .parseSamplesCsvFile("fieldmarkImport_" + notebookId, fieldmarkCsv, user)
+            .getFieldMappings();
+    List<String> igsnFieldCanditates = new LinkedList<>();
+    for (Entry<String, String> typeByFieldNameEntry : typeByFieldNameMap.entrySet()) {
+      if ("identifier".equals(typeByFieldNameEntry.getValue())) {
+        igsnFieldCanditates.add(typeByFieldNameEntry.getKey());
+      }
+    }
+    return igsnFieldCanditates;
   }
 
   @Override
