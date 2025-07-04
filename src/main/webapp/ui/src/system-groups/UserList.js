@@ -4,12 +4,12 @@ import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import UserDetails from "../components/UserDetails";
 import { stripDiacritics } from "../util/StringUtils";
+import ListItemButton from "@mui/material/ListItemButton";
 
 export default function UserList(props) {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -23,7 +23,7 @@ export default function UserList(props) {
   const handleSelect = (u) => {
     if (Array.isArray(u)) {
       props.onSelect(
-        u.map((user) => (typeof user === "string" ? user : user.username))
+        u.map((user) => (typeof user === "string" ? user : user.username)),
       );
     } else {
       props.onSelect(typeof u === "string" ? u : u.username);
@@ -64,7 +64,7 @@ export default function UserList(props) {
     const visible = props.users.filter((u) =>
       stripDiacritics(userLabel(u))
         .toUpperCase()
-        .includes(stripDiacritics(search.toUpperCase()))
+        .includes(stripDiacritics(search.toUpperCase())),
     );
     setVisibleUsers(visible);
     unselectFilteredUsers(visible);
@@ -117,10 +117,9 @@ export default function UserList(props) {
           data-test-id={`${props.listTitle.split(" ").join("-")}-list`}
         >
           {visibleUsers.map((u) => (
-            <ListItem
+            <ListItemButton
               key={u.username}
               role="listitem"
-              button
               onClick={(e) => handleSelect(u)}
               data-test-id="row"
             >
@@ -132,7 +131,7 @@ export default function UserList(props) {
                 />
               </ListItemIcon>
               <ListItemText primary={userRow(u)} />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       )}

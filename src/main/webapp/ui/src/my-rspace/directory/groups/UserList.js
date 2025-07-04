@@ -2,7 +2,6 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
@@ -10,6 +9,7 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import { stripDiacritics } from "../../../util/StringUtils";
+import ListItemButton from "@mui/material/ListItemButton";
 
 class UserList extends React.Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class UserList extends React.Component {
   isSelected = (user) => {
     return (
       this.props.selected.findIndex(
-        (selected) => selected.username == user.username
+        (selected) => selected.username == user.username,
       ) != -1
     );
   };
@@ -37,10 +37,10 @@ class UserList extends React.Component {
       stripDiacritics(
         `${user.username} ${
           user.displayName ? user.displayName : user.fullName
-        }`
+        }`,
       )
         .toUpperCase()
-        .includes(stripDiacritics(this.state.searchTerm.toUpperCase()))
+        .includes(stripDiacritics(this.state.searchTerm.toUpperCase())),
     );
   };
 
@@ -77,10 +77,9 @@ class UserList extends React.Component {
             style={{ height: "350px", overflowY: "auto" }}
           >
             {this.visibleUsers().map((user) => (
-              <ListItem
+              <ListItemButton
                 key={user.username}
                 role="listitem"
-                button
                 onClick={() => this.props.handleSelect(user)}
               >
                 <ListItemIcon>
@@ -95,7 +94,7 @@ class UserList extends React.Component {
                     user.displayName ? user.displayName : user.fullName
                   }`}
                 />
-              </ListItem>
+              </ListItemButton>
             ))}
           </List>
         </CardContent>

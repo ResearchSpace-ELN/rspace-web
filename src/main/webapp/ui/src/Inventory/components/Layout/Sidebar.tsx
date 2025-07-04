@@ -116,14 +116,14 @@ const CustomDrawer = withStyles<
             uiStore.alwaysVisibleSidebar && {
               [classes.drawerOpen]: uiStore.sidebarOpen,
               [classes.drawerClose]: !uiStore.sidebarOpen,
-            }
+            },
           ),
         }}
       >
         {children}
       </Drawer>
     );
-  })
+  }),
 );
 
 const NavButtonBadge = withStyles<
@@ -167,7 +167,7 @@ const NavItem = withStyles<
     datatestid?: string;
     badge: React.ReactNode;
     icon: React.ReactNode;
-  } & React.ComponentProps<typeof ListItem>,
+  } & React.ComponentProps<typeof ListItemButton>,
   { button: string; listIcon: string }
 >((theme: typeof Theme) => ({
   button: {
@@ -202,7 +202,7 @@ const NavItem = withStyles<
         </NavButtonBadge>
       </ListItemButton>
     );
-  })
+  }),
 );
 
 const largestFittingCount = 999;
@@ -216,7 +216,7 @@ const MyBenchNavItem = observer(() => {
     mapNullable((summary) => {
       if (!summary.isAccessible)
         throw new InvalidState(
-          "A user should always be able to access a summary of the contents of their own bench."
+          "A user should always be able to access a summary of the contents of their own bench.",
         );
       return summary.value.totalCount;
     }, benchContentSummary) ?? null;
@@ -234,10 +234,10 @@ const MyBenchNavItem = observer(() => {
       icon={<MyBenchIcon />}
       disabled={!currentUser}
       badge={Math.min(benchContentCount ?? 0, largestFittingCount)}
-      onClick={(e: React.MouseEvent<HTMLLIElement>) => {
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         navigateToSearch(
-          currentUser ? { parentGlobalId: `BE${currentUser.workbenchId}` } : {}
+          currentUser ? { parentGlobalId: `BE${currentUser.workbenchId}` } : {},
         );
       }}
     />
@@ -270,7 +270,7 @@ const ContainersNavItem = observer(() => {
         />
       }
       badge={0}
-      onClick={(e: React.MouseEvent<HTMLLIElement>) => {
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         navigateToSearch({
           resultType: "CONTAINER",
@@ -307,7 +307,7 @@ const SampleNavItem = observer(() => {
         />
       }
       badge={0}
-      onClick={(e: React.MouseEvent<HTMLLIElement>) => {
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         navigateToSearch({
           resultType: "SAMPLE",
@@ -343,7 +343,7 @@ const TemplateNavItem = observer(() => {
         />
       }
       badge={0}
-      onClick={(e: React.MouseEvent<HTMLLIElement>) => {
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         navigateToSearch({
           resultType: "TEMPLATE",
@@ -365,7 +365,7 @@ const IgsnNavItem = observer(() => {
       selected={/identifiers\/igsn/.test(window.location.pathname)}
       icon={<IgsnIcon style={{ width: "28px", height: "18px" }} />}
       badge={0}
-      onClick={(e: React.MouseEvent<HTMLLIElement>) => {
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         trackEvent("user:navigate:igsnManagementPage:InventorySidebar");
         navigate("/inventory/identifiers/igsn");
@@ -401,7 +401,7 @@ const SubsampleNavItem = observer(() => {
         />
       }
       badge={0}
-      onClick={(e: React.MouseEvent<HTMLLIElement>) => {
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         navigateToSearch({
           resultType: "SUBSAMPLE",

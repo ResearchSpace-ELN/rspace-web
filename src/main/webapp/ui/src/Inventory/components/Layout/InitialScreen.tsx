@@ -1,6 +1,5 @@
 import React from "react";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { observer } from "mobx-react-lite";
@@ -15,6 +14,7 @@ import Sidebar from "./Sidebar";
 import Main from "../../Main";
 import { useTheme } from "@mui/material/styles";
 import RecordTypeIcon from "../../../components/RecordTypeIcon";
+import ListItemButton from "@mui/material/ListItemButton";
 
 function InitialScreen(): React.ReactNode {
   const theme = useTheme();
@@ -31,7 +31,7 @@ function InitialScreen(): React.ReactNode {
             ? {
                 parentGlobalId: `BE${peopleStore.currentUser.workbenchId}`,
               }
-            : {}
+            : {},
         );
       },
       icon: <MyBenchIcon />,
@@ -77,13 +77,13 @@ function InitialScreen(): React.ReactNode {
       label: string;
       icon: React.ReactNode;
       onClick: (e: React.MouseEvent<HTMLElement>) => void;
-    }>
+    }>,
   ) => {
     return buttons.map((args) => (
-      <ListItem key={args.label} button {...args}>
+      <ListItemButton key={args.label} {...args}>
         <ListItemIcon>{args.icon}</ListItemIcon>
         <ListItemText primary={args.label} />
-      </ListItem>
+      </ListItemButton>
     ));
   };
 

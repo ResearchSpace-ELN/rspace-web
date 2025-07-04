@@ -1,12 +1,12 @@
 "use strict";
 import React from "react";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
+import ListItemButton from "@mui/material/ListItemButton";
 library.add(faFile);
 
 class Folder extends React.Component {
@@ -27,7 +27,7 @@ class Folder extends React.Component {
 
   render() {
     return (
-      <ListItem button>
+      <ListItemButton>
         <ListItemIcon>
           <>
             <Checkbox
@@ -42,7 +42,7 @@ class Folder extends React.Component {
           </>
         </ListItemIcon>
         <ListItemText primary={this.props.file.name} />
-      </ListItem>
+      </ListItemButton>
     );
   }
 }

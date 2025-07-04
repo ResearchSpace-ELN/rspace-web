@@ -3,7 +3,6 @@ import React from "react";
 import axios from "@/common/axios";
 import update from "immutability-helper";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
@@ -20,6 +19,8 @@ library.add(faChevronDown, faChevronUp, faFolder, faBook);
 
 import Subfolder from "./Folder";
 import File from "./File";
+
+import ListItemButton from "@mui/material/ListItemButton";
 
 class Folder extends React.Component {
   constructor(props) {
@@ -84,15 +85,15 @@ class Folder extends React.Component {
       });
       this.props.updateSelected(
         [this.props.folder.globalId],
-        this.state.subfiles.map((file) => file.globalId)
+        this.state.subfiles.map((file) => file.globalId),
       );
     } else if (this.props.selected && this.state.selectedFiles.length > 0) {
       this.setState({ selectedFiles: [], open: false });
       this.props.updateSelected(
         [],
         [this.props.folder.globalId].concat(
-          this.state.subfiles.map((file) => file.globalId)
-        )
+          this.state.subfiles.map((file) => file.globalId),
+        ),
       );
     } else if (this.props.level == 1 && !this.state.subfiles.length) {
       if (this.props.selected)
@@ -116,15 +117,15 @@ class Folder extends React.Component {
             this.props.onSelectChange(this.props.folder.globalId, true);
             this.props.updateSelected(
               [this.props.folder.globalId],
-              this.state.subfiles.map((file) => file.globalId)
+              this.state.subfiles.map((file) => file.globalId),
             );
           } else {
             this.props.updateSelected(
               this.state.selectedFiles,
-              this.state.subfiles.map((file) => file.globalId)
+              this.state.subfiles.map((file) => file.globalId),
             );
           }
-        }
+        },
       );
     } else if (!selected) {
       this.setState(
@@ -142,10 +143,10 @@ class Folder extends React.Component {
           } else {
             this.props.updateSelected(
               this.state.selectedFiles,
-              this.state.subfiles.map((file) => file.globalId)
+              this.state.subfiles.map((file) => file.globalId),
             );
           }
-        }
+        },
       );
     }
   };
@@ -183,8 +184,7 @@ class Folder extends React.Component {
   render() {
     return (
       <>
-        <ListItem
-          button
+        <ListItemButton
           onClick={this.openFolder}
           data-test-id={`open-folder-${this.props.folder.globalId}`}
         >
@@ -213,7 +213,7 @@ class Folder extends React.Component {
               icon={this.state.open ? "chevron-up" : "chevron-down"}
             />
           )}
-        </ListItem>
+        </ListItemButton>
         {this.state.subfiles.length > 0 && (
           <Collapse in={this.state.open} timeout="auto" unmountOnExit>
             <List
