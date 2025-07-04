@@ -397,7 +397,7 @@ const Path = observer(
           })}
           color="standardIcon"
           icon={<LinkIcon />}
-          sx={{
+          sx={theme => ({
             backgroundColor: (theme) =>
               alpha(
                 lighten((theme.palette.primary as { main: string }).main, 0.1),
@@ -414,8 +414,8 @@ const Path = observer(
                 ),
             },
             padding: "2px",
-            marginLeft: (theme) => theme.spacing(1),
-          }}
+            marginLeft: theme.spacing(1)
+          })}
         />
       </Stack>
     );
