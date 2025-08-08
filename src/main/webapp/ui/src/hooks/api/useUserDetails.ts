@@ -7,17 +7,13 @@ import useOauthToken from "@/common/useOauthToken";
 export type GroupMember = {
   id: number;
   username: string;
-  role: "PI" | "USER";
-};
-
-export type Group = {
-  id: number;
-  globalId: string;
-  name: string;
-  type: string;
-  sharedFolderId: number;
-  members: GroupMember[];
-  uniqueName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  homeFolderId: number;
+  workbenchId: number;
+  hasPiRole: boolean;
+  hasSysAdminRole: boolean;
   _links: Array<{
     link: string;
     rel: string;
@@ -25,23 +21,22 @@ export type Group = {
 };
 
 /**
- * This custom hook provides functionality to fetch groups that the current user is a member of
- * using the `/groups` endpoint.
+ * This custom hook provides functionality to fetch user details from various userDetails endpoints
  */
-export default function useGroups(): {
+export default function useUserDetails(): {
   /**
-   * Fetches all groups that the current user is a member of.
+   * Fetches all members from all groups that the current user is a member of.
    */
-  getGroups: () => Promise<ReadonlyArray<Group>>;
+  getGroupMembers: () => Promise<ReadonlyArray<GroupMember>>;
 } {
   const { getToken } = useOauthToken();
   const { addAlert } = React.useContext(AlertContext);
 
-  const getGroups = React.useCallback(async (): Promise<
-    ReadonlyArray<Group>
+  const getGroupMembers = React.useCallback(async (): Promise<
+    ReadonlyArray<GroupMember>
   > => {
     try {
-      const { data } = await axios.get<ReadonlyArray<Group>>(`/api/v1/groups`, {
+      const { data } = await axios.get<ReadonlyArray<GroupMember>>(`/api/v1/userDetails/groupMembers`, {
         headers: {
           Authorization: `Bearer ${await getToken()}`,
         },
@@ -51,15 +46,15 @@ export default function useGroups(): {
       addAlert(
         mkAlert({
           variant: "error",
-          title: "Error fetching groups",
+          title: "Error fetching group members",
           message: getErrorMessage(e, "An unknown error occurred."),
         }),
       );
-      throw new Error("Could not fetch groups", {
+      throw new Error("Could not fetch group members", {
         cause: e,
       });
     }
   }, [getToken, addAlert]);
 
-  return { getGroups };
+  return { getGroupMembers };
 }
