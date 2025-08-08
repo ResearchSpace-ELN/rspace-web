@@ -58,7 +58,7 @@ declare global {
 class PubchemPlugin {
   constructor(editor: Editor) {
     function* renderPubchem(
-      domContainer: HTMLElement
+      domContainer: HTMLElement,
     ): Generator<void, void, React.ComponentProps<typeof ImportDialog>> {
       const root = createRoot(domContainer);
       while (true) {
@@ -74,7 +74,7 @@ class PubchemPlugin {
                 </ErrorBoundary>
               </Analytics>
             </ThemeProvider>
-          </StyledEngineProvider>
+          </StyledEngineProvider>,
         );
       }
     }
@@ -101,7 +101,7 @@ class PubchemPlugin {
     // Add a button to the toolbar
     editor.ui.registry.addButton("pubchem", {
       tooltip: "Insert PubChem Compound",
-      icon: "pubchem",
+      icon: "foo",
       onAction() {
         pubchemRenderer.next({
           open: true,
