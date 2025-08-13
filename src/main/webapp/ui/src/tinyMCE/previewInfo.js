@@ -16,6 +16,7 @@ import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import { useIntegrationIsAllowedAndEnabled } from "../common/integrationHelpers";
 import * as FetchingData from "../util/fetchingData";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const useStyles = makeStyles()(() => ({
   wrapper: {
@@ -26,18 +27,20 @@ const useStyles = makeStyles()(() => ({
 export default function PreviewInfo(props) {
   const { classes } = useStyles();
   const chemistryStatus = useIntegrationIsAllowedAndEnabled("CHEMISTRY");
-  
+
   useEffect(() => {
     document.dispatchEvent(new Event("images-replaced"));
   }, []);
   const theme = createAccentedTheme(ACCENT_COLOR);
   return (
     <span className={classes.wrapper}>
-      <Stack sx={{
-        border: `2px solid ${theme.palette.primary.background}`,
-        borderRadius: 1,
-        backgroundColor: "#fafafa",
-      }}>
+      <Stack
+        sx={{
+          border: `2px solid ${theme.palette.primary.background}`,
+          borderRadius: 1,
+          backgroundColor: "#fafafa",
+        }}
+      >
         <div
           style={{ display: "flex", minHeight: "200px", maxHeight: "334px" }}
         >
@@ -59,6 +62,7 @@ export default function PreviewInfo(props) {
         </div>
         {props.item["data-has-stoichiometry-table"] && (
           <StyledEngineProvider injectFirst>
+            <CssBaseline />
             <ThemeProvider theme={theme}>
               <Analytics>
                 <ErrorBoundary>
@@ -84,16 +88,17 @@ export default function PreviewInfo(props) {
                             </Alert>
                           </Box>
                         ),
-                        success: (isEnabled) => 
+                        success: (isEnabled) =>
                           isEnabled ? (
                             <StoichiometryTable chemId={props.item.id} />
                           ) : (
                             <Box p={2}>
                               <Alert severity="warning">
-                                Chemistry integration is not enabled. Please contact your administrator to enable it.
+                                Chemistry integration is not enabled. Please
+                                contact your administrator to enable it.
                               </Alert>
                             </Box>
-                          )
+                          ),
                       })}
                     </Box>
                   </Alerts>
