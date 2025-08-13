@@ -47,8 +47,9 @@ export function BunchOfImages(): React.ReactNode {
               version: 1,
               thumbnailId: null,
               originalImageId: null,
+              metadata: {},
               token: "",
-            })
+            }),
         ),
       ],
       totalHits: 8,
@@ -71,20 +72,20 @@ export function BunchOfImages(): React.ReactNode {
                       <LandmarksProvider>
                         <GallerySelection>
                           <OpenFolderProvider setPath={() => {}}>
-                          <MainPanel
-                            selectedSection="Images"
-                            path={[]}
-                            setSelectedSection={() => {}}
-                            galleryListing={MOCK_ROOT_WITH_IMAGES}
-                            folderId={{ tag: "success", value: -1 }}
-                            refreshListing={async () => {}}
-                            sortOrder="ASC"
-                            orderBy="name"
-                            setSortOrder={() => {}}
-                            setOrderBy={() => {}}
-                            appliedSearchTerm=""
-                            setAppliedSearchTerm={() => {}}
-                          />
+                            <MainPanel
+                              selectedSection="Images"
+                              path={[]}
+                              setSelectedSection={() => {}}
+                              galleryListing={MOCK_ROOT_WITH_IMAGES}
+                              folderId={{ tag: "success", value: -1 }}
+                              refreshListing={async () => {}}
+                              sortOrder="ASC"
+                              orderBy="name"
+                              setSortOrder={() => {}}
+                              setOrderBy={() => {}}
+                              appliedSearchTerm=""
+                              setAppliedSearchTerm={() => {}}
+                            />
                           </OpenFolderProvider>
                         </GallerySelection>
                       </LandmarksProvider>
@@ -128,6 +129,7 @@ export function NestedFoldersWithImageFile(): React.ReactNode {
           version: 1,
           thumbnailId: null,
           originalImageId: null,
+          metadata: {},
           token: "",
         }),
       ],
@@ -158,6 +160,7 @@ export function NestedFoldersWithImageFile(): React.ReactNode {
           version: 1,
           thumbnailId: null,
           originalImageId: null,
+          metadata: {},
           token: "",
         }),
       ],
@@ -191,6 +194,7 @@ export function NestedFoldersWithImageFile(): React.ReactNode {
           version: 1,
           thumbnailId: null,
           originalImageId: null,
+          metadata: {},
           token: "",
         }),
       ],
@@ -232,23 +236,23 @@ export function NestedFoldersWithImageFile(): React.ReactNode {
                               }
                             }}
                           >
-                          <MainPanel
-                            selectedSection="Images"
-                            path={path}
-                            setSelectedSection={() => {
-                              setGalleryListing(MOCK_ROOT_WITH_OUTER_FOLDER);
-                              setPath([]);
-                            }}
-                            galleryListing={galleryListing}
-                            folderId={{ tag: "success", value: -1 }}
-                            refreshListing={async () => {}}
-                            sortOrder="ASC"
-                            orderBy="name"
-                            setSortOrder={() => {}}
-                            setOrderBy={() => {}}
-                            appliedSearchTerm=""
-                            setAppliedSearchTerm={() => {}}
-                          />
+                            <MainPanel
+                              selectedSection="Images"
+                              path={path}
+                              setSelectedSection={() => {
+                                setGalleryListing(MOCK_ROOT_WITH_OUTER_FOLDER);
+                                setPath([]);
+                              }}
+                              galleryListing={galleryListing}
+                              folderId={{ tag: "success", value: -1 }}
+                              refreshListing={async () => {}}
+                              sortOrder="ASC"
+                              orderBy="name"
+                              setSortOrder={() => {}}
+                              setOrderBy={() => {}}
+                              appliedSearchTerm=""
+                              setAppliedSearchTerm={() => {}}
+                            />
                           </OpenFolderProvider>
                         </GallerySelection>
                       </LandmarksProvider>

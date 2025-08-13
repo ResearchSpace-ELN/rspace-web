@@ -1,4 +1,4 @@
-import Dialog from "@mui/material/Dialog";
+import { Dialog } from "../../../components/DialogBoundary";
 import React from "react";
 import { ThemeProvider, styled } from "@mui/material/styles";
 import AppBar from "../../../components/AppBar";
@@ -28,7 +28,6 @@ import OpenFolderProvider from "../components/OpenFolderProvider";
 import SidebarToggle from "../../../components/AppBar/SidebarToggle";
 
 const CustomDialog = styled(Dialog)(({ theme }) => ({
-  zIndex: 1100, // less than the SwipeableDrawer so that mobile info panel is shown
   "& .MuiDialog-container > .MuiPaper-root": {
     height: "calc(100% - 32px)", // 16px margin above and below dialog
     [theme.breakpoints.down("md")]: {
@@ -83,18 +82,18 @@ const Picker = observer(
       PREFERENCES.GALLERY_SORT_BY,
       {
         defaultValue: "modificationDate",
-      }
+      },
     );
     const [sortOrder, setSortOrder] = useUiPreference<"DESC" | "ASC">(
       PREFERENCES.GALLERY_SORT_ORDER,
       {
         defaultValue: "DESC",
-      }
+      },
     );
     const [selectedSection, setSelectedSection] =
       useUiPreference<GallerySection>(
         PREFERENCES.GALLERY_PICKER_INITIAL_SECTION,
-        { defaultValue: "Chemistry" }
+        { defaultValue: "Chemistry" },
       );
 
     const [largerViewportSidebarOpenState, setLargerViewportSidebarOpenState] =
@@ -123,7 +122,7 @@ const Picker = observer(
     const [path, setPath] = React.useState<ReadonlyArray<GalleryFile>>([]);
     const listingOf = React.useMemo(
       () => ({ tag: "section" as const, section: selectedSection, path }),
-      [selectedSection, path]
+      [selectedSection, path],
     );
     const { galleryListing, folderId, refreshListing } = useGalleryListing({
       listingOf,
@@ -148,7 +147,7 @@ const Picker = observer(
                   height: {
                     xs:
                       selection.size > 0
-                        ? `calc(100% - ${CLOSED_MOBILE_INFO_PANEL_HEIGHT}px)`
+                        ? `calc(100% - ${CLOSED_MOBILE_INFO_PANEL_HEIGHT}px) !important`
                         : "100%",
                     md: "unset",
                   },
@@ -218,11 +217,11 @@ const Picker = observer(
                         validationResult={
                           selection.size > 0
                             ? Result.all(
-                                ...selection.asSet().map(validateSelection)
+                                ...selection.asSet().map(validateSelection),
                               ).map(() => null)
                             : Result.Error([
                                 new Error(
-                                  "Select at least one file to proceed."
+                                  "Select at least one file to proceed.",
                                 ),
                               ])
                         }
@@ -242,7 +241,7 @@ const Picker = observer(
         </CallablePdfPreview>
       </CallableImagePreview>
     );
-  }
+  },
 );
 
 /**
