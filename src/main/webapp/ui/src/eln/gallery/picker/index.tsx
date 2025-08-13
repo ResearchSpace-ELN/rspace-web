@@ -152,7 +152,9 @@ const Picker = observer(
                     md: "unset",
                   },
                 }}
-                aria-label="Gallery Picker"
+                PaperProps={{
+                  "aria-label": "Gallery Picker",
+                }}
               >
                 <AppBar
                   variant="dialog"
