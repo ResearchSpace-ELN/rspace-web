@@ -4,6 +4,8 @@ import static com.researchspace.service.fieldmark.impl.FieldmarkToRSpaceApiConve
 import static com.researchspace.service.fieldmark.impl.FieldmarkToRSpaceApiConverter.createSampleRequest;
 import static com.researchspace.service.fieldmark.impl.FieldmarkToRSpaceApiConverter.createSampleTemplateRequest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.researchspace.api.v1.controller.ContainerApiPostValidator;
 import com.researchspace.api.v1.controller.InventoryFilePostValidator;
 import com.researchspace.api.v1.controller.InventoryFilesApiController.ApiInventoryFilePost;
@@ -110,6 +112,10 @@ public class FieldmarkServiceManagerImpl implements FieldmarkServiceManager {
         apiHandler.assertInventoryAndDataciteEnabled(user);
       }
       FieldmarkNotebookDTO notebookDTO = getFieldmarkNotebookDTO(importRequest, user);
+
+      // DELETE THIS
+      ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+      String json = ow.writeValueAsString(notebookDTO);
 
       // create sample template
       ApiSampleTemplatePost sampleTemplatePost = createSampleTemplateRequest(notebookDTO);

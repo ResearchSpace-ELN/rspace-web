@@ -17,20 +17,20 @@ import com.researchspace.service.ApiAvailabilityHandler;
 import com.researchspace.service.UserConnectionManager;
 import com.researchspace.webapp.integrations.datacite.DataCiteConnectorDummy;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 
-@Ignore(
-    "We leave the test Ignored so we can potentially run it manually "
-        + "by pasting the bearer token")
+// @Ignore(
+//    "We leave the test Ignored so we can potentially run it manually "
+//        + "by pasting the bearer token")
 public class FieldmarkRealConnectionMVCIT extends API_MVC_TestBase {
 
   private static final FieldmarkApiImportRequest IMPORT_REQUEST =
       new FieldmarkApiImportRequest("1726126204618-rspace-igsn-demo");
-  private static final String LONG_LIVED_TOKEN = "_______PASTE_TOKEN_HERE_________";
+  private static final String LONG_LIVED_TOKEN =
+      "wDor74KSJe5ZZzeNE2jnGT7S5RYtYa9cWTi6f3wfBv0yjigQwFjQbodLlGwSKGAW";
 
   private User user;
   private String apiKey;

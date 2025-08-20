@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ApiAvailabilityHandlerImpl implements ApiAvailabilityHandler {
 
   @Autowired private SystemPropertyPermissionManager systemPropertyManager;
-
   @Autowired private DataCiteConnector dataCiteConnector;
 
   private static final ServiceOperationResult<String> enabledResult =
