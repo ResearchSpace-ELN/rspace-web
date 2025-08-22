@@ -7,6 +7,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { makeStyles } from "tss-react/mui";
 import { withStyles } from "Styles";
 import clsx from "clsx";
+import { Heading } from "../DynamicHeadingLevel";
 
 const useStyles = makeStyles()(() => ({
   formGroup: {
@@ -47,7 +48,7 @@ const FullLabel = withStyles<
 }))(({ classes, label, explanation, explanationId }) => {
   return (
     <>
-      {label}
+      <Heading>{label}</Heading>
       <div className={classes.explanationText} id={explanationId}>
         {explanation}
       </div>
@@ -92,7 +93,7 @@ function CustomFormControl({
       explanationId={explanationId}
     />
   ) : (
-    label
+    <Heading>label</Heading>
   );
 
   return (
