@@ -137,6 +137,15 @@ const MyBenchNavItem = observer(
     const { peopleStore, searchStore, uiStore } = useStores();
     const { navigateToSearch } = useNavigateHelpers();
     const currentUser = peopleStore.currentUser;
+    const benchContentSummary = peopleStore.currentUser?.bench?.contentSummary;
+    const benchContentCount: number | null =
+      mapNullable((summary) => {
+        if (!summary.isAccessible)
+          throw new InvalidState(
+            "A user should always be able to access a summary of the contents of their own bench.",
+          );
+        return summary.value.totalCount;
+      }, benchContentSummary) ?? null;
 
     return (
       <DrawerTab
@@ -152,6 +161,7 @@ const MyBenchNavItem = observer(
         tabIndex={tabIndex}
         ref={getRef(index)}
         drawerOpen={uiStore.sidebarOpen}
+        badge={Math.min(benchContentCount ?? 0, largestFittingCount)}
         onClick={() => {
           navigateToSearch(
             currentUser
