@@ -193,7 +193,6 @@ const ContainersNavItem = observer(
               iconName: "container",
               recordTypeLabel: "",
             }}
-            style={{ width: "24px" }}
             color={theme.palette.standardIcon.main}
           />
         }
@@ -241,7 +240,6 @@ const SampleNavItem = observer(
               iconName: "sample",
               recordTypeLabel: "",
             }}
-            style={{ width: "24px" }}
             color={theme.palette.standardIcon.main}
           />
         }
@@ -288,7 +286,7 @@ const TemplateNavItem = observer(
               iconName: "template",
               recordTypeLabel: "",
             }}
-            style={{ width: "28px", height: "18px" }}
+            style={{ width: "16px", height: "16px" }}
             color={theme.palette.standardIcon.main}
           />
         }
@@ -325,7 +323,7 @@ const IgsnNavItem = observer(
       <DrawerTab
         label="IGSN IDs"
         selected={/identifiers\/igsn/.test(window.location.pathname)}
-        icon={<IgsnIcon style={{ width: "28px", height: "18px" }} />}
+        icon={<IgsnIcon style={{ width: "16px", height: "16px" }} />}
         index={index}
         tabIndex={tabIndex}
         ref={getRef(index)}
@@ -369,7 +367,6 @@ const SubsampleNavItem = observer(
               iconName: "subsample",
               recordTypeLabel: "",
             }}
-            style={{ width: "24px" }}
             color={theme.palette.standardIcon.main}
           />
         }
