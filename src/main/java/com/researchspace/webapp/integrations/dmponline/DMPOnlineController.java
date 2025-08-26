@@ -4,12 +4,16 @@ import static com.researchspace.service.IntegrationsHandler.DMPONLINE_APP_NAME;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.researchspace.model.EcatDocumentFile;
 import com.researchspace.model.User;
-import com.researchspace.model.dmps.DMP;
+import com.researchspace.model.dmps.DMPSource;
 import com.researchspace.model.dmps.DMPUser;
+import com.researchspace.model.dmps.DmpDto;
 import com.researchspace.model.field.ErrorList;
 import com.researchspace.model.oauth.UserConnection;
 import com.researchspace.model.oauth.UserConnectionId;
+import com.researchspace.rda.model.DMP;
+import com.researchspace.rda.model.DMPList;
 import com.researchspace.service.DMPManager;
 import com.researchspace.service.MediaManager;
 import com.researchspace.service.UserManager;
@@ -249,7 +253,7 @@ public class DMPOnlineController extends BaseOAuth2Controller {
   @PostMapping("/importPlan")
   @ResponseBody
   public AjaxReturnObject<JsonNode> importDmp(
-      @RequestParam(name = "id") String id, // url to dmp
+      @RequestParam(name = "id") String id,
       @RequestParam(name = "filename") String filename,
       Model model,
       Principal principal)
@@ -258,34 +262,43 @@ public class DMPOnlineController extends BaseOAuth2Controller {
     User user = userManager.getAuthenticatedUserInSession();
     String accessToken = getExistingAccessToken(model, principal);
 
-    var dmps =
+    DMPList dmpList =
         restTemplate
             .exchange(
                 new URL(id).toURI(),
                 HttpMethod.GET,
                 new HttpEntity<>(getHttpHeadersWithToken(accessToken)),
-                JsonNode.class)
-            .getBody()
-            .get("items")
-            .elements();
-    var dmpWrappedObject = dmps.next();
-    var dmpObject = dmpWrappedObject.get("dmp");
+                DMPList.class)
+            .getBody();
 
     ObjectMapper objectMapper = new ObjectMapper();
-    String json = objectMapper.writeValueAsString(dmpObject);
+    String json = objectMapper.writeValueAsString(dmpList);
     InputStream is = new ByteArrayInputStream(json.getBytes());
-    var file = mediaManager.saveNewDMP(filename, is, user, null);
+    EcatDocumentFile file = mediaManager.saveNewDMP(filename, is, user, null);
 
-    DMP dmp = new DMP(id, filename);
-    var dmpUser = dmpManager.findByDmpId(dmp.getDmpId(), user).orElse(new DMPUser(user, dmp));
-    if (file != null) {
-      dmpUser.setDmpDownloadPdf(file);
-    } else {
-      log.warn("Unexpected null DMP PDF - did download work?");
+    DmpDto dmpDto = new DmpDto(id, filename);
+    Optional<DMPUser> dmpUser = dmpManager.findByDmpId(dmpDto.getDmpId(), user);
+    DMP currentDmp = dmpList.getItems().get(0).getDmp();
+    if (dmpUser.isEmpty()) {
+      dmpUser =
+          Optional.of(
+              new DMPUser(
+                  user,
+                  new DmpDto(
+                      currentDmp.getId() + "",
+                      currentDmp.getTitle(),
+                      DMPSource.DMP_ONLINE,
+                      currentDmp.getDoiLink(),
+                      currentDmp.getDmpLink())));
     }
-    dmpManager.save(dmpUser);
+    if (file != null) {
+      dmpUser.get().setDmpDownloadFile(file);
+    } else {
+      log.warn("Unexpected null DMP File - did download work?");
+    }
+    dmpManager.save(dmpUser.get());
 
-    return new AjaxReturnObject(dmpObject, null);
+    return new AjaxReturnObject(currentDmp, null);
   }
 
   private String getExistingAccessToken(Model model, Principal principal)
