@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * Stub implementation of DMP web client returns hard-coded DMP lists Use
- * -Ddmp.pdf=/full/path/toPDF to set a PDF to download.
+ * Stub implementation of DMP web client returns hard-coded DMP lists Use -Ddmp.pdf=/full/path/toPDF
+ * to set a PDF to download.
  */
 public class DMPClientStub extends AbstractDMPToolDMPProvider implements DMPToolDMPProvider {
 

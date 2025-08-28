@@ -11,6 +11,7 @@ import com.researchspace.argos.model.DataTableData;
 import com.researchspace.argos.model.TableRequest;
 import com.researchspace.model.EcatDocumentFile;
 import com.researchspace.model.User;
+import com.researchspace.model.dmps.DMPSource;
 import com.researchspace.model.dmps.DMPUser;
 import com.researchspace.model.dmps.DmpDto;
 import com.researchspace.service.DMPManager;
@@ -88,7 +89,7 @@ public class ArgosDMPProvider {
     EcatDocumentFile file =
         mediaManager.saveNewDMP(dmpDetails.getLabel() + ".json", is, user, null);
 
-    DmpDto dmpDto = new DmpDto(id, dmpDetails.getLabel());
+    DmpDto dmpDto = new DmpDto(id, dmpDetails.getLabel(), DMPSource.ARGOS, null, null);
     DMPUser dmpUser =
         dmpManager.findByDmpId(dmpDto.getDmpId(), user).orElse(new DMPUser(user, dmpDto));
     if (file != null) {

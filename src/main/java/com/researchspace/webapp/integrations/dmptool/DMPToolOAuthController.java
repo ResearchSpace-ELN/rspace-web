@@ -197,8 +197,7 @@ public class DMPToolOAuthController extends BaseOAuth2Controller {
 
     } catch (URISyntaxException | IOException | RuntimeException e) {
       log.error("Failure on downloading DMP", e);
-      return new AjaxReturnObject<>(
-          null, ErrorList.of("Couldn't download DMP pdf for id: " + id));
+      return new AjaxReturnObject<>(null, ErrorList.of("Couldn't download DMP pdf for id: " + id));
     }
     return new AjaxReturnObject<Boolean>(Boolean.TRUE, null);
   }

@@ -29,10 +29,10 @@ public class DMPOnlineProviderImpl implements DMPOnlineProvider {
 
   @Value("${dmponline.base.url}")
   private String baseUrl;
+
   private final RestTemplate restTemplate;
 
   private static String URL_DMP_PLANS;
-
 
   public DMPOnlineProviderImpl() {
     this.restTemplate = new RestTemplate();
@@ -69,12 +69,10 @@ public class DMPOnlineProviderImpl implements DMPOnlineProvider {
         .getBody();
   }
 
-
   private HttpHeaders getHttpHeadersWithToken(String accessToken) {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
     headers.setBearerAuth(accessToken);
     return headers;
   }
-
 }

@@ -36,8 +36,7 @@ public interface DMPToolDMPProvider {
       String dmpId, String doiIdentifier, User user);
 
   /**
-   * Downloads a PDF of the DMP, creating a new DMP entry in RSpace if one does not already
-   * exist.
+   * Downloads a PDF of the DMP, creating a new DMP entry in RSpace if one does not already exist.
    *
    * @param dmp the DMP
    * @param title The title of the DMP
@@ -50,8 +49,7 @@ public interface DMPToolDMPProvider {
       throws URISyntaxException, IOException;
 
   /**
-   * Downloads a PDF of the DMP, creating a new DMP entry in RSpace if one does not already
-   * exist.
+   * Downloads a PDF of the DMP, creating a new DMP entry in RSpace if one does not already exist.
    *
    * @param dmp the DMP
    * @param title The title of the DMP

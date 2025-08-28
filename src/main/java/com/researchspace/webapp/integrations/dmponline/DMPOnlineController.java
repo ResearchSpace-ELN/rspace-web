@@ -229,14 +229,12 @@ public class DMPOnlineController extends BaseOAuth2Controller {
       Principal principal) {
     try {
       String accessToken = getExistingAccessToken(model, principal);
-      return new AjaxReturnObject(
-          dmpOnlineProvider.listPlans(page, per_page, accessToken), null);
+      return new AjaxReturnObject(dmpOnlineProvider.listPlans(page, per_page, accessToken), null);
     } catch (HttpClientErrorException | URISyntaxException | MalformedURLException e) {
       log.warn("error connecting to DMPonline", e);
       return new AjaxReturnObject<>(null, ErrorList.of("Error connecting to DMPonline."));
     }
   }
-
 
   @PostMapping("/importPlan")
   @ResponseBody
@@ -257,8 +255,7 @@ public class DMPOnlineController extends BaseOAuth2Controller {
     InputStream is = new ByteArrayInputStream(json.getBytes());
     EcatDocumentFile file = mediaManager.saveNewDMP(filename, is, user, null);
 
-    DmpDto dmpDto = new DmpDto(id, filename);
-    Optional<DMPUser> dmpUser = dmpManager.findByDmpId(dmpDto.getDmpId(), user);
+    Optional<DMPUser> dmpUser = dmpManager.findByDmpId(id, user);
     DMP currentDmp = dmpList.getItems().get(0).getDmp();
     if (dmpUser.isEmpty()) {
       dmpUser =
