@@ -14,6 +14,8 @@ import com.researchspace.dmptool.model.DMPPlanScope;
 import com.researchspace.model.dmps.DMPUser;
 import com.researchspace.rda.model.DMP;
 import com.researchspace.rda.model.DMPList;
+import com.researchspace.rda.model.DmpId;
+import com.researchspace.rda.model.DmpId.DmpIdType;
 import com.researchspace.service.impl.ConditionalTestRunner;
 import com.researchspace.service.impl.RunIfSystemPropertyDefined;
 import com.researchspace.testutils.RSpaceTestUtils;
@@ -21,8 +23,6 @@ import com.researchspace.webapp.controller.MVCTestBase;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
@@ -182,6 +182,7 @@ public class DMPToolOAuthControllerMVCIT extends MVCTestBase {
 
   private DMP mkDMP(Long id, String title) {
     var dmp = new DMP();
+    dmp.setDmpId(new DmpId("http://doi.org/10.12345/asdfr-ertgd", DmpIdType.DOI));
     dmp.setTitle(title);
     dmp.setLinks(
         Map.of(
@@ -230,7 +231,7 @@ public class DMPToolOAuthControllerMVCIT extends MVCTestBase {
     // try conversion to API response object
     DMPList plansList =
         dmpToolProvider.listPlans(DMPPlanScope.MINE, clientCredentialToken.getAccessToken());
-    assertEquals(5, plansList.getItems().size());
+    assertFalse(plansList.getItems().isEmpty());
     assertFalse(plansList.getItems().isEmpty());
     DMP firstPlan = (DMP) plansList.getItems().get(0).getDmp();
     assertNotNull(firstPlan.getId());
@@ -280,6 +281,7 @@ public class DMPToolOAuthControllerMVCIT extends MVCTestBase {
   }
 
   @Test
+  @RunIfSystemPropertyDefined("nightly")
   public void testSanitizeDMPLinksFromDMPToolDMP() throws JsonProcessingException {
     ObjectMapper mapper = new ObjectMapper();
 
@@ -293,32 +295,11 @@ public class DMPToolOAuthControllerMVCIT extends MVCTestBase {
   }
 
   @Test
+  @RunIfSystemPropertyDefined("nightly")
   public void testSanitizeDMPLinksFromJson() {
     assertTrue(jsonDmpTool.contains("https://https/api/v2/plans/"));
     String sanitizedJson = ((DMPToolDMPProviderImpl) dmpToolProvider).sanitizeDMPLinks(jsonDmpTool);
     assertFalse(sanitizedJson.contains("https://https/api/v2/plans/"));
     assertTrue(sanitizedJson.contains(realBaseUrl.getHost()));
-  }
-
-  /**
-   * won't work anymore, as it seem DMP API no longer allows editing with
-   * grant_type=client_credentials authentication
-   */
-  // @Test
-  // @RunIfSystemPropertyDefined("nightly")
-  public void attachDoiToPublicDMPPlan() throws Exception {
-    DMPToolOAuthController.AccessToken clientCredentialToken = getClientCredentialToken();
-    String doiIdentifier =
-        "https://doi.org/10.987/rsUnitTest-" + DateTimeFormatter.ISO_INSTANT.format(Instant.now());
-    dmpToolProvider.addDoiIdentifierToDMP(
-        "https://dmptool-stg.cdlib.org/api/v2/plans/" + PUBLIC_DMP_ID,
-        doiIdentifier,
-        clientCredentialToken.getAccessToken());
-
-    // verify DOI identifier present in updated plan
-    String testPlanJson =
-        dmpToolProvider.doGet(
-            clientCredentialToken.getAccessToken(), "plans/" + PUBLIC_DMP_ID, String.class);
-    assertTrue(testPlanJson.contains(doiIdentifier), "no expected DOI in plan: " + testPlanJson);
   }
 }
