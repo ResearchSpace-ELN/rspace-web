@@ -62,7 +62,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Controller
@@ -72,6 +71,7 @@ public class DMPOnlineController extends BaseOAuth2Controller {
   @Autowired private MediaManager mediaManager;
   @Autowired private UserManager userManager;
   @Autowired private DMPManager dmpManager;
+  @Autowired private DMPOnlineProvider dmpOnlineProvider;
 
   @Value("${dmponline.base.url}")
   private String baseUrl;
@@ -94,7 +94,6 @@ public class DMPOnlineController extends BaseOAuth2Controller {
   private static String URL_AUTH_END_POINT;
   private static String URL_AUTH_TOKEN_INFO;
   private static String URL_TOKEN_END_POINT;
-  private static String URL_DMP_PLANS;
   private static String URL_CALLBACK;
   private static final String TEMP_TOKEN = "TEMP";
 
@@ -110,7 +109,6 @@ public class DMPOnlineController extends BaseOAuth2Controller {
     URL_AUTH_END_POINT = this.baseUrl + "/oauth/authorize";
     URL_TOKEN_END_POINT = this.baseUrl + "/oauth/token";
     URL_AUTH_TOKEN_INFO = this.baseUrl + "/oauth/token/info";
-    URL_DMP_PLANS = this.baseUrl + "/api/v2/plans";
     URL_CALLBACK = getCallbackUrl() + "/apps/dmponline/callback";
     URL_CALLBACK = new URI(URL_CALLBACK).normalize().toString();
     clientId = clientId == null ? "" : StringUtils.strip(clientId);
@@ -232,23 +230,13 @@ public class DMPOnlineController extends BaseOAuth2Controller {
     try {
       String accessToken = getExistingAccessToken(model, principal);
       return new AjaxReturnObject(
-          restTemplate
-              .exchange(
-                  UriComponentsBuilder.fromUriString(URL_DMP_PLANS)
-                      .queryParam("page", page)
-                      .queryParam("per_page", per_page)
-                      .build()
-                      .toUri(),
-                  HttpMethod.GET,
-                  new HttpEntity<>(getHttpHeadersWithToken(accessToken)),
-                  JsonNode.class)
-              .getBody(),
-          null);
+          dmpOnlineProvider.listPlans(page, per_page, accessToken), null);
     } catch (HttpClientErrorException | URISyntaxException | MalformedURLException e) {
       log.warn("error connecting to DMPonline", e);
       return new AjaxReturnObject<>(null, ErrorList.of("Error connecting to DMPonline."));
     }
   }
+
 
   @PostMapping("/importPlan")
   @ResponseBody
@@ -262,14 +250,7 @@ public class DMPOnlineController extends BaseOAuth2Controller {
     User user = userManager.getAuthenticatedUserInSession();
     String accessToken = getExistingAccessToken(model, principal);
 
-    DMPList dmpList =
-        restTemplate
-            .exchange(
-                new URL(id).toURI(),
-                HttpMethod.GET,
-                new HttpEntity<>(getHttpHeadersWithToken(accessToken)),
-                DMPList.class)
-            .getBody();
+    DMPList dmpList = dmpOnlineProvider.getPlanByUrlId(id, accessToken);
 
     ObjectMapper objectMapper = new ObjectMapper();
     String json = objectMapper.writeValueAsString(dmpList);
