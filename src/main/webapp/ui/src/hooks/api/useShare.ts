@@ -210,7 +210,7 @@ export default function useShare(): {
                 {
                   id: shareInfo.shareeId,
                   permission: shareInfo.permission,
-                  sharedFolderId: shareInfo.sharedToFolderId!,
+                  sharedFolderId: null, // shareInfo.sharedToFolderId!,
                 },
               ]
             : [],
