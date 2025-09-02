@@ -689,6 +689,7 @@ public class ExportController extends BaseController {
       }
 
       Future<ArchiveResult> futureArchive = null;
+      // TODO[nik]: check if we need to add DMP new parameter before to save in here
       switch (exportSelection.getType()) {
         case SELECTION:
           futureArchive =

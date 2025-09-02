@@ -10,9 +10,11 @@ import com.axiope.search.SearchUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.researchspace.core.util.ISearchResults;
 import com.researchspace.core.util.JacksonUtil;
+import com.researchspace.core.util.MediaUtils;
 import com.researchspace.core.util.SearchResultsImpl;
 import com.researchspace.core.util.TransformerUtils;
 import com.researchspace.dao.AuditDao;
+import com.researchspace.dao.DMPDao;
 import com.researchspace.dao.EcatImageDao;
 import com.researchspace.dao.FieldDao;
 import com.researchspace.dao.FolderDao;
@@ -39,6 +41,7 @@ import com.researchspace.model.audit.AuditedEntity;
 import com.researchspace.model.core.GlobalIdPrefix;
 import com.researchspace.model.core.GlobalIdentifier;
 import com.researchspace.model.core.RecordType;
+import com.researchspace.model.dmps.DMPUser;
 import com.researchspace.model.dtos.GalleryFilterCriteria;
 import com.researchspace.model.dtos.WorkspaceFilters;
 import com.researchspace.model.dtos.WorkspaceListingConfig;
@@ -62,6 +65,7 @@ import com.researchspace.model.record.IllegalAddChildOperation;
 import com.researchspace.model.record.ImportOverride;
 import com.researchspace.model.record.RSForm;
 import com.researchspace.model.record.Record;
+import com.researchspace.model.record.RecordInformation;
 import com.researchspace.model.record.RecordToFolder;
 import com.researchspace.model.record.Snippet;
 import com.researchspace.model.record.StructuredDocument;
@@ -122,6 +126,7 @@ public class RecordManagerImpl implements RecordManager {
   private @Autowired FieldDao fieldDao;
   private @Autowired FolderDao folderDao;
   private @Autowired EcatImageDao imageDao;
+  private @Autowired DMPDao dmpDao;
   private @Autowired FormUsageDao formUsageDao;
   private @Autowired RecordEditorTracker tracker;
   private @Autowired FieldLinksEntitiesSynchronizer fieldContentSynchroniser;
@@ -1384,5 +1389,44 @@ public class RecordManagerImpl implements RecordManager {
       User user, Folder folderOrNotebook) {
     return folderOrNotebook.isSharedFolder()
         || isSharedNotebookWithoutCreatePermission(user, folderOrNotebook);
+  }
+
+  @Override
+  public RecordInformation decorateRecordInfo(
+      RecordInformation recordInfo,
+      User user,
+      Folder parentFolder,
+      boolean isOnRoot,
+      BaseRecord baseRecord,
+      String mediaType) {
+    if (baseRecord instanceof EcatDocumentFile) {
+      EcatDocumentFile doc = (EcatDocumentFile) baseRecord;
+      recordInfo.addType(getEcatDocumentFileType(mediaType, doc.getDocumentType()));
+    }
+
+    if ("DMPs".equals(mediaType)) {
+      DMPUser dmpSaved = dmpDao.findDMPsByFile(user, baseRecord.getId()).get(0);
+      recordInfo.setDmpLink(dmpSaved.getDmpLink());
+      recordInfo.setDoiLink(dmpSaved.getDoiLink());
+      recordInfo.setDmpSource(dmpSaved.getSource());
+    }
+
+    recordInfo.setParentId(parentFolder.getId());
+    recordInfo.setOnRoot(isOnRoot);
+
+    return recordInfo;
+  }
+
+  private String getEcatDocumentFileType(String mediatype, String documentType) {
+    if (mediatype.equals(Folder.EXPORTS_FOLDER_NAME)) {
+      return Folder.EXPORTS_FOLDER_NAME;
+    }
+    if (documentType.equalsIgnoreCase(MediaUtils.MISC_MEDIA_FLDER_NAME)) {
+      return MediaUtils.MISC_MEDIA_FLDER_NAME;
+    }
+    if (documentType.equalsIgnoreCase(MediaUtils.DMP_MEDIA_FLDER_NAME)) {
+      return MediaUtils.DMP_MEDIA_FLDER_NAME;
+    }
+    return MediaUtils.DOCUMENT_MEDIA_FLDER_NAME;
   }
 }
