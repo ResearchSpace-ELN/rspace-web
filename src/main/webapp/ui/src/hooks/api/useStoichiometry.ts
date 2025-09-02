@@ -152,6 +152,7 @@ export default function useStoichiometry(): {
           },
         },
       );
+      console.debug("Calculated stoichiometry data:", data);
       return data;
     } catch (e) {
       addAlert(
