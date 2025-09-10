@@ -37,7 +37,12 @@ const useStyles = makeStyles()(() => ({
 }));
 
 const FullLabel = withStyles<
-  { explanation?: React.ReactNode; explanationId: string; label?: string },
+  {
+    explanation?: React.ReactNode;
+    explanationId: string;
+    label?: string;
+    disabled?: boolean;
+  },
   { explanationText: string }
 >((theme) => ({
   explanationText: {
@@ -45,13 +50,15 @@ const FullLabel = withStyles<
     lineHeight: 1.5,
     marginTop: theme.spacing(0.5),
   },
-}))(({ classes, label, explanation, explanationId }) => {
+}))(({ classes, label, explanation, explanationId, disabled }) => {
   return (
     <>
-      <Heading>{label}</Heading>
-      <div className={classes.explanationText} id={explanationId}>
-        {explanation}
-      </div>
+      {disabled ? <Heading>{label}</Heading> : <label>{label}</label>}
+      {explanation && (
+        <div className={classes.explanationText} id={explanationId}>
+          {explanation}
+        </div>
+      )}
     </>
   );
 });
@@ -68,6 +75,7 @@ export type FormControlArgs = {
   required?: boolean;
   explanation?: React.ReactNode;
   "aria-label"?: string;
+  disabled?: boolean;
 };
 
 function CustomFormControl({
@@ -82,20 +90,12 @@ function CustomFormControl({
   required,
   explanation,
   ["aria-label"]: ariaLabel,
+  disabled,
 }: FormControlArgs): React.ReactNode {
   const { classes: additionalClasses } = useStyles();
   const explanationId = useId();
 
-  const fullLabel = explanation ? (
-    <FullLabel
-      label={label}
-      explanation={explanation}
-      explanationId={explanationId}
-    />
-  ) : (
-    <Heading>label</Heading>
-  );
-
+  console.debug({ label, disabled, explanation });
   return (
     <FormControl
       component="fieldset"
@@ -114,7 +114,12 @@ function CustomFormControl({
             classes={{ root: classes.formLabel ?? "" }}
             required={required}
           >
-            {fullLabel}
+            <FullLabel
+              label={label}
+              explanation={explanation}
+              explanationId={explanationId}
+              disabled={disabled}
+            />
           </FormLabel>
         )}
         {actions}
