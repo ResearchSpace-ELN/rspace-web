@@ -95,7 +95,6 @@ function CustomFormControl({
   const { classes: additionalClasses } = useStyles();
   const explanationId = useId();
 
-  console.debug({ label, disabled, explanation });
   return (
     <FormControl
       component="fieldset"
