@@ -57,7 +57,7 @@ public class UserConnectionManagerImpl extends GenericManagerImpl<UserConnection
       key =
           "#rspaceUserName + #providername +"
               + " T(com.researchspace.service.IntegrationsHandler).PROVIDER_USER_ID")
-  public int deleteByUserAndProvider(String providername, String rspaceUserName) {
+  public int deleteByUserAndProvider(String rspaceUserName, String providername) {
     return userConnectionDao.deleteByUserAndProvider(rspaceUserName, providername);
   }
 

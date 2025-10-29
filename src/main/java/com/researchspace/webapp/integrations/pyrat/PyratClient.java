@@ -70,7 +70,7 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
       throws HttpClientErrorException, URISyntaxException, MalformedURLException {
     return restTemplate
         .exchange(
-            UriComponentsBuilder.fromUriString(getServerUrl(serverAlias) + "/version")
+            UriComponentsBuilder.fromUriString(getApiBaseUrl(serverAlias) + "/version")
                 .build()
                 .toUri(),
             HttpMethod.GET,
@@ -83,7 +83,7 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
       throws HttpClientErrorException, URISyntaxException, MalformedURLException {
     return restTemplate
         .exchange(
-            UriComponentsBuilder.fromUriString(getServerUrl(serverAlias) + "/locations")
+            UriComponentsBuilder.fromUriString(getApiBaseUrl(serverAlias) + "/locations")
                 .queryParams(queryParams)
                 .build()
                 .toUri(),
@@ -97,7 +97,7 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
       throws HttpClientErrorException, URISyntaxException, MalformedURLException {
     var response =
         restTemplate.exchange(
-            UriComponentsBuilder.fromUriString(getServerUrl(serverAlias) + "/animals")
+            UriComponentsBuilder.fromUriString(getApiBaseUrl(serverAlias) + "/animals")
                 .queryParams(queryParams)
                 .build()
                 .toUri(),
@@ -111,7 +111,7 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
       throws HttpClientErrorException, URISyntaxException, MalformedURLException {
     var response =
         restTemplate.exchange(
-            UriComponentsBuilder.fromUriString(getServerUrl(serverAlias) + "/pups")
+            UriComponentsBuilder.fromUriString(getApiBaseUrl(serverAlias) + "/pups")
                 .queryParams(queryParams)
                 .build()
                 .toUri(),
@@ -153,7 +153,7 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
       throws HttpClientErrorException, URISyntaxException, MalformedURLException {
     return restTemplate
         .exchange(
-            UriComponentsBuilder.fromUriString(getServerUrl(serverAlias) + "/projects")
+            UriComponentsBuilder.fromUriString(getApiBaseUrl(serverAlias) + "/projects")
                 .queryParams(queryParams)
                 .build()
                 .toUri(),
@@ -167,7 +167,7 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
       throws HttpClientErrorException, URISyntaxException, MalformedURLException {
     return restTemplate
         .exchange(
-            UriComponentsBuilder.fromUriString(getServerUrl(serverAlias) + "/users")
+            UriComponentsBuilder.fromUriString(getApiBaseUrl(serverAlias) + "/users")
                 .queryParams(queryParams)
                 .build()
                 .toUri(),
@@ -181,7 +181,7 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
       throws HttpClientErrorException, URISyntaxException, MalformedURLException {
     return restTemplate
         .exchange(
-            UriComponentsBuilder.fromUriString(getServerUrl(serverAlias) + "/licenses")
+            UriComponentsBuilder.fromUriString(getApiBaseUrl(serverAlias) + "/licenses")
                 .queryParams(queryParams)
                 .build()
                 .toUri(),
@@ -189,15 +189,6 @@ public class PyratClient extends MultiInstanceBaseClient<PyratServerConfiguratio
             new HttpEntity<>(getHttpHeaders(serverAlias)),
             JsonNode.class)
         .getBody();
-  }
-
-  private String getServerUrl(String serverAlias) {
-    if (!this.getServerMapByAlias().containsKey(serverAlias)
-        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getApiUrl())) {
-      throw new HttpClientErrorException(
-          HttpStatus.NOT_FOUND, "Pyrat server url for alias=\"" + serverAlias + "\" not found");
-    }
-    return this.getServerMapByAlias().get(serverAlias).getApiUrl();
   }
 
   private String getServerSecret(String serverAlias) {

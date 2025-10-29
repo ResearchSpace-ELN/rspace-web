@@ -142,7 +142,7 @@ public class DigitalCommonsDataController extends BaseOAuth2Controller {
   public void disconnect(Principal principal) {
     int deletedConnCount =
         userConnectionManager.deleteByUserAndProvider(
-            DIGITAL_COMMONS_DATA_APP_NAME, principal.getName());
+            principal.getName(), DIGITAL_COMMONS_DATA_APP_NAME);
     log.info(
         "Deleted {} Digital Commons Data connection(s) for user {}",
         deletedConnCount,

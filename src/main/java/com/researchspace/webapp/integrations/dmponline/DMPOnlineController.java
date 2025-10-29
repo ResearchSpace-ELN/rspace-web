@@ -148,7 +148,7 @@ public class DMPOnlineController extends BaseOAuth2Controller {
   @DeleteMapping("/connect")
   public void disconnect(Principal principal) {
     int deletedConnCount =
-        userConnectionManager.deleteByUserAndProvider(DMPONLINE_APP_NAME, principal.getName());
+        userConnectionManager.deleteByUserAndProvider(principal.getName(), DMPONLINE_APP_NAME);
     log.info(
         "Deleted {} DMPonline connection(s) for user {}", deletedConnCount, principal.getName());
   }

@@ -11,6 +11,8 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 public abstract class MultiInstanceBaseClient<T extends ServerConfigurationDTO>
@@ -33,6 +35,7 @@ public abstract class MultiInstanceBaseClient<T extends ServerConfigurationDTO>
       for (Entry<String, T> serverConfEntry : serverByAlias.entrySet()) {
         serverConfEntry.getValue().setAlias(serverConfEntry.getKey());
       }
+      serverByAlias = Collections.unmodifiableMap(this.serverByAlias);
     }
   }
 
@@ -42,21 +45,37 @@ public abstract class MultiInstanceBaseClient<T extends ServerConfigurationDTO>
         this.init();
       } catch (JsonProcessingException e) {
         log.error("Unable to build the map of servers configured for this integration: ", e);
-        throw new RuntimeException(e);
+        throw new RuntimeException(
+            "Unable to build the map of servers configured for this integration: ", e);
       }
     }
-    return Collections.unmodifiableMap(this.serverByAlias);
+    return this.serverByAlias;
   }
 
   public T getServerConfiguration(@NotNull String serverAlias) {
-    return getServerMapByAlias().get(serverAlias);
+    if (!this.getServerMapByAlias().containsKey(serverAlias)
+        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getApiUrl())) {
+      throw new HttpClientErrorException(
+          HttpStatus.NOT_FOUND, "Server configuration for alias=\"" + serverAlias + "\" not found");
+    }
+    return this.getServerMapByAlias().get(serverAlias);
   }
 
   public String getApiBaseUrl(@NotNull String serverAlias) {
-    return getServerMapByAlias().get(serverAlias).getApiUrl();
+    if (!this.getServerMapByAlias().containsKey(serverAlias)
+        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getApiUrl())) {
+      throw new HttpClientErrorException(
+          HttpStatus.NOT_FOUND, "Server apiUrl for alias=\"" + serverAlias + "\" not found");
+    }
+    return this.getServerMapByAlias().get(serverAlias).getApiUrl();
   }
 
   public String getAuthBaseUrl(@NotNull String serverAlias) {
-    return getServerMapByAlias().get(serverAlias).getAuthUrl();
+    if (!this.getServerMapByAlias().containsKey(serverAlias)
+        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getAuthUrl())) {
+      throw new HttpClientErrorException(
+          HttpStatus.NOT_FOUND, "Server authUrl for alias=\"" + serverAlias + "\" not found");
+    }
+    return this.getServerMapByAlias().get(serverAlias).getAuthUrl();
   }
 }

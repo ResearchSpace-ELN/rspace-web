@@ -14,8 +14,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,7 +31,13 @@ public class RaIDAuthController extends BaseOAuth2Controller {
 
   public RaIDAuthController() {}
 
-  @GetMapping("/connect/{serverAlias}") // TODO[nik]: make it POST
+  @GetMapping("/getconnect/{serverAlias}") // TODO[nik]: remove the GET used for testing
+  public RedirectView connectGet(@PathVariable String serverAlias)
+      throws MalformedURLException, URISyntaxException {
+    return connect(serverAlias);
+  }
+
+  @PostMapping("/connect/{serverAlias}")
   public RedirectView connect(@PathVariable String serverAlias)
       throws MalformedURLException, URISyntaxException {
     return new RedirectView(raidServiceClientAdapter.performRedirectConnect(serverAlias));
@@ -57,15 +65,25 @@ public class RaIDAuthController extends BaseOAuth2Controller {
     return redirectResult;
   }
 
-  @GetMapping("/disconnect/{serverAlias}") // TODO[nik]: make it DELETE /connect/{serverAlias}
+  @GetMapping("/getdisconnect/{serverAlias}") // TODO[nik]: remove the GET used for testing
+  public void disconnectGet(@PathVariable String serverAlias, Principal principal) {
+    disconnect(serverAlias, principal);
+  }
+
+  @DeleteMapping("/connect/{serverAlias}")
   public void disconnect(@PathVariable String serverAlias, Principal principal) {
     int deletedConnCount =
         userConnectionManager.deleteByUserAndProvider(
-            RAID_APP_NAME, principal.getName(), serverAlias);
+            principal.getName(), RAID_APP_NAME, serverAlias);
     log.info("Deleted {} RaID connection(s) for user {}", deletedConnCount, principal.getName());
   }
 
-  @GetMapping("/test_connection/{serverAlias}") // TODO[nik]: make it POST
+  @GetMapping("/gettest_connection/{serverAlias}") // TODO[nik]: remove the GET used for testing
+  public Boolean isConnectionAliveGet(@PathVariable String serverAlias, Principal principal) {
+    return isConnectionAlive(serverAlias, principal);
+  }
+
+  @PostMapping("/test_connection/{serverAlias}")
   public Boolean isConnectionAlive(@PathVariable String serverAlias, Principal principal) {
     Boolean isConnectionAlive = Boolean.TRUE;
     try {
@@ -80,7 +98,13 @@ public class RaIDAuthController extends BaseOAuth2Controller {
     return isConnectionAlive;
   }
 
-  @GetMapping("/refresh_token/{serverAlias}") // TODO[nik]: make it POST
+  @GetMapping("/getrefresh_token/{serverAlias}") // TODO[nik]: remove the GET used for testing
+  public String refreshTokenGet(
+      @PathVariable String serverAlias, Model model, Principal principal) {
+    return refreshToken(serverAlias, model, principal);
+  }
+
+  @PostMapping("/refresh_token/{serverAlias}")
   public String refreshToken(@PathVariable String serverAlias, Model model, Principal principal) {
     OauthAuthorizationErrorBuilder error = OauthAuthorizationError.builder().appName("RaID");
     String redirectResult = "";

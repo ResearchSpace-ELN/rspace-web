@@ -85,6 +85,7 @@ public class RaIDServiceClientAdapterImpl
   public RaIDServicePoint getServicePoint(
       String username, String serverAlias, Integer servicePointId) throws HttpServerErrorException {
     // TODO: RSDEV-849
+    RaIDServicePoint result = new RaIDServicePoint(); // //TODO[nik]: dummy one
     return null;
   }
 
@@ -240,16 +241,31 @@ public class RaIDServiceClientAdapterImpl
 
   @NotNull
   private String getClientId(String serverAlias) {
-    return this.getServerConfiguration(serverAlias).getClientId();
+    if (!this.getServerMapByAlias().containsKey(serverAlias)
+        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getClientId())) {
+      throw new HttpClientErrorException(
+          HttpStatus.NOT_FOUND, "RaID clientId for alias=\"" + serverAlias + "\" not found");
+    }
+    return this.getServerMapByAlias().get(serverAlias).getClientId();
   }
 
   @NotNull
   private String getClientSecret(String serverAlias) {
-    return this.getServerConfiguration(serverAlias).getClientSecret();
+    if (!this.getServerMapByAlias().containsKey(serverAlias)
+        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getClientSecret())) {
+      throw new HttpClientErrorException(
+          HttpStatus.NOT_FOUND, "RaID clientSecret for alias=\"" + serverAlias + "\" not found");
+    }
+    return this.getServerMapByAlias().get(serverAlias).getClientSecret();
   }
 
   @NotNull
   private Integer getServicePointId(String serverAlias) {
-    return this.getServerConfiguration(serverAlias).getServicePointId();
+    if (!this.getServerMapByAlias().containsKey(serverAlias)
+        || this.getServerMapByAlias().get(serverAlias).getServicePointId() == null) {
+      throw new HttpClientErrorException(
+          HttpStatus.NOT_FOUND, "RaID servicePointId for alias=\"" + serverAlias + "\" not found");
+    }
+    return this.getServerMapByAlias().get(serverAlias).getServicePointId();
   }
 }

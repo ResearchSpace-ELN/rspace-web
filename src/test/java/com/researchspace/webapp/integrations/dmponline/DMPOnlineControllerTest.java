@@ -85,7 +85,7 @@ public class DMPOnlineControllerTest extends SpringTransactionalTest {
 
   @After
   public void tearDownConnection() {
-    userConnectionManager.deleteByUserAndProvider(DMPONLINE_APP_NAME, testUser.getUsername());
+    userConnectionManager.deleteByUserAndProvider(testUser.getUsername(), DMPONLINE_APP_NAME);
   }
 
   @Test

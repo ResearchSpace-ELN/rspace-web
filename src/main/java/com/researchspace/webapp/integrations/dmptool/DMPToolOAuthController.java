@@ -83,7 +83,7 @@ public class DMPToolOAuthController extends BaseOAuth2Controller {
   @DeleteMapping("/connect")
   public void disconnect(Principal principal) {
     int deletedConnCount =
-        userConnectionManager.deleteByUserAndProvider(DMPTOOL_APP_NAME, principal.getName());
+        userConnectionManager.deleteByUserAndProvider(principal.getName(), DMPTOOL_APP_NAME);
     log.info("Deleted {} DMPTool connection(s) for user {}", deletedConnCount, principal.getName());
   }
 

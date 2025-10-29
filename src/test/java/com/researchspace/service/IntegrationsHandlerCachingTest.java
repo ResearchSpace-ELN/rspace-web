@@ -167,7 +167,7 @@ public class IntegrationsHandlerCachingTest extends SpringTransactionalTest {
     assertThat(reloaded, sameInstance(reloadedCached));
 
     // now we remove the UserConnection, should evict cache
-    userConn.deleteByUserAndProvider(PROTOCOLS_IO_APP_NAME, anyUser.getUsername());
+    userConn.deleteByUserAndProvider(anyUser.getUsername(), PROTOCOLS_IO_APP_NAME);
     IntegrationInfo reloaded2 = integrationsHandler.getIntegration(anyUser, PROTOCOLS_IO_APP_NAME);
     // ... and is now picking up  no UserConnection
     assertThat(reloaded2, not(sameInstance(reloaded)));

@@ -86,7 +86,7 @@ public class DigitalCommonsDataControllerTest extends SpringTransactionalTest {
   @After
   public void tearDownConnection() {
     userConnectionManager.deleteByUserAndProvider(
-        DIGITAL_COMMONS_DATA_APP_NAME, testUser.getUsername());
+        testUser.getUsername(), DIGITAL_COMMONS_DATA_APP_NAME);
   }
 
   @Test
