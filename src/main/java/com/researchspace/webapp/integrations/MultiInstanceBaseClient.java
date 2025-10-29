@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
-public abstract class MultiInstanceBaseExternalApp<T extends ServerConfigurationDTO>
+public abstract class MultiInstanceBaseClient<T extends ServerConfigurationDTO>
     implements MultiInstanceClient<T> {
 
   // the server specific deployment.property configuration

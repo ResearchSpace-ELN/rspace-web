@@ -15,7 +15,7 @@ import com.researchspace.service.UserConnectionManager;
 import com.researchspace.service.UserManager;
 import com.researchspace.service.raid.RaIDServerConfigurationDTO;
 import com.researchspace.service.raid.RaIDServiceClientAdapter;
-import com.researchspace.webapp.integrations.MultiInstanceBaseExternalApp;
+import com.researchspace.webapp.integrations.MultiInstanceBaseClient;
 import com.researchspace.webapp.integrations.MultiInstanceClient;
 import com.researchspace.webapp.integrations.helper.BaseOAuth2Controller.AccessToken;
 import java.net.URI;
@@ -42,7 +42,7 @@ import org.springframework.web.client.HttpServerErrorException;
 @Service
 @NoArgsConstructor
 public class RaIDServiceClientAdapterImpl
-    extends MultiInstanceBaseExternalApp<RaIDServerConfigurationDTO>
+    extends MultiInstanceBaseClient<RaIDServerConfigurationDTO>
     implements MultiInstanceClient<RaIDServerConfigurationDTO>, RaIDServiceClientAdapter {
 
   public static final String RAID_CONFIGURED_SERVERS = "RAID_CONFIGURED_SERVERS";

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.researchspace.model.User;
 import com.researchspace.service.UserConnectionManager;
 import com.researchspace.service.UserManager;
-import com.researchspace.webapp.integrations.MultiInstanceBaseExternalApp;
+import com.researchspace.webapp.integrations.MultiInstanceBaseClient;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Base64;
@@ -30,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
-public class PyratClient extends MultiInstanceBaseExternalApp<PyratServerConfigurationDTO> {
+public class PyratClient extends MultiInstanceBaseClient<PyratServerConfigurationDTO> {
 
   public static final String PYRAT_CONFIGURED_SERVERS = "PYRAT_CONFIGURED_SERVERS";
   public static final String PYRAT_URL = "PYRAT_URL";
