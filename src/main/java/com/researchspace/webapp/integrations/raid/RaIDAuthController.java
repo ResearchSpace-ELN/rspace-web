@@ -54,7 +54,7 @@ public class RaIDAuthController extends BaseOAuth2Controller {
           principal.getName(), serverAlias, params.get("code"));
 
       log.info("Connected RaID for user {}", principal.getName());
-      redirectResult = "connect/raid/connected";
+      redirectResult = "connect/raid/connected/" + serverAlias;
     } catch (Exception ex) {
       log.error("Couldn't complete the token request on RaID", ex);
       error.errorMsg("Error during token creation");

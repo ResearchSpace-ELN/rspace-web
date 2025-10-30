@@ -53,6 +53,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -78,6 +79,8 @@ import org.springframework.dao.DataAccessException;
 @Slf4j
 public class IntegrationsHandlerImpl implements IntegrationsHandler {
 
+  private static final String IS_CONNECTED = "IS_CONNECTED";
+  public static final String MASKED_TOKEN = "XXXXXXXXXXXXXXXXX";
   private @Autowired SystemPropertyManager sysPropMgr;
   private @Autowired SystemPropertyPermissionManager systemPropertyPermissionUtils;
   private @Autowired UserAppConfigManager appConfigMgr;
@@ -195,7 +198,13 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
         return;
       case RAID_APP_NAME:
         setMultipleUserTokens(
-            info, user, RAID_APP_NAME, RAID_CONFIGURED_SERVERS, RAID_ALIAS, RAID_APIKEY);
+            info,
+            user,
+            RAID_APP_NAME,
+            RAID_CONFIGURED_SERVERS,
+            RAID_ALIAS,
+            RAID_APIKEY,
+            IS_CONNECTED);
         return;
       case ZENODO_APP_NAME:
         setSingleUserToken(info, user, ZENODO_APP_NAME, ZENODO_USER_TOKEN);
@@ -228,22 +237,38 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
       String paramConfiguredServers,
       String paramAlias,
       String paramApiKey) {
+    setMultipleUserTokens(
+        info, user, appName, paramConfiguredServers, paramAlias, paramApiKey, null);
+  }
+
+  private void setMultipleUserTokens(
+      IntegrationInfo info,
+      User user,
+      String appName,
+      String paramConfiguredServers,
+      String paramAlias,
+      String paramApiKey,
+      String paramIsConnected) {
     Map<String, String> apikeyByAlias = getTokenMapForProvider(user, appName);
 
     for (Entry<String, Object> infoElement : info.getOptions().entrySet()) {
       if (!paramConfiguredServers.equals(infoElement.getKey())) {
         Map<String, String> configElementMapSet = (Map<String, String>) infoElement.getValue();
         String aliasToConfigure = configElementMapSet.get(paramAlias); // i.e.: "mice server"
-        String apiKey =
-            apikeyByAlias.get(aliasToConfigure) == null ? "" : apikeyByAlias.get(aliasToConfigure);
+        String apiKey = apikeyByAlias.get(aliasToConfigure) == null ? "" : MASKED_TOKEN;
         configElementMapSet.put(paramApiKey, apiKey);
+        if (StringUtils.isNotBlank(paramIsConnected)) {
+          configElementMapSet.put(
+              paramIsConnected, String.valueOf(apikeyByAlias.containsKey(aliasToConfigure)));
+        }
       }
     }
   }
 
   // this is using UserConnection table to store OAuth token.
   private void setOAuthConnectionStatus(IntegrationInfo info, User user, String appName) {
-    getTokenForProvider(user, appName).ifPresent(token -> updateInfoWithOAuthToken(info, token));
+    getTokenForProvider(user, appName)
+        .ifPresent(token -> updateInfoWithOAuthToken(info, MASKED_TOKEN));
   }
 
   private String updateInfoWithOAuthToken(IntegrationInfo info, String token) {
@@ -254,7 +279,7 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
 
   private Optional<String> getTokenForProvider(User user, String provider) {
     return userConnManager
-        .findByUserNameProviderName(user.getUsername(), provider, PROVIDER_USER_ID)
+        .findByUserNameProviderName(user.getUsername(), provider)
         .map(UserConnection::getAccessToken);
   }
 
@@ -276,7 +301,7 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
   private void setSingleUserToken(
       IntegrationInfo info, User user, String appName, String tokenName) {
     Optional<String> userToken = getTokenForProvider(user, appName);
-    userToken.ifPresent(t -> info.getOptions().put(tokenName, t));
+    userToken.ifPresent(t -> info.getOptions().put(tokenName, MASKED_TOKEN)); // mask token t
   }
 
   private void populateIntegrationInfoFromUserAppConfig(IntegrationInfo info, User user) {
@@ -298,7 +323,7 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
           options.put(GALAXY_CONFIGURED_SERVERS, galaxyServerByAlias);
         }
       }
-
+      // TODO[nik]: CHECK THIS WHAT TO DO WITH RAID cause it is not populatinbg it
       appConfig
           .getAppConfigElementSets()
           .forEach(
@@ -331,8 +356,7 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
       // add the configured servers in the options
       for (Entry<String, T> serverByAlias : serverByAliasMap.entrySet()) {
         configuredServers.add(
-            new ServerConfigurationDTO(
-                serverByAlias.getKey(), serverByAlias.getValue().getApiUrl()));
+            new ServerConfigurationDTO(serverByAlias.getKey(), serverByAlias.getValue().getUrl()));
       }
     }
   }

@@ -18,7 +18,9 @@ public class UserConnectionManagerImpl extends GenericManagerImpl<UserConnection
     implements UserConnectionManager {
 
   static final String SAVE_CONNECTION_SPEL =
-      "#connection.id.userId + #connection.id.providerId + #connection.id.providerUserId";
+      "#connection.id.userId + #connection.id.providerId + "
+          + "(#connection.id.providerUserId != null ? #connection.id.providerUserId : "
+          + "T(com.researchspace.service.IntegrationsHandler).PROVIDER_USER_ID)";
   private UserConnectionDao userConnectionDao;
 
   public UserConnectionManagerImpl(@Autowired UserConnectionDao userDao) {

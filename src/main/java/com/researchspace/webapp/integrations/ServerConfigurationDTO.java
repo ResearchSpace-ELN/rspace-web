@@ -18,20 +18,20 @@ import org.jetbrains.annotations.NotNull;
 public class ServerConfigurationDTO implements Comparable<ServerConfigurationDTO> {
 
   protected String alias;
-  protected String apiUrl;
+  protected String url;
 
   @JsonInclude(value = Include.NON_EMPTY)
   protected String authUrl;
 
   public ServerConfigurationDTO(String alias, String apiUrl) {
     this.alias = alias;
-    this.apiUrl = apiUrl;
+    this.url = apiUrl;
   }
 
   @Override
   public int compareTo(@NotNull ServerConfigurationDTO o) {
     if (Strings.isBlank(this.getAlias())) {
-      return this.getApiUrl().compareTo(o.getApiUrl());
+      return this.getUrl().compareTo(o.getUrl());
     } else {
       return this.getAlias().compareTo(o.getAlias());
     }

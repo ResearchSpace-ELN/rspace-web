@@ -1,6 +1,7 @@
 package com.researchspace.webapp.integrations.dmponline;
 
 import static com.researchspace.service.IntegrationsHandler.DMPONLINE_APP_NAME;
+import static com.researchspace.service.IntegrationsHandler.PROVIDER_USER_ID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -373,8 +374,7 @@ public class DMPOnlineController extends BaseOAuth2Controller {
     conn.setRefreshToken(accessToken.getRefreshToken());
     conn.setExpireTime(getExpireTime(accessToken.getExpiresIn()));
     conn.setDisplayName("DMPonline access token");
-    conn.setId(
-        new UserConnectionId(principal.getName(), DMPONLINE_APP_NAME, "ProviderUserIdNotNeeded"));
+    conn.setId(new UserConnectionId(principal.getName(), DMPONLINE_APP_NAME, PROVIDER_USER_ID));
     userConnectionManager.save(conn);
   }
 }

@@ -1,6 +1,7 @@
 package com.researchspace.webapp.integrations.dmponline;
 
 import static com.researchspace.service.IntegrationsHandler.DMPONLINE_APP_NAME;
+import static com.researchspace.service.IntegrationsHandler.PROVIDER_USER_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -80,7 +81,7 @@ public class DMPOnlineControllerTest extends SpringTransactionalTest {
     principal = new MockPrincipal(testUser.getUsername());
 
     userConnectionId =
-        new UserConnectionId(testUser.getUsername(), DMPONLINE_APP_NAME, "ProviderUserIdNotNeeded");
+        new UserConnectionId(testUser.getUsername(), DMPONLINE_APP_NAME, PROVIDER_USER_ID);
   }
 
   @After

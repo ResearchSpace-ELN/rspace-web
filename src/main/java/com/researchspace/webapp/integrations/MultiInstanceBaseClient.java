@@ -54,7 +54,7 @@ public abstract class MultiInstanceBaseClient<T extends ServerConfigurationDTO>
 
   public T getServerConfiguration(@NotNull String serverAlias) {
     if (!this.getServerMapByAlias().containsKey(serverAlias)
-        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getApiUrl())) {
+        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getUrl())) {
       throw new HttpClientErrorException(
           HttpStatus.NOT_FOUND, "Server configuration for alias=\"" + serverAlias + "\" not found");
     }
@@ -63,11 +63,11 @@ public abstract class MultiInstanceBaseClient<T extends ServerConfigurationDTO>
 
   public String getApiBaseUrl(@NotNull String serverAlias) {
     if (!this.getServerMapByAlias().containsKey(serverAlias)
-        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getApiUrl())) {
+        || StringUtils.isBlank(this.getServerMapByAlias().get(serverAlias).getUrl())) {
       throw new HttpClientErrorException(
           HttpStatus.NOT_FOUND, "Server apiUrl for alias=\"" + serverAlias + "\" not found");
     }
-    return this.getServerMapByAlias().get(serverAlias).getApiUrl();
+    return this.getServerMapByAlias().get(serverAlias).getUrl();
   }
 
   public String getAuthBaseUrl(@NotNull String serverAlias) {

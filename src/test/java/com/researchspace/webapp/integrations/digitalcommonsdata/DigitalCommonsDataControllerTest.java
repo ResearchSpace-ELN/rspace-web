@@ -1,6 +1,7 @@
 package com.researchspace.webapp.integrations.digitalcommonsdata;
 
 import static com.researchspace.service.IntegrationsHandler.DIGITAL_COMMONS_DATA_APP_NAME;
+import static com.researchspace.service.IntegrationsHandler.PROVIDER_USER_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -80,7 +81,7 @@ public class DigitalCommonsDataControllerTest extends SpringTransactionalTest {
 
     userConnectionId =
         new UserConnectionId(
-            testUser.getUsername(), DIGITAL_COMMONS_DATA_APP_NAME, "ProviderUserIdNotNeeded");
+            testUser.getUsername(), DIGITAL_COMMONS_DATA_APP_NAME, PROVIDER_USER_ID);
   }
 
   @After
