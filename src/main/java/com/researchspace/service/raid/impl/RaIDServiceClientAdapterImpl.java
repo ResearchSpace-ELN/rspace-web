@@ -47,7 +47,7 @@ public class RaIDServiceClientAdapterImpl
 
   public static final String RAID_CONFIGURED_SERVERS = "RAID_CONFIGURED_SERVERS";
   public static final String RAID_URL = "RAID_URL";
-  public static final String RAID_APIKEY = "RAID_APIKEY";
+  public static final String RAID_OAUTH_CONNECTED = "RAID_OAUTH_CONNECTED";
   public static final String RAID_ALIAS = "RAID_ALIAS";
 
   @Setter

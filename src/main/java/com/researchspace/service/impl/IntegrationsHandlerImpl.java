@@ -4,8 +4,8 @@ import static com.researchspace.CacheNames.INTEGRATION_INFO;
 import static com.researchspace.model.dto.IntegrationInfo.getAppNameFromIntegrationName;
 import static com.researchspace.service.SystemPropertyName.valueOfPropertyName;
 import static com.researchspace.service.raid.impl.RaIDServiceClientAdapterImpl.RAID_ALIAS;
-import static com.researchspace.service.raid.impl.RaIDServiceClientAdapterImpl.RAID_APIKEY;
 import static com.researchspace.service.raid.impl.RaIDServiceClientAdapterImpl.RAID_CONFIGURED_SERVERS;
+import static com.researchspace.service.raid.impl.RaIDServiceClientAdapterImpl.RAID_OAUTH_CONNECTED;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_ALIAS;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_APIKEY;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_CONFIGURED_SERVERS;
@@ -203,7 +203,7 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
             RAID_APP_NAME,
             RAID_CONFIGURED_SERVERS,
             RAID_ALIAS,
-            RAID_APIKEY,
+            RAID_OAUTH_CONNECTED,
             IS_CONNECTED);
         return;
       case ZENODO_APP_NAME:
@@ -476,7 +476,7 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
           options.get(PYRAT_APIKEY), user, PYRAT_APP_NAME, options.get(PYRAT_ALIAS));
     } else if (RAID_APP_NAME.equals(appName) && optionsId != null) {
       saveNewUserConnectionForMultipleOptionApp(
-          options.get(RAID_APIKEY), user, RAID_APP_NAME, options.get(RAID_ALIAS));
+          options.get(RAID_OAUTH_CONNECTED), user, RAID_APP_NAME, options.get(RAID_ALIAS));
     } else if (GALAXY_APP_NAME.equals(appName) && optionsId != null) {
       saveNewUserConnectionForMultipleOptionApp(
           options.get(GALAXY_APIKEY), user, GALAXY_APP_NAME, options.get(GALAXY_ALIAS));
@@ -568,10 +568,10 @@ public class IntegrationsHandlerImpl implements IntegrationsHandler {
       String apiKeymap = "";
       if (PYRAT_APP_NAME.equals(appName)) {
         apiKeymap = PYRAT_APIKEY;
+        safeMap.remove(apiKeymap);
       } else if (RAID_APP_NAME.equals(appName)) {
-        apiKeymap = RAID_APIKEY;
+        apiKeymap = RAID_OAUTH_CONNECTED;
       }
-      safeMap.remove(apiKeymap);
       appConfigMgr.saveAppConfigElementSet(safeMap, optionsId, trustedOrigin, user);
     } else {
       appConfigMgr.saveAppConfigElementSet(options, optionsId, trustedOrigin, user);

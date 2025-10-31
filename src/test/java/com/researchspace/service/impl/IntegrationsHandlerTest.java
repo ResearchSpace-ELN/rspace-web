@@ -353,7 +353,7 @@ public class IntegrationsHandlerTest {
     assertEquals(MASKED_TOKEN, options.get(DIGITAL_COMMONS_DATA_USER_TOKEN));
   }
 
-  //TODO[nik]: make the same for RaID
+  // TODO[nik]: make the same for RaID
   @Test
   public void getPyratIntegrationOptions() {
     SystemPropertyValue pyratDataAvailable = getSystemPropertyValueAllowed(PYRAT_AVAILABLE);

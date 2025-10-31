@@ -20,7 +20,7 @@
         <insert tableName="PropertyDescriptor">
             <column name="id" type="NUMERIC" value="NULL"/>
             <column name="defaultValue" type="STRING" value="" />
-            <column name="name" type="STRING" value="RAID_APIKEY" />
+            <column name="name" type="STRING" value="RAID_OAUTH_CONNECTED" />
             <column name="type" type="NUMERIC" value="2" />
         </insert>
         <insert tableName="PropertyDescriptor">
@@ -42,7 +42,7 @@
         <sql>insert into AppConfigElementDescriptor (descriptor_id, app_id)
              select pd.id as descriptor_id, app.id as app_id
              from PropertyDescriptor pd, App app
-             where app.name='app.raid' and pd.name='RAID_APIKEY';</sql>
+             where app.name='app.raid' and pd.name='RAID_OAUTH_CONNECTED';</sql>
         <sql>insert into AppConfigElementDescriptor (id, descriptor_id, app_id)
              select null, pd.id, app.id
              from PropertyDescriptor pd, App app

@@ -370,6 +370,7 @@ public class IntegrationControllerMVCIT extends MVCTestBase {
     assertEquals(0, deletedOptions.size());
   }
 
+  // TODO[nik]: do it for RaID as well
   @Test
   public void addEditDeletePyratOptions() throws Exception {
     String integrationName = PYRAT_APP_NAME;
@@ -402,12 +403,10 @@ public class IntegrationControllerMVCIT extends MVCTestBase {
     assertEquals(2, configuredServers.size());
     assertEquals("mice server", ((Map<String, String>) configuredServers.get(0)).get("alias"));
     assertEquals(
-        "https://pyrat1.server.com",
-        ((Map<String, String>) configuredServers.get(0)).get("apiUrl"));
+        "https://pyrat1.server.com", ((Map<String, String>) configuredServers.get(0)).get("url"));
     assertEquals("frogs server", ((Map<String, String>) configuredServers.get(1)).get("alias"));
     assertEquals(
-        "https://pyrat2.server.com",
-        ((Map<String, String>) configuredServers.get(1)).get("apiUrl"));
+        "https://pyrat2.server.com", ((Map<String, String>) configuredServers.get(1)).get("url"));
 
     String optionsSetId = "";
     for (String key : savedOptions.keySet()) {
