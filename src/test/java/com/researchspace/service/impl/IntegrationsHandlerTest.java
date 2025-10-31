@@ -6,7 +6,6 @@ import static com.researchspace.service.IntegrationsHandler.DIGITAL_COMMONS_DATA
 import static com.researchspace.service.IntegrationsHandler.EGNYTE_APP_NAME;
 import static com.researchspace.service.IntegrationsHandler.EGNYTE_DOMAIN_SETTING;
 import static com.researchspace.service.IntegrationsHandler.ONBOARDING_APP_NAME;
-import static com.researchspace.service.IntegrationsHandler.PROVIDER_USER_ID;
 import static com.researchspace.service.IntegrationsHandler.PYRAT_APP_NAME;
 import static com.researchspace.service.IntegrationsHandler.SLACK_APP_NAME;
 import static com.researchspace.service.SystemPropertyName.BOX_AVAILABLE;
@@ -14,6 +13,7 @@ import static com.researchspace.service.SystemPropertyName.DIGITAL_COMMON_DATA_A
 import static com.researchspace.service.SystemPropertyName.DROPBOX_AVAILABLE;
 import static com.researchspace.service.SystemPropertyName.PYRAT_AVAILABLE;
 import static com.researchspace.service.SystemPropertyName.SLACK_AVAILABLE;
+import static com.researchspace.service.impl.IntegrationsHandlerImpl.MASKED_TOKEN;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_ALIAS;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_APIKEY;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_CONFIGURED_SERVERS;
@@ -342,7 +342,7 @@ public class IntegrationsHandlerTest {
     when(sysPropMgr.findByName(DIGITAL_COMMON_DATA_AVAILABLE))
         .thenReturn(digitalCommonsDataAvailable);
     when(userConnectionManager.findByUserNameProviderName(
-            anyString(), eq(DIGITAL_COMMONS_DATA_APP_NAME), eq(PROVIDER_USER_ID)))
+            anyString(), eq(DIGITAL_COMMONS_DATA_APP_NAME)))
         .thenReturn(Optional.of(userConn));
 
     IntegrationInfo info = handler.getIntegration(subject, DIGITAL_COMMONS_DATA_APP_NAME);
@@ -350,9 +350,10 @@ public class IntegrationsHandlerTest {
     Map<String, Object> options = info.getOptions();
     assertNotNull(options);
     assertEquals(1, options.size());
-    assertEquals(options.get(DIGITAL_COMMONS_DATA_USER_TOKEN), "<ACCESS_TOKEN>");
+    assertEquals(MASKED_TOKEN, options.get(DIGITAL_COMMONS_DATA_USER_TOKEN));
   }
 
+  //TODO[nik]: make the same for RaID
   @Test
   public void getPyratIntegrationOptions() {
     SystemPropertyValue pyratDataAvailable = getSystemPropertyValueAllowed(PYRAT_AVAILABLE);
@@ -419,7 +420,7 @@ public class IntegrationsHandlerTest {
     // here we do get("null") becasue since the AppCnfigSet is not saved into DB (as per mocks)
     // then it has not got a proper numerical ID
     assertEquals("alias1", ((Map<String, String>) options.get("null")).get(PYRAT_ALIAS));
-    assertEquals("<API_KEY_1>", ((Map<String, String>) options.get("null")).get(PYRAT_APIKEY));
+    assertEquals(MASKED_TOKEN, ((Map<String, String>) options.get("null")).get(PYRAT_APIKEY));
     assertEquals(
         "http://pyrat1.server.com/", ((Map<String, String>) options.get("null")).get(PYRAT_URL));
   }

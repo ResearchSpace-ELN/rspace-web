@@ -2,6 +2,7 @@ package com.researchspace.service;
 
 import static com.researchspace.service.IntegrationsHandler.ACCESS_TOKEN_SETTING;
 import static com.researchspace.service.IntegrationsHandler.PROTOCOLS_IO_APP_NAME;
+import static com.researchspace.service.impl.IntegrationsHandlerImpl.MASKED_TOKEN;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
@@ -154,7 +155,7 @@ public class IntegrationsHandlerCachingTest extends SpringTransactionalTest {
     IntegrationInfo infoCached = integrationsHandler.getIntegration(anyUser, PROTOCOLS_IO_APP_NAME);
     assertThat(info, sameInstance(infoCached));
     assertEquals(
-        protocolsIOConnection.getAccessToken(), getAccessTokenFromIntegrationInfo(infoCached));
+        getAccessTokenFromIntegrationInfo(info), getAccessTokenFromIntegrationInfo(infoCached));
 
     // now set new access token - this should trigger a reload and re-cache.
     protocolsIOConnection.setAccessToken("newToken");
@@ -162,7 +163,7 @@ public class IntegrationsHandlerCachingTest extends SpringTransactionalTest {
     IntegrationInfo reloaded = integrationsHandler.getIntegration(anyUser, PROTOCOLS_IO_APP_NAME);
     IntegrationInfo reloadedCached =
         integrationsHandler.getIntegration(anyUser, PROTOCOLS_IO_APP_NAME);
-    assertEquals("newToken", getAccessTokenFromIntegrationInfo(reloaded));
+    assertEquals(MASKED_TOKEN, getAccessTokenFromIntegrationInfo(reloaded));
     // sanity check that it is now being cached again
     assertThat(reloaded, sameInstance(reloadedCached));
 
