@@ -1,8 +1,8 @@
 package com.axiope.webapp.listener;
 
 import static com.researchspace.session.UserSessionTracker.USERS_KEY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.researchspace.model.User;
 import com.researchspace.model.record.TestFactory;
@@ -13,9 +13,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 
@@ -26,7 +26,7 @@ public class UserCounterListenerTest extends SpringTransactionalTest {
   private UserCounterListener listener = null;
   private HttpSession mockSession = new MockHttpSession();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     mockServletContext = new MockServletContext();
     servletContext = mockServletContext;
@@ -35,7 +35,7 @@ public class UserCounterListenerTest extends SpringTransactionalTest {
     listener.contextInitialized(e);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

@@ -1,11 +1,7 @@
 package com.researchspace.webapp.controller;
 
 import static com.researchspace.session.UserSessionTracker.USERS_KEY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -45,23 +41,25 @@ import org.apache.shiro.util.ThreadState;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class JournalControllerTest extends SpringTransactionalTest {
 
   private static final String EXPECTED_FIELD_HEADER_HTML = "<h2 class='formTitles'>";
   private static ThreadState subjectThreadState;
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
 
   private static final String TEXT_FIELD_TEST_DATA = "I AM A TEXT FIELD BELONGING TO ";
   private static final String TEXT_FIELD_NAME = "TEXT ";
@@ -92,7 +90,7 @@ public class JournalControllerTest extends SpringTransactionalTest {
   private ISearchResults<BaseRecord> noSearchResults;
   @Mock private Notebook notebookMock;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     setupLoggedInUser("user1a");
     recordManagerStub = new JournalRecordManagerStub();
@@ -112,7 +110,7 @@ public class JournalControllerTest extends SpringTransactionalTest {
   }
 
   @Override
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
     RSpaceTestUtils.logout();
@@ -336,9 +334,7 @@ public class JournalControllerTest extends SpringTransactionalTest {
     Exception exception =
         assertThrows(
             AuthorizationException.class,
-            () -> {
-              journalController.searchText("abc", targetParent, 0, mockPrincipal);
-            });
+            () -> journalController.searchText("abc", targetParent, 0, mockPrincipal));
   }
 
   /** I've extended the stub because I need getRecord to not return certain records */

@@ -1,6 +1,6 @@
 package com.researchspace.service.audit.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,31 +23,32 @@ import com.researchspace.model.views.RSpaceDocView;
 import com.researchspace.service.RecordManager;
 import java.time.Instant;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class UpdateRecordNamePostProcessorTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock RecordManager recMgr;
   UpdateRecordNamePostProcessor processor;
 
   User user;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     processor = new UpdateRecordNamePostProcessor();
     processor.setRecordManager(recMgr);
     this.user = TestFactory.createAnyUser("any");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

@@ -1,6 +1,7 @@
 package com.researchspace.admin.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,23 +11,24 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class FileLocationBasedRetrieverTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock IPropertyHolder properties;
   @Mock IPropertyHolder okProperties;
 
   FileLocationBasedLogRetriever logretriever;
   final File testLogPath = RSpaceTestUtils.getResource("sampleLogs/RSLogs.txt.1");
 
-  @Before
+  @BeforeEach
   public void setUp() {
     logretriever = new FileLocationBasedLogRetriever();
     logretriever.setProperties(properties);
@@ -36,16 +38,24 @@ public class FileLocationBasedRetrieverTest {
             .getMock();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void checkArgumentValidation() throws IOException {
-    when(properties.getErrorLogFile()).thenReturn("unknownPath");
-    logretriever.retrieveLastNLogLines(500);
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          when(properties.getErrorLogFile()).thenReturn("unknownPath");
+          logretriever.retrieveLastNLogLines(500);
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void checkArgumentValidationNoFolder() throws IOException {
-    when(properties.getErrorLogFile()).thenReturn("unknownPath");
-    logretriever.retrieveLastNLogLines(500);
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          when(properties.getErrorLogFile()).thenReturn("unknownPath");
+          logretriever.retrieveLastNLogLines(500);
+        });
   }
 
   @Test

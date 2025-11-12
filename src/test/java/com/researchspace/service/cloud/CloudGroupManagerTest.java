@@ -1,6 +1,6 @@
 package com.researchspace.service.cloud;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.core.testutil.CoreTestUtils;
 import com.researchspace.model.User;
@@ -8,9 +8,9 @@ import com.researchspace.model.permissions.IGroupPermissionUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
 import com.researchspace.testutils.TestGroup;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 // RA Feb 19
@@ -21,12 +21,12 @@ public class CloudGroupManagerTest extends SpringTransactionalTest {
 
   private @Autowired IGroupPermissionUtils grpPermUtils;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void after() throws Exception {
     super.setUp();
     propertyHolder.setCloud("false"); // revert to default setting

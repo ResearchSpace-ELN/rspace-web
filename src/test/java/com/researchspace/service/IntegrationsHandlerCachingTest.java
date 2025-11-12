@@ -2,11 +2,11 @@ package com.researchspace.service;
 
 import static com.researchspace.service.IntegrationsHandler.ACCESS_TOKEN_SETTING;
 import static com.researchspace.service.IntegrationsHandler.PROTOCOLS_IO_APP_NAME;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.researchspace.model.User;
 import com.researchspace.model.dto.IntegrationInfo;
@@ -15,9 +15,9 @@ import com.researchspace.model.preference.Preference;
 import com.researchspace.model.record.TestFactory;
 import com.researchspace.model.system.SystemPropertyValue;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class IntegrationsHandlerCachingTest extends SpringTransactionalTest {
@@ -26,12 +26,12 @@ public class IntegrationsHandlerCachingTest extends SpringTransactionalTest {
   private @Autowired SystemPropertyManager sysPropMger;
   private @Autowired UserConnectionManager userConn;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

@@ -1,6 +1,6 @@
 package com.researchspace.offline.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.model.EcatImageAnnotation;
@@ -8,16 +8,17 @@ import com.researchspace.offline.service.impl.MobileToRsContentConverter;
 import com.researchspace.offline.service.impl.RsToMobileContentConverter;
 import com.researchspace.service.EcatImageAnnotationManager;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class MobileContentConverterTest extends SpringTransactionalTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
 
   private @Autowired RsToMobileContentConverter rsToMobileConverter;
   private @Autowired MobileToRsContentConverter mobileToRsConverter;

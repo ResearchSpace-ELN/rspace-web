@@ -1,11 +1,7 @@
 package com.researchspace.service.inventory;
 
 import static com.researchspace.webapp.integrations.datacite.DataCiteConnectorDummy.DUMMY_VALID_DOI;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.api.v1.model.ApiContainer;
 import com.researchspace.api.v1.model.ApiInventoryDOI;
@@ -26,8 +22,8 @@ import com.researchspace.webapp.integrations.datacite.DataCiteConnectorDummy;
 import com.researchspace.webapp.integrations.datacite.DataCiteConnectorDummyError;
 import java.util.List;
 import javax.naming.InvalidNameException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
@@ -36,7 +32,7 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
 
   @Autowired private DigitalObjectIdentifierDao doiDao;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     inventoryIdentifierApiMgr.setDataCiteConnector(new DataCiteConnectorDummy());
@@ -140,10 +136,14 @@ public class InventoryIdentifierApiManagerTest extends SpringTransactionalTest {
     inventoryIdentifierApiMgr.deleteUnassociatedIdentifier(result.get(2), user);
   }
 
-  @Test(expected = DataCiteConnectionException.class)
+  @Test
   public void testRegisterBulkIdentifiersThrowsError() {
-    inventoryIdentifierApiMgr.setDataCiteConnector(new DataCiteConnectorDummyError());
-    inventoryIdentifierApiMgr.registerBulkIdentifiers(3, user);
+    assertThrows(
+        DataCiteConnectionException.class,
+        () -> {
+          inventoryIdentifierApiMgr.setDataCiteConnector(new DataCiteConnectorDummyError());
+          inventoryIdentifierApiMgr.registerBulkIdentifiers(3, user);
+        });
   }
 
   @Test

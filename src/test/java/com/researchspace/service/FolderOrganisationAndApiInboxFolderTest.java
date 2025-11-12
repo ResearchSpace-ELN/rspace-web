@@ -2,10 +2,7 @@ package com.researchspace.service;
 
 import static com.researchspace.core.util.MediaUtils.AUDIO_MEDIA_FLDER_NAME;
 import static com.researchspace.service.UserFolderCreator.SHARED_SNIPPETS_FOLDER_PREFIX;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,17 +26,19 @@ import com.researchspace.testutils.FolderTestUtils;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class FolderOrganisationAndApiInboxFolderTest {
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock private FolderDao folderDao;
   @Mock private IPermissionUtils permUtils;
@@ -53,7 +52,7 @@ public class FolderOrganisationAndApiInboxFolderTest {
   @Mock private FolderManager folderManagerMock;
   @Mock private Folder folderMock;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     openMocks(this);
     recordFactory = new RecordFactory();
@@ -69,17 +68,20 @@ public class FolderOrganisationAndApiInboxFolderTest {
     setup = FolderTestUtils.createDefaultFolderStructure(user, folderManagerMock, folderMock);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getApiUploadTargetFolderThrowsIAEIfInvalidfolderName() {
-    folderMgr.getApiUploadTargetFolder("NotValidContentType", user, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> folderMgr.getApiUploadTargetFolder("NotValidContentType", user, null));
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void getApiUploadTargetFolderThrowsAuthExceptionIfFolderNotExists() {
-    folderMgr.getApiUploadTargetFolder("", user, -3000L);
+    assertThrows(
+        AuthorizationException.class, () -> folderMgr.getApiUploadTargetFolder("", user, -3000L));
   }
 
   @Test
@@ -105,7 +107,7 @@ public class FolderOrganisationAndApiInboxFolderTest {
         .addChild(eq(null), eq(folderMock), eq(user), eq(ACLPropagationPolicy.NULL_POLICY));
   }
 
-  @Test()
+  @Test
   public void getApiInboxWorkspaceHappyCase() {
     mockWorkspaceApiInboxExists(user.getUsername(), null);
     mockGetRootFolder(setup);
@@ -120,7 +122,7 @@ public class FolderOrganisationAndApiInboxFolderTest {
     assertTrue(apiInboxInWorkspace == apiInboxInWorkspace2);
   }
 
-  @Test()
+  @Test
   public void getImportFolderPermissions() {
     mockWorkspaceImportExists(null);
     mockGetRootFolder(setup);
@@ -145,7 +147,7 @@ public class FolderOrganisationAndApiInboxFolderTest {
     assertTrue(aclPermits(apiInboxInWorkspace, user, PermissionType.CREATE_FOLDER));
   }
 
-  @Test()
+  @Test
   public void getApiInboxChildPermissions() {
     mockWorkspaceApiInboxExists("", null);
     mockGetRootFolder(setup);
@@ -164,7 +166,7 @@ public class FolderOrganisationAndApiInboxFolderTest {
     return folder.getSharingACL().isPermitted(user, permission);
   }
 
-  @Test()
+  @Test
   public void getApiInboxGalleryHappyCase() {
     mockWorkspaceApiInboxExists(AUDIO_MEDIA_FLDER_NAME, null);
     mockGetRootFolder(setup);
@@ -192,47 +194,72 @@ public class FolderOrganisationAndApiInboxFolderTest {
             .get();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getWorkspaceApiUploadTargetFolderThrowsIAEIfDesiredTargetInSharedFolder() {
-    mockGetRootFolder(setup);
-    mockGetFolderToReturn(setup.getShared());
-    folderMgr.getApiUploadTargetFolder("", user, 1L);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          mockGetRootFolder(setup);
+          mockGetFolderToReturn(setup.getShared());
+          folderMgr.getApiUploadTargetFolder("", user, 1L);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getWorkspaceApiUploadTargetFolderThrowsIAEIfDesiredTargetInSTemplatesFolder() {
-    mockGetRootFolder(setup);
-    mockGetFolderToReturn(setup.getTemplateFolder());
-    folderMgr.getApiUploadTargetFolder("", user, 1L);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          mockGetRootFolder(setup);
+          mockGetFolderToReturn(setup.getTemplateFolder());
+          folderMgr.getApiUploadTargetFolder("", user, 1L);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getWorkspaceApiUploadTargetFolderThrowsIAEIfDesiredTargetInGalleryFolder() {
-    mockGetRootFolder(setup);
-    mockGetFolderToReturn(setup.getMediaRoot());
-    folderMgr.getApiUploadTargetFolder("", user, 1L);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          mockGetRootFolder(setup);
+          mockGetFolderToReturn(setup.getMediaRoot());
+          folderMgr.getApiUploadTargetFolder("", user, 1L);
+        });
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void getWorkspaceApiUploadTargetFolderThrowsAuthIfNoReadPermissionOnTargetFolder() {
-    mockGetRootFolder(setup);
-    mockGetFolderToReturn(setup.getUserRoot());
-    when(permUtils.isPermitted(setup.getUserRoot(), PermissionType.READ, user)).thenReturn(false);
-    folderMgr.getApiUploadTargetFolder("", user, 1L);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          mockGetRootFolder(setup);
+          mockGetFolderToReturn(setup.getUserRoot());
+          when(permUtils.isPermitted(setup.getUserRoot(), PermissionType.READ, user))
+              .thenReturn(false);
+          folderMgr.getApiUploadTargetFolder("", user, 1L);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getGalleryApiUploadTargetFolderThrowThrowsIAEIfDesiredTargetInWorkspace() {
-    mockGetRootFolder(setup);
-    mockGetFolderToReturn(setup.getUserRoot());
-    folderMgr.getApiUploadTargetFolder(MediaUtils.IMAGES_MEDIA_FLDER_NAME, user, 1L);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          mockGetRootFolder(setup);
+          mockGetFolderToReturn(setup.getUserRoot());
+          folderMgr.getApiUploadTargetFolder(MediaUtils.IMAGES_MEDIA_FLDER_NAME, user, 1L);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getGalleryApiUploadTargetFolderThrowThrowsIAEIfDesiredTargetInTemplates() {
-    mockGetRootFolder(setup);
-    mockGetFolderToReturn(setup.getTemplateFolder());
-    folderMgr.getApiUploadTargetFolder(MediaUtils.IMAGES_MEDIA_FLDER_NAME, user, 1L);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          mockGetRootFolder(setup);
+          mockGetFolderToReturn(setup.getTemplateFolder());
+          folderMgr.getApiUploadTargetFolder(MediaUtils.IMAGES_MEDIA_FLDER_NAME, user, 1L);
+        });
   }
 
   private void mockGetFolderToReturn(Folder folderToReturnOnGet) {

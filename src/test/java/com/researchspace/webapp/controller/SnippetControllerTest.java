@@ -1,8 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.User;
 import com.researchspace.model.record.IllegalAddChildOperation;
@@ -11,8 +9,8 @@ import com.researchspace.service.RecordManager;
 import com.researchspace.service.UserManager;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.security.Principal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.orm.ObjectRetrievalFailureException;
@@ -30,7 +28,7 @@ public class SnippetControllerTest extends SpringTransactionalTest {
   private User user;
   private Principal principalTestUserStub = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IllegalAddChildOperation {
     user = createAndSaveUserIfNotExists(getRandomAlphabeticString("any"));
     initialiseContentWithExampleContent(user);
@@ -70,8 +68,12 @@ public class SnippetControllerTest extends SpringTransactionalTest {
     assertEquals(testContent, snippetContent);
   }
 
-  @Test(expected = ObjectRetrievalFailureException.class)
+  @Test
   public void testExceptionOnGettingNonExistentSnippetContent() {
-    snippetController.getSnippetContent(NON_EXISTENT_SNIPPET_ID, principalTestUserStub, response);
+    assertThrows(
+        ObjectRetrievalFailureException.class,
+        () ->
+            snippetController.getSnippetContent(
+                NON_EXISTENT_SNIPPET_ID, principalTestUserStub, response));
   }
 }

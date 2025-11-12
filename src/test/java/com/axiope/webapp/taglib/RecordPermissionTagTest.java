@@ -1,6 +1,7 @@
 package com.axiope.webapp.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.researchspace.model.EcatMediaFile;
 import com.researchspace.model.User;
@@ -10,9 +11,9 @@ import com.researchspace.model.record.Snippet;
 import com.researchspace.model.record.TestFactory;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RecordPermissionTagTest {
   RecordPermissionTagTSS tag;
@@ -26,20 +27,23 @@ public class RecordPermissionTagTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     tag = new RecordPermissionTagTSS();
     user = TestFactory.createAnyUser("any");
     ;
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testDoStartTag() throws JspException {
-    // throws ISE if attributes are not set
-    tag.doStartTag();
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            // throws ISE if attributes are not set
+            tag.doStartTag());
   }
 
   @Test

@@ -1,29 +1,30 @@
 package com.researchspace.service.archive.export;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.properties.IPropertyHolder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ExportObjectGeneratorTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock IPropertyHolder properties;
   @InjectMocks private ExportObjectGenerator exportObjectGenerator;
   TestFieldExporter testExporter = new TestFieldExporter();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

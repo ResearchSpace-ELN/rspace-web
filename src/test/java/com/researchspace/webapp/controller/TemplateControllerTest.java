@@ -1,24 +1,22 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.MediaUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TemplateControllerTest extends SpringTransactionalTest {
 
   @Autowired private TemplateController templateController;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

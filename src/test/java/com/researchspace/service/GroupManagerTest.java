@@ -2,12 +2,7 @@ package com.researchspace.service;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
 import static com.researchspace.service.UserFolderCreator.SHARED_SNIPPETS_FOLDER_PREFIX;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.Constants;
 import com.researchspace.core.testutil.CoreTestUtils;
@@ -42,15 +37,15 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import com.researchspace.testutils.TestGroup;
 import java.util.Arrays;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class GroupManagerTest extends SpringTransactionalTest {
 
   @Autowired SystemPropertyManager systemPropertyManager;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
   }

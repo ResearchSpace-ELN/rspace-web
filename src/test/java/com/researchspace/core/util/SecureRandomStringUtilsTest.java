@@ -1,15 +1,15 @@
 package com.researchspace.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SecureRandomStringUtilsTest {
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getURLSafeSecureRandomStringThrowsIAEIfInvalidLength() {
-    SecureStringUtils.getURLSafeSecureRandomString(0);
+    assertThrows(
+        IllegalArgumentException.class, () -> SecureStringUtils.getURLSafeSecureRandomString(0));
   }
 
   @Test

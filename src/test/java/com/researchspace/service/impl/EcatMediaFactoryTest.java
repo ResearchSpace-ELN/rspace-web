@@ -1,10 +1,8 @@
 package com.researchspace.service.impl;
 
 import static com.researchspace.testutils.TestRunnerController.isJDK8;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,17 +22,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class EcatMediaFactoryTest {
 
   private static final String TIFF_ICON_PATH = "src/main/webapp/images/icons/tiff.png";
@@ -45,9 +46,8 @@ public class EcatMediaFactoryTest {
   EcatMediaFactory impl;
   @Mock ResourceLoader mockResourceLoader;
   @Mock Resource resource, resource2;
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     user = TestFactory.createAnyUser("user");
     impl = new EcatMediaFactory();
@@ -55,7 +55,7 @@ public class EcatMediaFactoryTest {
     ecatImageFactoryAPI = impl;
   }
 
-  @After
+  @AfterEach
   public void after() {
     impl.setMaxImageMemorySize(EcatImage.MAX_IMAGE_IN_MEMORY);
   }
@@ -91,11 +91,15 @@ public class EcatMediaFactoryTest {
     assertEquals(maxWidth, ecatImage.getWidthResized());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void generateEcatNullBUfferedImage() throws IOException, URISyntaxException {
-    FileProperty fp = new FileProperty();
-    EcatImage ecatImage =
-        ecatImageFactoryAPI.generateEcatImage(user, fp, null, "png", "test.png", null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          FileProperty fp = new FileProperty();
+          EcatImage ecatImage =
+              ecatImageFactoryAPI.generateEcatImage(user, fp, null, "png", "test.png", null);
+        });
   }
 
   @Test

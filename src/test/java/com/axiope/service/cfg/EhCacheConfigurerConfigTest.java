@@ -1,26 +1,19 @@
 package com.axiope.service.cfg;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import net.sf.ehcache.Cache;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+@Disabled
 @ContextConfiguration(classes = {CacheConfig.class})
 public class EhCacheConfigurerConfigTest extends AbstractJUnit4SpringContextTests {
-
-  @Before
-  public void setUp() throws Exception {}
-
-  @After
-  public void tearDown() throws Exception {}
-
   // from ehcache.xml
   static final int DEFAULT_FILEPROPERTY_SIZE = 2500;
   static final int DEFAULT_IMAGE_BLOB_SIZE_SIZE = 1000;

@@ -4,10 +4,7 @@ import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static com.researchspace.model.preference.Preference.NOTIFICATION_DOCUMENT_DELETED_PREF;
 import static com.researchspace.model.preference.Preference.NOTIFICATION_DOCUMENT_SHARED_PREF;
 import static com.researchspace.model.preference.Preference.NOTIFICATION_DOCUMENT_UNSHARED_PREF;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.axiope.search.SearchManager;
 import com.researchspace.Constants;
@@ -86,8 +83,8 @@ import lombok.Value;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.criterion.Projections;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -148,12 +145,12 @@ public class RealTransactionSpringTestBase extends BaseManagerTestCaseBase {
 
   protected TransactionStatus status;
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     sampleDao.resetDefaultTemplateOwner();
   }
 
-  @AfterClass
+  @AfterAll
   public static void after() {
     DatabaseCleaner.cleanUp();
   }

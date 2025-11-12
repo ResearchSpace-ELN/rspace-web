@@ -3,10 +3,7 @@ package com.researchspace.api.v1.controller;
 import static com.researchspace.core.util.MediaUtils.IMAGES_MEDIA_FLDER_NAME;
 import static com.researchspace.model.core.RecordType.API_INBOX;
 import static com.researchspace.testutils.RSpaceTestUtils.logout;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,8 +19,8 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -33,7 +30,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebAppConfiguration
 public class FilesApiControllerMVCIT extends API_MVC_TestBase {
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
   }

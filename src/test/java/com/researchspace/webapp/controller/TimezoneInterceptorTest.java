@@ -1,11 +1,7 @@
 package com.researchspace.webapp.controller;
 
 import static com.researchspace.session.SessionAttributeUtils.TIMEZONE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.auth.TimezoneAdjusterImpl;
@@ -13,19 +9,21 @@ import com.researchspace.properties.IPropertyHolder;
 import com.researchspace.session.SessionAttributeUtils;
 import java.io.IOException;
 import javax.servlet.http.Cookie;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class TimezoneInterceptorTest {
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
 
   @Mock IPropertyHolder properties;
   @InjectMocks TimezoneInterceptor tzInterceptor;
@@ -34,7 +32,7 @@ public class TimezoneInterceptorTest {
   MockHttpSession session;
   TimezoneAdjusterImpl tzAdjuster;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     req = new MockHttpServletRequest();
     session = new MockHttpSession();
@@ -43,7 +41,7 @@ public class TimezoneInterceptorTest {
     tzInterceptor.setTimezoneAdjuster(tzAdjuster);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

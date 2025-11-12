@@ -5,11 +5,7 @@ import static com.researchspace.model.comms.CommsTestUtils.createAGroupRequest;
 import static com.researchspace.model.comms.CommsTestUtils.createARequest;
 import static com.researchspace.model.comms.CommsTestUtils.createAnyNotification;
 import static com.researchspace.model.comms.CommsTestUtils.createRequestOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.Constants;
 import com.researchspace.core.util.IPagination;
@@ -40,9 +36,9 @@ import javax.persistence.PersistenceException;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Session;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class CommunicationDaoTest extends BaseDaoTestCase {
@@ -51,19 +47,23 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
 
   private User originator;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testSOriginatorMustNotBeNull() {
-    Notification message = createAnyNotification(originator);
-    message.setOriginator(null);
-    dao.save(message);
-    // needed to test FK constraints
-    sessionFactory.getCurrentSession().flush();
+    assertThrows(
+        PersistenceException.class,
+        () -> {
+          Notification message = createAnyNotification(originator);
+          message.setOriginator(null);
+          dao.save(message);
+          // needed to test FK constraints
+          sessionFactory.getCurrentSession().flush();
+        });
   }
 
   @Test
@@ -284,13 +284,13 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
     // recipient status change shouldn't trigger message status change
     MessageOrRequest globalMsgUpdated = (MessageOrRequest) dao.get(globalMsg.getId());
     assertEquals(
-        "communicationTarget status should be updated",
         CommunicationStatus.COMPLETED,
-        globalMsgUpdated.getRecipients().iterator().next().getStatus());
+        globalMsgUpdated.getRecipients().iterator().next().getStatus(),
+        "communicationTarget status should be updated");
     assertEquals(
-        "communication status shouldn't be updated for global message",
         CommunicationStatus.NEW,
-        globalMsgUpdated.getStatus());
+        globalMsgUpdated.getStatus(),
+        "communication status shouldn't be updated for global message");
   }
 
   @Test

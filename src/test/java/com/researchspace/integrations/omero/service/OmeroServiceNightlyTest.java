@@ -1,7 +1,7 @@
 package com.researchspace.integrations.omero.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.integrations.omero.client.OmeroClientImpl;
 import com.researchspace.integrations.omero.model.DataSetRSpaceView;
@@ -241,8 +241,8 @@ public class OmeroServiceNightlyTest {
                 "Channels = [name = PCNT colour = 16711935 photo interpretation = Monochrome] [name"
                     + " = CDK5RAP2-C colour = -16776961 photo interpretation = Monochrome] "));
     assertTrue(
-        "unexpected image data: " + anImage.getBase64ThumbnailData(),
-        anImage.getBase64ThumbnailData().startsWith("data:image/jpeg;base64,/9j/4AAQSkZJRgABAgA"));
+        anImage.getBase64ThumbnailData().startsWith("data:image/jpeg;base64,/9j/4AAQSkZJRgABAgA"),
+        "unexpected image data: " + anImage.getBase64ThumbnailData());
   }
 
   @SneakyThrows

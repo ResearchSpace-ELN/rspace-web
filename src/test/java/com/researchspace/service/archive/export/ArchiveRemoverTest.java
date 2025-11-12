@@ -1,7 +1,8 @@
 package com.researchspace.service.archive.export;
 
 import static com.researchspace.model.comms.NotificationType.PROCESS_COMPLETED;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,30 +17,32 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ArchiveRemoverTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock CommunicationManager comms;
   @Mock IPropertyHolder properties;
   @Mock ArchiveExportServiceManager archiveMgr;
-  public @Rule TemporaryFolder tempFolder = new TemporaryFolder();
+
+  @TempDir public File tempFolder;
   ArchivalCheckSum archivalChecksum = null;
   User anyUser = null;
 
   @InjectMocks ArchiveRemover remover;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     remover.setRemovalPolicy(ExportRemovalPolicy.TRUE);
     archivalChecksum = TestFactory.createAnArchivalChecksum();
@@ -47,7 +50,7 @@ public class ArchiveRemoverTest {
     archivalChecksum.setExporter(anyUser);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -80,9 +83,7 @@ public class ArchiveRemoverTest {
     mockValidExportLocation();
     mockArchiveToBeDeleted();
     FileUtils.write(
-        new File(tempFolder.getRoot().getAbsolutePath(), archivalChecksum.getZipName()),
-        "content",
-        "UTF-8");
+        new File(tempFolder.getAbsolutePath(), archivalChecksum.getZipName()), "content", "UTF-8");
     remover.removeOldArchives(archiveMgr);
     assertRemovalSucceeded();
   }
@@ -98,21 +99,29 @@ public class ArchiveRemoverTest {
     verify(archiveMgr).save(Mockito.any(ArchivalCheckSum.class));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void nonexistentArchiveLocation() {
-    when(properties.getExportFolderLocation()).thenReturn("nonExistent");
-    remover.removeOldArchives(archiveMgr);
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          when(properties.getExportFolderLocation()).thenReturn("nonExistent");
+          remover.removeOldArchives(archiveMgr);
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void archiveLocationIsFile() throws IOException {
-    when(properties.getExportFolderLocation())
-        .thenReturn(File.createTempFile("any", "something").getAbsolutePath());
-    remover.removeOldArchives(archiveMgr);
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          when(properties.getExportFolderLocation())
+              .thenReturn(File.createTempFile("any", "something").getAbsolutePath());
+          remover.removeOldArchives(archiveMgr);
+        });
   }
 
   private void assertNoRemovalAttempted() {
-    Mockito.verifyZeroInteractions(comms);
+    Mockito.verifyNoInteractions(comms);
     Mockito.verify(archiveMgr, Mockito.never()).save(Mockito.any(ArchivalCheckSum.class));
   }
 
@@ -126,6 +135,6 @@ public class ArchiveRemoverTest {
   }
 
   private void mockValidExportLocation() {
-    when(properties.getExportFolderLocation()).thenReturn(tempFolder.getRoot().getAbsolutePath());
+    when(properties.getExportFolderLocation()).thenReturn(tempFolder.getAbsolutePath());
   }
 }

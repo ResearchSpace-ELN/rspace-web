@@ -11,15 +11,18 @@ import com.researchspace.model.record.TestFactory;
 import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.File;
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class RSpaceDocumentCreatorTest {
 
   class DocumentImporterFromWord2HTMLTSS extends DocumentImporterFromWord2HTML {
@@ -34,14 +37,13 @@ public class RSpaceDocumentCreatorTest {
     }
   }
 
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock ContentProvider provider;
   private @Mock IPermissionUtils permUtils;
   User anyUser;
   @InjectMocks RSpaceDocumentCreator creator = new DocumentImporterFromWord2HTMLTSS();
   File anyFile = RSpaceTestUtils.getResource("word2rspace/dsRNAi/dsRNAi-in-Drosophila-cells.html");
 
-  @Before
+  @BeforeEach
   public void before() {
     anyUser = TestFactory.createAnyUser("any");
   }

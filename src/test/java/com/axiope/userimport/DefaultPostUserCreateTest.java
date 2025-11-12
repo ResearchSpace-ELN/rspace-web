@@ -13,19 +13,20 @@ import com.researchspace.model.record.TestFactory;
 import com.researchspace.properties.IPropertyHolder;
 import com.researchspace.service.UserRoleHandler;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class DefaultPostUserCreateTest {
-
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
 
   @Mock IPropertyHolder properties;
   @Mock LoginHelper loginHelper;
@@ -35,7 +36,7 @@ public class DefaultPostUserCreateTest {
   HttpServletRequest mockRequest;
   User anyUser;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     mockRequest = new MockHttpServletRequest();
     anyUser = TestFactory.createAnyUser("any");

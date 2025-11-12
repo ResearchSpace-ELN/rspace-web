@@ -7,8 +7,8 @@ import static com.researchspace.model.record.TestFactory.createAnyGroup;
 import static com.researchspace.model.record.TestFactory.createAnyUser;
 import static com.researchspace.model.record.TestFactory.createNUsers;
 import static com.researchspace.testutils.MockAndStubUtils.modifyUserCreationDate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doThrow;
@@ -16,7 +16,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.api.v1.controller.SysadminApiController.GroupApiPost;
@@ -56,26 +55,27 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.slf4j.Logger;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SysadminApiControllerTest extends JavaxValidatorTest {
-
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   @Mock UserManager userMgr;
   @Mock UserDeletionManager userDelMgr;
   @Mock WhiteListIPChecker checker;
@@ -94,13 +94,13 @@ public class SysadminApiControllerTest extends JavaxValidatorTest {
   MockHttpServletResponse response;
   MockHttpServletRequest request;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     response = new MockHttpServletResponse();
     sysadmin.addRole(Role.SYSTEM_ROLE);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -317,7 +317,7 @@ public class SysadminApiControllerTest extends JavaxValidatorTest {
         () ->
             controller.createGroup(
                 request, grpApiPost, new BeanPropertyBindingResult(grpApiPost, "bean"), sysadmin));
-    verifyZeroInteractions(grpStrategy);
+    verifyNoInteractions(grpStrategy);
 
     // but with >=1 PI, succeeds
     internalUser.addRole(Role.PI_ROLE);

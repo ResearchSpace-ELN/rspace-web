@@ -1,6 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,23 +11,21 @@ import com.researchspace.model.dtos.UserValidator;
 import com.researchspace.model.record.TestFactory;
 import com.researchspace.service.IVerificationPasswordValidator;
 import com.researchspace.service.UserManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class VerificationPasswordControllerTest {
-
-  public final @Rule MockitoRule mockitoRule = MockitoJUnit.rule();
   private @Mock UserManager userMgr;
   private @Mock UserValidator userValidator;
   private @Mock IVerificationPasswordValidator verificationPasswordValidator;
@@ -36,12 +34,12 @@ public class VerificationPasswordControllerTest {
   User anyUser;
   final String OK_PWD = "abcdefg";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     anyUser = TestFactory.createAnyUser("any");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   // this is the only method not very similar t oSignup/Profile tests

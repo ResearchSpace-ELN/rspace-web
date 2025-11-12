@@ -1,10 +1,7 @@
 package com.researchspace.webapp.controller.cloud;
 
 import static com.researchspace.core.util.JacksonUtil.toJson;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -41,9 +38,9 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +57,7 @@ public class CommunityControllerMVCIT extends MVCTestBase {
 
   @Mock CommunityPostSignupVerification postSignupVerification;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     mockRequest = new MockHttpServletRequest();
@@ -70,7 +67,7 @@ public class CommunityControllerMVCIT extends MVCTestBase {
     rsCommunityController.setPostUserSignup(postSignupVerification);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

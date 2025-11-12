@@ -1,10 +1,7 @@
 package com.researchspace.dao;
 
 import static com.researchspace.core.util.TransformerUtils.toSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.TransformerUtils;
 import com.researchspace.model.PropertyDescriptor;
@@ -18,9 +15,9 @@ import com.researchspace.model.record.TestFactory;
 import com.researchspace.model.system.SystemPropertyTestFactory;
 import com.researchspace.testutils.SpringTransactionalTest;
 import org.hibernate.Session;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
@@ -40,14 +37,14 @@ public class UserAppConfigDaoTest extends SpringTransactionalTest {
   User u2;
   ;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     app = (App) getSession().get(App.class, -55L);
     u1 = TestFactory.createAnyUser("u1");
     u2 = TestFactory.createAnyUser("u2");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -119,20 +116,28 @@ public class UserAppConfigDaoTest extends SpringTransactionalTest {
     assertEquals(0, c2.getConfigElementSetCount());
   }
 
-  @Test(expected = DataIntegrityViolationException.class)
+  @Test
   public void noNullApp() {
-    u1 = createAndSaveRandomUser();
-    // null app not allowed
-    UserAppConfig c1 = new UserAppConfig(u1, null, true);
-    c1 = dao.save(c1);
+    assertThrows(
+        DataIntegrityViolationException.class,
+        () -> {
+          u1 = createAndSaveRandomUser();
+          // null app not allowed
+          UserAppConfig c1 = new UserAppConfig(u1, null, true);
+          c1 = dao.save(c1);
+        });
   }
 
-  @Test(expected = DataIntegrityViolationException.class)
+  @Test
   public void noNullUser() {
-    u1 = createAndSaveRandomUser();
-    // null app not allowed
-    UserAppConfig c1 = new UserAppConfig(null, app, true);
-    c1 = dao.save(c1);
+    assertThrows(
+        DataIntegrityViolationException.class,
+        () -> {
+          u1 = createAndSaveRandomUser();
+          // null app not allowed
+          UserAppConfig c1 = new UserAppConfig(null, app, true);
+          c1 = dao.save(c1);
+        });
   }
 
   private AppConfigElementDescriptor storeDescriptor(PropertyDescriptor prop) {

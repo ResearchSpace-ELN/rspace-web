@@ -1,9 +1,6 @@
 package com.researchspace.webapp.controller.cloud;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -39,9 +36,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.hibernate.criterion.Restrictions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -56,14 +53,14 @@ public class CloudInvitedSignupTestMVCIT extends MVCTestBase {
 
   private HttpServletRequest mockRequest;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     mockRequest = new MockHttpServletRequest();
     assertTrue(propertyHolder.isCloud());
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

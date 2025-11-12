@@ -1,6 +1,6 @@
 package com.researchspace.testutils;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.researchspace.auth.GlobalInitSysadminAuthenticationToken;
@@ -18,8 +18,8 @@ import com.researchspace.webapp.controller.MVCTestBase;
 import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -35,7 +35,7 @@ public class RunConfigWiringTestIT extends MVCTestBase {
   @Autowired private FolderManager folderManager;
   @Autowired private UserManager userManager;
 
-  @BeforeClass
+  @BeforeAll
   public static void BeforeClass() throws Exception {
     TestRunnerController.ignoreIfFastRun();
   }

@@ -1,8 +1,6 @@
 package com.researchspace.auth;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.maintenance.model.WhiteListedSysAdminIPAddress;
 import com.researchspace.maintenance.service.WhiteListedIPAddressManager;
@@ -12,9 +10,9 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -30,7 +28,7 @@ public class IPWhitelistLoginAuthorizerTest extends SpringTransactionalTest {
   private MockHttpServletRequest req;
   private MockHttpServletResponse resp;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     initHttpReqAndResp();
@@ -41,7 +39,7 @@ public class IPWhitelistLoginAuthorizerTest extends SpringTransactionalTest {
     resp = new MockHttpServletResponse();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

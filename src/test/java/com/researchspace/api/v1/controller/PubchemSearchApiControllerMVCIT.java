@@ -1,6 +1,6 @@
 package com.researchspace.api.v1.controller;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -10,8 +10,8 @@ import com.researchspace.model.dtos.chemistry.ChemicalImportSearchResult;
 import com.researchspace.model.dtos.chemistry.ChemicalImportSearchType;
 import com.researchspace.model.dtos.chemistry.ChemicalSearchRequest;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -22,7 +22,7 @@ public class PubchemSearchApiControllerMVCIT extends API_MVC_TestBase {
   private User user;
   private String apiKey;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     user = createInitAndLoginAnyUser();

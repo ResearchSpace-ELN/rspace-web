@@ -1,9 +1,7 @@
 package com.researchspace.webapp.controller;
 
 import static com.researchspace.testutils.RSpaceTestUtils.assertAuthExceptionThrown;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.licenseserver.model.License;
 import com.researchspace.model.Role;
@@ -12,19 +10,20 @@ import com.researchspace.model.record.TestFactory;
 import com.researchspace.service.LicenseService;
 import com.researchspace.service.MessageSourceUtils;
 import com.researchspace.service.UserManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SysadminSupportControllerTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock LicenseService licenseService;
   @Mock UserManager usrMgr;
@@ -33,14 +32,14 @@ public class SysadminSupportControllerTest {
   @InjectMocks SysAdminSupportController controller;
   User sysadmin;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     sysadmin = TestFactory.createAnyUser("sysadmin");
     sysadmin.addRole(Role.SYSTEM_ROLE);
     Mockito.when(usrMgr.getAuthenticatedUserInSession()).thenReturn(sysadmin);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

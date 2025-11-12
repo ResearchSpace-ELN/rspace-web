@@ -1,7 +1,6 @@
 package com.researchspace.model.dtos;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.comms.CommunicationTargetFinderPolicy.TargetFinderPolicy;
 import com.researchspace.model.User;
@@ -11,24 +10,28 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.EnumSet;
 import org.apache.commons.lang.ArrayUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RequestCommandTest extends SpringTransactionalTest {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetTargetFinderPolicyThrowsIAEIfNotInEnum() {
-    MsgOrReqstCreationCfg rc = new MsgOrReqstCreationCfg();
-    rc.setTargetFinderPolicy("XXX");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          MsgOrReqstCreationCfg rc = new MsgOrReqstCreationCfg();
+          rc.setTargetFinderPolicy("XXX");
+        });
   }
 
   public void testSetTargetFinderPolicyHappyCase() {

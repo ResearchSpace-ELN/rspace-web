@@ -1,9 +1,9 @@
 package com.researchspace.files.service.egnyte;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.core.testutil.CoreTestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EgnyteFileStoreAdapterTest {
 

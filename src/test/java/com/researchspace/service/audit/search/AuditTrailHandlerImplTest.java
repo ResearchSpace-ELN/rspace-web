@@ -1,6 +1,6 @@
 package com.researchspace.service.audit.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.api.v1.controller.ApiActivitySrchConfig;
 import com.researchspace.core.util.ISearchResults;
@@ -11,18 +11,20 @@ import com.researchspace.model.audittrail.AuditTrailService;
 import com.researchspace.model.record.TestFactory;
 import com.researchspace.service.UserManager;
 import java.util.ArrayList;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class AuditTrailHandlerImplTest {
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock UserManager userManager;
   @Mock IAuditTrailSearch logSearcher;
   @Mock ISearchResults<User> searchResults;
@@ -30,10 +32,10 @@ public class AuditTrailHandlerImplTest {
   private @Mock IAuditSearchResultPostProcessor postProcessor;
   @InjectMocks AuditTrailHandlerImpl impl;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

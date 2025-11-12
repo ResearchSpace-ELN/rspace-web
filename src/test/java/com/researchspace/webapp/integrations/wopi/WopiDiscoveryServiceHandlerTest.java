@@ -1,8 +1,6 @@
 package com.researchspace.webapp.integrations.wopi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.service.impl.ConditionalTestRunner;
 import com.researchspace.service.impl.RunIfSystemPropertyDefined;
@@ -12,7 +10,7 @@ import com.researchspace.webapp.integrations.wopi.WopiDiscoveryServiceHandler.Wo
 import java.io.IOException;
 import java.util.Map;
 import javax.xml.bind.JAXBException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;

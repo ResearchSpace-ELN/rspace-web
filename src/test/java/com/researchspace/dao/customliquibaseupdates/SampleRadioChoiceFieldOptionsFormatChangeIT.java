@@ -20,8 +20,8 @@ import java.util.List;
 import liquibase.exception.CustomChangeException;
 import liquibase.exception.SetupException;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SampleRadioChoiceFieldOptionsFormatChangeIT extends AbstractDBHelpers {
@@ -32,7 +32,7 @@ public class SampleRadioChoiceFieldOptionsFormatChangeIT extends AbstractDBHelpe
 
   private @Autowired SampleDao sampleDao;
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

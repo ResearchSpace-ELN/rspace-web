@@ -19,20 +19,22 @@ import com.researchspace.service.impl.RepositoryDepositHandlerImpl;
 import com.researchspace.webapp.controller.repositories.RSpaceRepoConnectionConfig;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class RepositoryDepositHandlerTest {
   private static final String DATAVERSE_REPOSITORY = "dataverseRepository";
   private static final String FIGSHARE_REPOSITORY = "figshareRepository";
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
   private @Mock UserManager userManager;
   private @Mock RepositoryFactory repoFactory;
 
@@ -67,7 +69,7 @@ public class RepositoryDepositHandlerTest {
   @InjectMocks RepositoryDepositHandlerImplUnconnectedHandlerTSS unconnectedHandlerTSS;
   private User anyUser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
 
     handler.setRepoFactory(repoFactory);
@@ -75,7 +77,7 @@ public class RepositoryDepositHandlerTest {
     anyUser = TestFactory.createAnyUser("any");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

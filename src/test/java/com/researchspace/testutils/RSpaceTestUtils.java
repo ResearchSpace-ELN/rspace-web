@@ -1,8 +1,8 @@
 package com.researchspace.testutils;
 
 import static com.researchspace.core.testutil.CoreTestUtils.assertExceptionThrown;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.researchspace.auth.SSOAuthenticationToken;
 import com.researchspace.core.testutil.Invokable;

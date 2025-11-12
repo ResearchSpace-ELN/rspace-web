@@ -12,11 +12,7 @@ import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_ALIA
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_APIKEY;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_CONFIGURED_SERVERS;
 import static com.researchspace.webapp.integrations.pyrat.PyratClient.PYRAT_URL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -57,19 +53,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class IntegrationsHandlerTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock private UserManager userMgr;
   @Mock private SystemPropertyManager sysPropMgr;
@@ -83,7 +80,7 @@ public class IntegrationsHandlerTest {
 
   private User subject;
 
-  @Before
+  @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
     subject = TestFactory.createAnyUser("any");
@@ -126,9 +123,9 @@ public class IntegrationsHandlerTest {
     assertFalse(handler.isValidIntegration("xyz")); // invalid preference handled gracefully
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getForPropertyThrowsIAEIfUnknownProperty() {
-    handler.getIntegration(subject, "unknown");
+    assertThrows(IllegalArgumentException.class, () -> handler.getIntegration(subject, "unknown"));
   }
 
   private SystemPropertyValue createSystemPropertyForName(String prefName) {
@@ -139,7 +136,7 @@ public class IntegrationsHandlerTest {
     return rc;
   }
 
-  @Test()
+  @Test
   public void getForPropertyHappyCase() {
     String propName = "DROPBOX", systemPropertyName = propName.toLowerCase() + ".available";
     SystemPropertyValue dropboxAvailable = getSystemPropertyValueAllowed(systemPropertyName);
@@ -285,16 +282,20 @@ public class IntegrationsHandlerTest {
     assertTrue(updateInfo.isEnabled());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUpdateUnknownIntegrationName() {
-    IntegrationInfo infor = new IntegrationInfo();
-    infor.setAvailable(true);
-    infor.setEnabled(false);
-    infor.setName("UNKNOWN");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          IntegrationInfo infor = new IntegrationInfo();
+          infor.setAvailable(true);
+          infor.setEnabled(false);
+          infor.setName("UNKNOWN");
 
-    handler.updateIntegrationInfo(subject, infor);
-    Mockito.verify(userMgr, never())
-        .setPreference(Preference.DROPBOX, infor.isEnabled() + "", subject.getUsername());
+          handler.updateIntegrationInfo(subject, infor);
+          Mockito.verify(userMgr, never())
+              .setPreference(Preference.DROPBOX, infor.isEnabled() + "", subject.getUsername());
+        });
   }
 
   @Test

@@ -1,7 +1,8 @@
 package com.researchspace.webapp.filter;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
-import junit.framework.TestCase;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -9,15 +10,15 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Only for local test of Remote user login. Other test needs to change the proper url. Ignore as
  * default, due to url change required
  */
-@Ignore
-public class HttpClientTest extends TestCase {
+@Disabled
+public class HttpClientTest {
   private static String url = "http://localhost:8080/";
 
   /**

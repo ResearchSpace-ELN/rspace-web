@@ -1,25 +1,25 @@
 package com.researchspace.model.audittrail;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.dtos.ShareConfigElement;
 import com.researchspace.model.record.Record;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ShareAuditEventTest {
   User user = com.researchspace.model.record.TestFactory.createAnyUser("any");
   User sharee = com.researchspace.model.record.TestFactory.createAnyUser("sharee");
   Record shared = com.researchspace.model.record.TestFactory.createAnyRecord(user);
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     shared.setId(1L);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

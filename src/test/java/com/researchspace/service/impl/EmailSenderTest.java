@@ -9,14 +9,17 @@ import java.util.Collections;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.slf4j.Logger;
 
-@RunWith(MockitoJUnitRunner.class)
+@MockitoSettings(strictness = Strictness.WARN)
+@ExtendWith(MockitoExtension.class)
 public class EmailSenderTest {
 
   @Mock Logger logger;

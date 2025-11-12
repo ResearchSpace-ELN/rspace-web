@@ -1,17 +1,16 @@
 package com.axiope.search;
 
-import static org.junit.Assert.assertTrue;
-
 import com.researchspace.model.dtos.WorkspaceListingConfig;
 import com.researchspace.model.dtos.WorkspaceSettings;
 import java.text.ParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.util.JsonPathExpectationsHelper;
 
-public class WorkspaceSearchListingConfigTest {
+class WorkspaceSearchListingConfigTest {
 
   @Test
-  public void jsonConversion() throws ParseException {
+  void jsonConversion() throws ParseException {
     WorkspaceSettings settings = new WorkspaceSettings();
     WorkspaceListingConfig cfg =
         new WorkspaceListingConfig(settings, new String[] {"a"}, new String[] {"b"});
@@ -22,31 +21,31 @@ public class WorkspaceSearchListingConfigTest {
   }
 
   @Test
-  public void srchCfg() throws ParseException {
+  void srchCfg() throws ParseException {
     WorkspaceSettings settings = new WorkspaceSettings();
     WorkspaceListingConfig cfg =
         new WorkspaceListingConfig(
             settings, new String[] {SearchConstants.ATTACHMENT_SEARCH_OPTION}, new String[] {"b"});
-    assertTrue(cfg.isAttachmentSearch());
+    Assertions.assertTrue(cfg.isAttachmentSearch());
     cfg =
         new WorkspaceListingConfig(
             settings,
             new String[] {SearchConstants.CREATION_DATE_SEARCH_OPTION},
             new String[] {"b"});
-    assertTrue(cfg.isSimpleCreationDateSearch());
+    Assertions.assertTrue(cfg.isSimpleCreationDateSearch());
     cfg =
         new WorkspaceListingConfig(
             settings, new String[] {SearchConstants.FORM_SEARCH_OPTION}, new String[] {"b"});
-    assertTrue(cfg.isSimpleFormSearch());
+    Assertions.assertTrue(cfg.isSimpleFormSearch());
     cfg =
         new WorkspaceListingConfig(
             settings,
             new String[] {SearchConstants.MODIFICATION_DATE_SEARCH_OPTION},
             new String[] {"b"});
-    assertTrue(cfg.isSimpleModificationDateSearch());
+    Assertions.assertTrue(cfg.isSimpleModificationDateSearch());
     cfg =
         new WorkspaceListingConfig(
             settings, new String[] {SearchConstants.NAME_SEARCH_OPTION}, new String[] {"b"});
-    assertTrue(cfg.isSimpleNameSearch());
+    Assertions.assertTrue(cfg.isSimpleNameSearch());
   }
 }

@@ -1,6 +1,6 @@
 package com.researchspace.analytics.service.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.admin.service.UserUsageInfo;
 import com.researchspace.analytics.service.AnalyticsManager;
@@ -20,8 +20,8 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -48,7 +48,7 @@ public class AnalyticsManagerRealConnectionTest extends SpringTransactionalTest 
   private User testUser;
   private MockHttpServletRequest mockHttpRequest;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
 
@@ -152,6 +152,6 @@ public class AnalyticsManagerRealConnectionTest extends SpringTransactionalTest 
     /* if you are investigating the test and want more details in logger, then comment out
      * the lines in SegmentAnalyticsLogAdapter to see VERBOSE level messages  */
     assertEquals(
-        "no error should be printed into segmentIO logger", "", testStringAppender.logContents);
+        "", testStringAppender.logContents, "no error should be printed into segmentIO logger");
   }
 }

@@ -1,9 +1,6 @@
 package com.researchspace.analytics.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.admin.service.SysAdminManager;
@@ -46,14 +43,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -64,6 +62,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.util.ReflectionUtils;
 
 /** Unit tests covering analytics. */
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 @RunWith(ConditionalTestRunner.class)
 public class AnalyticsManagerTest extends SpringTransactionalTest {
 
@@ -91,7 +91,6 @@ public class AnalyticsManagerTest extends SpringTransactionalTest {
     }
   }
 
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   @Mock private SysAdminManager mockSysAdminManager;
   @Mock private GroupManager groupManager;
   @Mock private LicenseService licenseService;
@@ -105,7 +104,7 @@ public class AnalyticsManagerTest extends SpringTransactionalTest {
   private MockHttpServletRequest mockRequest;
   private final RecordFactory recordFactory = new RecordFactory();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     analyticsManagerImplTSS = new AnalyticsManagerImplTSS();
     Analytics dummyAnalyticsClient = Analytics.builder("any").build();
@@ -133,11 +132,11 @@ public class AnalyticsManagerTest extends SpringTransactionalTest {
     String analyticsUserId = analyticsManager.getAnalyticsUserId(testUser);
 
     assertTrue(
-        "analyticsUserId should start with user id, but was: " + analyticsUserId,
-        analyticsUserId.startsWith("" + testUser.getId()));
+        analyticsUserId.startsWith("" + testUser.getId()),
+        "analyticsUserId should start with user id, but was: " + analyticsUserId);
     assertTrue(
-        "analyticsUserId should end with license id, but was: " + analyticsUserId,
-        analyticsUserId.endsWith(SERVER_ID));
+        analyticsUserId.endsWith(SERVER_ID),
+        "analyticsUserId should end with license id, but was: " + analyticsUserId);
   }
 
   @Test

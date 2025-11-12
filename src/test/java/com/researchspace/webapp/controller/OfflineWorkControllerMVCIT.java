@@ -1,14 +1,14 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.researchspace.model.User;
 import com.researchspace.model.record.Record;
 import com.researchspace.testutils.RealTransactionSpringTestBase;
 import java.security.Principal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -29,7 +29,7 @@ public class OfflineWorkControllerMVCIT extends RealTransactionSpringTestBase {
   private Principal principal;
   private User user;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 

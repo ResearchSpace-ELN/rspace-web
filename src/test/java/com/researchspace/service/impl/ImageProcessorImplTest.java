@@ -1,6 +1,6 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,18 +16,19 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Optional;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ImageProcessorImplTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
 
   @Mock RecordManager rcdMgr;
   @Mock FileStore fileStore;
@@ -62,7 +63,7 @@ public class ImageProcessorImplTest {
 
   @InjectMocks ImageProcessorImplTSS imgHandler;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     anyUser = TestFactory.createAnyUser("any");
     img = TestFactory.createEcatImage(1L);
@@ -70,7 +71,7 @@ public class ImageProcessorImplTest {
     anyBR = RSpaceTestUtils.getImageFromTestResourcesFolder("Picture1.png");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

@@ -3,10 +3,7 @@ package com.researchspace.auth;
 import static com.researchspace.model.record.TestFactory.createAnyUser;
 import static com.researchspace.session.SessionAttributeUtils.FIRST_LOGIN;
 import static com.researchspace.session.SessionAttributeUtils.RSPACE_VERSION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,19 +18,20 @@ import com.researchspace.service.impl.MessageAndNotificationTracker;
 import com.researchspace.session.SessionAttributeUtils;
 import java.util.Calendar;
 import javax.servlet.http.HttpSession;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class LoginHelperTest {
-
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   @Mock UserManager userMgr;
   @Mock CommunicationManager commGr;
   @Mock MessageAndNotificationTracker tracker;
@@ -53,7 +51,7 @@ public class LoginHelperTest {
   @InjectMocks LoginHelperImplTSS loginHelperTSS;
   MockHttpServletRequest req = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     loginHelper = loginHelperTSS;
     req = new MockHttpServletRequest();
@@ -133,11 +131,15 @@ public class LoginHelperTest {
     assertEquals(Boolean.TRUE, session.getAttribute(SessionAttributeUtils.FIRST_LOGIN));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testLoginThrowsISEIfAccountDisabled() {
-    User any = createAnyUser("any");
-    any.setEnabled(false);
-    loginHelper.login(any, any.getPassword(), req);
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          User any = createAnyUser("any");
+          any.setEnabled(false);
+          loginHelper.login(any, any.getPassword(), req);
+        });
   }
 
   private void assertPostLoginAssertions(

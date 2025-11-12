@@ -1,10 +1,7 @@
 package com.researchspace.service;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.Constants;
 import com.researchspace.core.util.ISearchResults;
@@ -43,9 +40,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -62,7 +59,7 @@ public class RecordSharingIT extends RealTransactionSpringTestBase {
   private User piUser;
   private User other;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     permBuilder.setRecMgr(recordMgr);
@@ -70,7 +67,7 @@ public class RecordSharingIT extends RealTransactionSpringTestBase {
     initialiseContentWithEmptyContent(piUser);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

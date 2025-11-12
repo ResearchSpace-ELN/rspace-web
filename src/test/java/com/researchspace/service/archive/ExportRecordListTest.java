@@ -1,9 +1,7 @@
 package com.researchspace.service.archive;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.archive.ArchiveFolder;
 import com.researchspace.archive.ExportRecordList;
@@ -12,16 +10,16 @@ import com.researchspace.model.core.RecordType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExportRecordListTest {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

@@ -1,8 +1,6 @@
 package com.researchspace.ldap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.ldap.impl.UserLdapRepoImpl;
 import com.researchspace.model.User;
@@ -16,7 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.support.LdapUtils;

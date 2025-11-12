@@ -1,6 +1,6 @@
 package com.researchspace.dao;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.core.util.imageutils.ImageUtils;
 import com.researchspace.model.EcatImage;
@@ -10,9 +10,9 @@ import com.researchspace.model.record.TestFactory;
 import com.researchspace.testutils.RSpaceTestUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.awt.image.BufferedImage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class EcatImageDaoTest extends SpringTransactionalTest {
@@ -22,14 +22,14 @@ public class EcatImageDaoTest extends SpringTransactionalTest {
   private BufferedImage workingImage = null;
   User user = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     thumbImage = RSpaceTestUtils.getImageFromTestResourcesFolder("commentIcon30px.gif");
     workingImage = RSpaceTestUtils.getImageFromTestResourcesFolder("Picture1.png");
     user = createAndSaveRandomUser();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

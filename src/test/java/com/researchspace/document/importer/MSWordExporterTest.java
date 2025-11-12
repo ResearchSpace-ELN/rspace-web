@@ -2,7 +2,7 @@ package com.researchspace.document.importer;
 
 import static com.researchspace.core.testutil.CoreTestUtils.assertIllegalStateExceptionThrown;
 import static org.apache.commons.io.FilenameUtils.getBaseName;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -19,18 +19,19 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class MSWordExporterTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock DocumentConversionService docConverter;
   @Mock RSpaceDocumentCreator creator;
   File inputFile;
@@ -40,7 +41,7 @@ public class MSWordExporterTest {
   User any;
   Folder targetFolder;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     wordImporter = new MSWordImporter(docConverter);
     wordImporter.setCreator(creator);
@@ -52,7 +53,7 @@ public class MSWordExporterTest {
     targetFolder = TestFactory.createAFolder("afolder", any);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

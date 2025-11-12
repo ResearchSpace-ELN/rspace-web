@@ -1,6 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.model.User;
@@ -16,21 +16,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class WorkspaceControllerPlainJunit {
-
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
   @Mock RecordManager recordMgr;
   @Mock UserManager userMgr;
   @Mock RecordSharingManager sharingMgr;
@@ -38,13 +36,13 @@ public class WorkspaceControllerPlainJunit {
   @InjectMocks WorkspaceController workspaceCtrller;
   User anyUser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     anyUser = TestFactory.createAnyUser("any");
     workspaceCtrller.setRecordManager(recordMgr);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   // rspac-2073

@@ -1,8 +1,6 @@
 package com.researchspace.dao.hibernate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.EcatImageAnnotation;
 import com.researchspace.model.RSChemElement;
@@ -13,8 +11,8 @@ import com.researchspace.model.record.BaseRecordAdaptable;
 import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class BaseRecordAdapterTest extends SpringTransactionalTest {
@@ -22,7 +20,7 @@ public class BaseRecordAdapterTest extends SpringTransactionalTest {
   private @Autowired BaseRecordAdaptable adapter;
   User user;
 
-  @Before
+  @BeforeEach
   public void setup() {
     user = createAndSaveRandomUser();
     initialiseContentWithEmptyContent(user);

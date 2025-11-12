@@ -1,8 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.EcatMediaFile;
 import com.researchspace.model.EditStatus;
@@ -31,20 +29,21 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.mock.web.MockServletContext;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class RevisionHistoryControllerTest {
-
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
 
   @Mock private UserManager userMgr;
   @Mock private RecordManager recordMgr;
@@ -61,7 +60,7 @@ public class RevisionHistoryControllerTest {
   private StaticMessageSource messageSource;
   private MockServletContext context;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     messageSource = new StaticMessageSource();
 
@@ -79,7 +78,7 @@ public class RevisionHistoryControllerTest {
     mockPrincipal = user::getUsername;
   }
 
-  @After
+  @AfterEach
   public void tearDown() {}
 
   @Test

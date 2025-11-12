@@ -3,9 +3,7 @@ package com.researchspace.api.v1.controller;
 import static com.researchspace.core.util.DateUtil.localDateToDateUTC;
 import static com.researchspace.model.dtos.AbstractFormFieldDTO.MAX_NAME_LENGTH;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.api.v1.controller.FormTemplatesCommon.DateFieldPost;
 import com.researchspace.api.v1.controller.FormTemplatesCommon.FormFieldPost;
@@ -27,18 +25,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.support.StaticMessageSource;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class FormTemplatesCommonTest extends JavaxValidatorTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock FormManager formMgr;
   @Mock IPropertyHolder properties;
   @Mock IPermissionUtils perms;

@@ -3,10 +3,7 @@ package com.researchspace.api.v1.controller;
 import static com.researchspace.api.v1.controller.APIFileUploadThrottlingInterceptor.BYTES_PER_MB;
 import static com.researchspace.api.v1.controller.APIFileUploadThrottlingInterceptor.X_UPLOAD_LIMIT_LIMIT;
 import static com.researchspace.api.v1.controller.APIFileUploadThrottlingInterceptor.X_UPLOAD_LIMIT_REMAINING;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,35 +15,37 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class APIFileUploadThrottlingInterceptorTest {
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock APIFileUploadThrottler throttler;
   MockMultipartHttpServletRequest request;
   MockHttpServletResponse response;
 
   @InjectMocks APIFileUploadThrottlingInterceptor interceptor;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     request = new MockMultipartHttpServletRequest();
     response = new MockHttpServletResponse();
     request.setMethod("POST");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

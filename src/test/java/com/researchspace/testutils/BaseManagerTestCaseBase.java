@@ -2,7 +2,7 @@ package com.researchspace.testutils;
 
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static com.researchspace.core.util.TransformerUtils.toSet;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.axiope.search.IFileIndexer;
 import com.researchspace.Constants;
@@ -172,7 +172,7 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.mgt.SecurityManager;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.SessionFactory;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -203,7 +203,7 @@ public abstract class BaseManagerTestCaseBase extends AbstractJUnit4SpringContex
 
   protected static final Logger log = LoggerFactory.getLogger(BaseManagerTestCaseBase.class);
 
-  @BeforeClass
+  @BeforeAll
   public static void BeforeClass() throws Exception {
     TestRunnerController.ignoreIfFastRun();
   }

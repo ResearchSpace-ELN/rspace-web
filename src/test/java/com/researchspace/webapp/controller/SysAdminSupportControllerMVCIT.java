@@ -1,8 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,32 +11,33 @@ import com.researchspace.service.impl.ConfigurableLogger;
 import com.researchspace.testutils.RunProfileTestConfiguration;
 import java.util.Map;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.slf4j.Logger;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 @WebAppConfiguration()
 @RunProfileTestConfiguration
 public class SysAdminSupportControllerMVCIT extends MVCTestBase {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock private Logger log;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
     getBeanOfClass(ConfigurableLogger.class).setLogger(log);
   }
 
-  @After
+  @AfterEach
   public void teardown() throws Exception {
     getBeanOfClass(ConfigurableLogger.class).setLoggerDefault();
   }

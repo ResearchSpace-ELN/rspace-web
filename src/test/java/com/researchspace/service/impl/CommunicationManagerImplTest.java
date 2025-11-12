@@ -1,6 +1,6 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.comms.Communication;
@@ -11,13 +11,16 @@ import com.researchspace.model.record.TestFactory;
 import com.researchspace.service.Broadcaster;
 import java.util.Arrays;
 import java.util.Collections;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class CommunicationManagerImplTest {
 
   class CommunicationManagerImplTSS extends CommunicationManagerImpl {
@@ -29,8 +32,6 @@ public class CommunicationManagerImplTest {
       return null;
     }
   }
-
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
 
   @Mock Broadcaster broadcaster1;
   @Mock Broadcaster broadcaster2;

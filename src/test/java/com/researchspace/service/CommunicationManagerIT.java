@@ -3,10 +3,7 @@ package com.researchspace.service;
 import static com.researchspace.core.testutil.CoreTestUtils.assertExceptionThrown;
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static com.researchspace.core.util.TransformerUtils.toSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.Constants;
 import com.researchspace.comms.CommunicationTargetFinderPolicy;
@@ -46,9 +43,9 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.UnexpectedRollbackException;
 
@@ -59,12 +56,12 @@ public class CommunicationManagerIT extends RealTransactionSpringTestBase {
 
   private static final int NAME_LENGTH = 10;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

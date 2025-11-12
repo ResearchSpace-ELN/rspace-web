@@ -2,8 +2,9 @@ package com.researchspace.api.v1.controller;
 
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.researchspace.api.v1.model.*;
@@ -15,21 +16,21 @@ import com.researchspace.model.record.Folder;
 import com.researchspace.model.record.Notebook;
 import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.testutils.TestGroup;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class FolderApiControllerMVCIT extends API_MVC_TestBase {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

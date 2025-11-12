@@ -1,7 +1,7 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.comms.CommunicationStatus;
@@ -9,9 +9,9 @@ import com.researchspace.model.comms.CommunicationTarget;
 import com.researchspace.model.comms.MessageOrRequest;
 import com.researchspace.model.comms.MessageType;
 import com.researchspace.model.record.TestFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 // see RSPAC-302
 public class AbstractRSpaceRequestHandlerTest {
@@ -44,7 +44,7 @@ public class AbstractRSpaceRequestHandlerTest {
   private User updater, originator;
   private CommunicationTarget target;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     handlerTSS = new TestHandler();
     api = handlerTSS;
@@ -58,7 +58,7 @@ public class AbstractRSpaceRequestHandlerTest {
     target.setCommunication(mor);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

@@ -6,8 +6,8 @@ import static com.researchspace.webapp.controller.ExportControllerTest.createExp
 import static com.researchspace.webapp.controller.ExportControllerTest.createExportConfig;
 import static com.researchspace.webapp.controller.ExportControllerTest.createExportConfigForUser;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,13 +28,13 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.File;
 import java.nio.file.Files;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
 public class ExportControllerMVCIT extends MVCTestBase {
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
   }

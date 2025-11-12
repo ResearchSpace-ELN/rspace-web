@@ -1,7 +1,7 @@
 package com.researchspace.service.archive;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.archive.ExportScope;
 import com.researchspace.archive.model.ArchiveExportConfig;
@@ -14,9 +14,9 @@ import com.researchspace.service.UserFolderSetup;
 import com.researchspace.service.archive.export.ExportArchiveTreeTraversor;
 import com.researchspace.testutils.FolderTestUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExportTreeTraversorTest {
 
@@ -26,7 +26,7 @@ public class ExportTreeTraversorTest {
   UserFolderSetup setup;
   ArchiveExportConfig archiveCfg;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     owner = TestFactory.createAnyUser("any");
     setup = FolderTestUtils.createDefaultFolderStructure(owner);
@@ -39,7 +39,7 @@ public class ExportTreeTraversorTest {
     f2.addChild(f3, owner);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

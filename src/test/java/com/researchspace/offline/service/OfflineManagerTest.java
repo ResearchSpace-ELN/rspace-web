@@ -1,9 +1,6 @@
 package com.researchspace.offline.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.Constants;
 import com.researchspace.model.EditStatus;
@@ -25,13 +22,13 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 
-@Ignore
+@Disabled
 public class OfflineManagerTest extends SpringTransactionalTest {
 
   @Autowired private OfflineManager offlineManager;
@@ -49,7 +46,7 @@ public class OfflineManagerTest extends SpringTransactionalTest {
 
   private boolean offlineUserInitialised;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     initOfflineUsers();
   }
@@ -82,9 +79,9 @@ public class OfflineManagerTest extends SpringTransactionalTest {
     OfflineRecordUser createdWork =
         offlineManager.addRecordForOfflineWork(doc1, offlineUser1, activeUsers);
 
-    assertNotNull("id shouldn't be null", createdWork.getId());
-    assertNotNull("creation date shouldn't be null", createdWork.getCreationDate());
-    assertNotNull("type shouldn't be null", createdWork.getWorkType());
+    assertNotNull(createdWork.getId(), "id shouldn't be null");
+    assertNotNull(createdWork.getCreationDate(), "creation date shouldn't be null");
+    assertNotNull(createdWork.getWorkType(), "type shouldn't be null");
   }
 
   @Test
@@ -142,28 +139,37 @@ public class OfflineManagerTest extends SpringTransactionalTest {
     assertEquals(OfflineWorkType.VIEW, createdWork4.getWorkType());
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void exceptionIfNoPermissionToRecordSelectedForOfflineWork() {
-    // first user creates document but doesn't share it
-    StructuredDocument doc1 = createBasicDocumentInRootFolderWithText(offlineUser1, "testDoc1");
-    // second user tries mark the document for offline - should return exception
-    offlineManager.addRecordForOfflineWork(doc1, offlineUser2, activeUsers);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          // first user creates document but doesn't share it
+          StructuredDocument doc1 =
+              createBasicDocumentInRootFolderWithText(offlineUser1, "testDoc1");
+          // second user tries mark the document for offline - should return exception
+          offlineManager.addRecordForOfflineWork(doc1, offlineUser2, activeUsers);
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void exceptionIfRecordIsCurrentlyEdited() {
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          logoutAndLoginAs(offlineUser1);
+          StructuredDocument doc1 =
+              createBasicDocumentInRootFolderWithText(offlineUser1, "testDoc1");
+          shareRecordWithOfflineGroup(doc1, "edit");
+          logoutAndLoginAs(offlineUser2);
+          // second user opens document for edit
+          EditStatus editStatus =
+              recordManager.requestRecordEdit(doc1.getId(), offlineUser2, activeUsers);
+          assertEquals(EditStatus.EDIT_MODE, editStatus);
 
-    logoutAndLoginAs(offlineUser1);
-    StructuredDocument doc1 = createBasicDocumentInRootFolderWithText(offlineUser1, "testDoc1");
-    shareRecordWithOfflineGroup(doc1, "edit");
-    logoutAndLoginAs(offlineUser2);
-    // second user opens document for edit
-    EditStatus editStatus =
-        recordManager.requestRecordEdit(doc1.getId(), offlineUser2, activeUsers);
-    assertEquals(EditStatus.EDIT_MODE, editStatus);
-
-    // first user tries marking offline - should return exception
-    offlineManager.addRecordForOfflineWork(doc1, offlineUser1, activeUsers);
+          // first user tries marking offline - should return exception
+          offlineManager.addRecordForOfflineWork(doc1, offlineUser1, activeUsers);
+        });
   }
 
   @SuppressWarnings("unused")
@@ -196,9 +202,9 @@ public class OfflineManagerTest extends SpringTransactionalTest {
         createBasicDocumentInRootFolderWithText(offlineUser1, "test2");
     notBasicDocument.setForm(notBasicDocumentForm);
 
-    assertTrue("basic document seems not to be basic document", basicDocument.isBasicDocument());
+    assertTrue(basicDocument.isBasicDocument(), "basic document seems not to be basic document");
     assertFalse(
-        "not real basic document seems to be basic document", notBasicDocument.isBasicDocument());
+        notBasicDocument.isBasicDocument(), "not real basic document seems to be basic document");
 
     List<BaseRecord> docs = new ArrayList<BaseRecord>();
     docs.add(basicDocument);
@@ -224,7 +230,7 @@ public class OfflineManagerTest extends SpringTransactionalTest {
     } catch (UnsupportedOperationException uoe) {
       exceptionThrown = true;
     }
-    assertTrue("exception not thrown when adding folder for offline", exceptionThrown);
+    assertTrue(exceptionThrown, "exception not thrown when adding folder for offline");
 
     boolean exceptionThrown2 = false;
     try {
@@ -232,7 +238,7 @@ public class OfflineManagerTest extends SpringTransactionalTest {
     } catch (UnsupportedOperationException uoe) {
       exceptionThrown2 = true;
     }
-    assertTrue("exception not thrown when adding notebook for offline", exceptionThrown2);
+    assertTrue(exceptionThrown2, "exception not thrown when adding notebook for offline");
 
     boolean exceptionThrown3 = false;
     try {
@@ -240,7 +246,7 @@ public class OfflineManagerTest extends SpringTransactionalTest {
     } catch (UnsupportedOperationException uoe) {
       exceptionThrown3 = true;
     }
-    assertTrue("exception not thrown when adding not basic document for offline", exceptionThrown3);
+    assertTrue(exceptionThrown3, "exception not thrown when adding not basic document for offline");
   }
 
   @SuppressWarnings("unused")

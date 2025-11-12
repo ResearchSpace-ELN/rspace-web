@@ -1,8 +1,8 @@
 package com.researchspace.service.archive;
 
 import static com.researchspace.testutils.RSpaceTestUtils.getInputStreamOnFromTestResourcesFolder;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 
 import com.researchspace.archive.ArchivalDocumentParserRef;
@@ -16,31 +16,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class FormImporterTest {
 
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
-  public @Rule TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir public File tempFolder;
   @Mock IconImgDao imgDao;
   @Mock FormManager formMgr;
   @InjectMocks FormImporterImpl importer;
 
   final long OLD_FORM_ID = 123L;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -99,7 +101,7 @@ public class FormImporterTest {
   }
 
   private File makeIconFile() {
-    File f = tempFolder.getRoot();
+    File f = tempFolder;
     File icon = new File(f, "formIcon_" + OLD_FORM_ID + ".png");
     return icon;
   }

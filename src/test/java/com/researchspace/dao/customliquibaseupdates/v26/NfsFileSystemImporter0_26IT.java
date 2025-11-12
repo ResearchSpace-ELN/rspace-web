@@ -1,9 +1,6 @@
 package com.researchspace.dao.customliquibaseupdates.v26;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.dao.NfsDao;
 import com.researchspace.model.netfiles.NfsAuthenticationType;
@@ -16,14 +13,14 @@ import com.researchspace.testutils.RealTransactionSpringTestBase;
 import java.util.List;
 import liquibase.exception.CustomChangeException;
 import liquibase.exception.SetupException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /* this class was used for testing 0.26 upgrade and is now obsolete */
-@Ignore
+@Disabled
 public class NfsFileSystemImporter0_26IT extends RealTransactionSpringTestBase {
 
   @Autowired private NfsManager netFilesManager;
@@ -35,7 +32,7 @@ public class NfsFileSystemImporter0_26IT extends RealTransactionSpringTestBase {
   private static NfsFileStore testPreExistingFileStore;
   private static NfsFileSystem testImportedFileSystem;
 
-  @Before
+  @BeforeEach
   public void before() {
     // created outside spring, as it will be created by liquibase in reality
     nfsFileSystemImporter = new NfsFileSystemImporter();
@@ -46,7 +43,7 @@ public class NfsFileSystemImporter0_26IT extends RealTransactionSpringTestBase {
     }
   }
 
-  @After
+  @AfterEach
   public void cleanUp() throws Exception {
 
     testPreExistingFileStore.setFileSystem(null);
@@ -81,7 +78,7 @@ public class NfsFileSystemImporter0_26IT extends RealTransactionSpringTestBase {
 
     List<NfsFileSystem> initialFileSystems = netFilesManager.getFileSystems();
     assertTrue(
-        "there shouldn't be any file systems on initial import", initialFileSystems.isEmpty());
+        initialFileSystems.isEmpty(), "there shouldn't be any file systems on initial import");
 
     /* run update class */
     openTransaction();
@@ -141,7 +138,7 @@ public class NfsFileSystemImporter0_26IT extends RealTransactionSpringTestBase {
 
     List<NfsFileSystem> initialFileSystems = netFilesManager.getFileSystems();
     assertTrue(
-        "there shouldn't be any file systems on initial import", initialFileSystems.isEmpty());
+        initialFileSystems.isEmpty(), "there shouldn't be any file systems on initial import");
 
     /* run update class */
     openTransaction();
@@ -190,8 +187,8 @@ public class NfsFileSystemImporter0_26IT extends RealTransactionSpringTestBase {
 
     testPreExistingFileStore = fileStores.get(0);
     assertNotNull(
-        "preexisting file store should point to newly imported file system",
-        testPreExistingFileStore.getFileSystem());
+        testPreExistingFileStore.getFileSystem(),
+        "preexisting file store should point to newly imported file system");
     assertEquals(testImportedFileSystem.getId(), testPreExistingFileStore.getFileSystem().getId());
   }
 }

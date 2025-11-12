@@ -1,6 +1,6 @@
 package com.researchspace.api.v1.controller;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.core.testutil.CoreTestUtils;
@@ -18,21 +18,22 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.Optional;
 import javax.ws.rs.NotFoundException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.mock.web.MockMultipartFile;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class FilesApiControllerTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
 
   @Mock RecordManager recordMgr;
   @Mock IPermissionUtils permissions;
@@ -45,7 +46,7 @@ public class FilesApiControllerTest {
 
   @InjectMocks FilesApiController fileController;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.subject = TestFactory.createAnyUser("any");
     StaticMessageSource messages = new StaticMessageSource();
@@ -60,7 +61,7 @@ public class FilesApiControllerTest {
     Mockito.when(properties.getServerUrl()).thenReturn("http://somewhere.com");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

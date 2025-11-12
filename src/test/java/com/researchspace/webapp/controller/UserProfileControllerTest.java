@@ -2,13 +2,9 @@ package com.researchspace.webapp.controller;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
 import static com.researchspace.model.record.TestFactory.createOAuthTokenForUI;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,19 +41,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class UserProfileControllerTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock LicenseService licenseService;
   @Mock UserManager usrMgr;
@@ -71,7 +68,7 @@ public class UserProfileControllerTest {
   User anyUser, sessionUser;
   MockHttpServletRequest mockRequest;
 
-  @Before
+  @BeforeEach
   public void before() {
     anyUser = TestFactory.createAnyUser("any");
     anyUser.setId(2L);

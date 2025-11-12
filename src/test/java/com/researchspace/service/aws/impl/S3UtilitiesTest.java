@@ -1,11 +1,11 @@
 package com.researchspace.service.aws.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.File;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @Slf4j
 public class S3UtilitiesTest {

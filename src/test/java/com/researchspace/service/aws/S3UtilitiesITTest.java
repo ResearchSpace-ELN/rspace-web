@@ -1,9 +1,6 @@
 package com.researchspace.service.aws;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.service.aws.impl.S3UtilitiesImpl;
 import com.researchspace.service.impl.ConditionalTestRunnerNotSpring;
@@ -12,9 +9,9 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.File;
 import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.util.ReflectionTestUtils;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -51,7 +48,7 @@ public class S3UtilitiesITTest {
 
   private S3Presigner testS3Presigner;
 
-  @Before
+  @BeforeEach
   public void setup() {
     s3Utilities = new S3UtilitiesImpl();
     ReflectionTestUtils.setField(s3Utilities, "region", REGION);
@@ -68,7 +65,7 @@ public class S3UtilitiesITTest {
     assertTrue(createTestBucket(BUCKET_NAME));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     // Clean up test uploads after every test
     assertTrue(deleteTestBucket(BUCKET_NAME));
@@ -123,11 +120,15 @@ public class S3UtilitiesITTest {
     assertFalse(s3Utilities.isArchiveInS3("fileNotInS3.zip"));
   }
 
-  @Test(expected = SdkClientException.class)
+  @Test
   @RunIfSystemPropertyDefined(value = "nightly")
   public void testIsArchiveInS3BucketNameNull() {
-    ReflectionTestUtils.setField(s3Utilities, "s3BucketName", null);
-    s3Utilities.isArchiveInS3(TEST_FILE_NAME);
+    assertThrows(
+        SdkClientException.class,
+        () -> {
+          ReflectionTestUtils.setField(s3Utilities, "s3BucketName", null);
+          s3Utilities.isArchiveInS3(TEST_FILE_NAME);
+        });
   }
 
   @Test

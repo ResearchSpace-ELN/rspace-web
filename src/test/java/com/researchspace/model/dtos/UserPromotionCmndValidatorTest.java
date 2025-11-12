@@ -1,16 +1,16 @@
 package com.researchspace.model.dtos;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.Role;
 import com.researchspace.model.User;
 import com.researchspace.model.record.TestFactory;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
@@ -20,7 +20,7 @@ public class UserPromotionCmndValidatorTest {
   private User u;
   private Set<String> activeUsers = new HashSet<String>();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     u = TestFactory.createAnyUser("any");
     u.addRole(Role.USER_ROLE);
@@ -28,7 +28,7 @@ public class UserPromotionCmndValidatorTest {
     validator = new UserToPiCommandValidator(activeUsers, u);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

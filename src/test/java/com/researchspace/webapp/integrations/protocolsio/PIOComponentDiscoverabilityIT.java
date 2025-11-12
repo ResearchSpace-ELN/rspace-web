@@ -14,8 +14,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +36,7 @@ public class PIOComponentDiscoverabilityIT {
   private RestTemplate restTemplate;
   private ObjectMapper objectMapper;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     objectMapper = new ObjectMapper();
     objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);

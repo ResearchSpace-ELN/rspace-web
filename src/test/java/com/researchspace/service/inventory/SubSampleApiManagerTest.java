@@ -50,8 +50,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -63,7 +63,7 @@ public class SubSampleApiManagerTest extends SpringTransactionalTest {
   private User testUser;
   private @Autowired SubSampleDao dao;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
 

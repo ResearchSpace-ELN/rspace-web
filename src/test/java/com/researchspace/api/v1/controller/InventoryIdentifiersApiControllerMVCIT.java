@@ -15,9 +15,9 @@ import com.researchspace.service.impl.ConditionalTestRunner;
 import com.researchspace.service.impl.RunIfSystemPropertyDefined;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +45,7 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
 
   private BindingResult mockBindingResult = mock(BindingResult.class);
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
     enableDataCiteRealConnectionSettings(true);
@@ -62,7 +62,7 @@ public class InventoryIdentifiersApiControllerMVCIT extends API_MVC_InventoryTes
         new MockHttpServletRequest(), update, mockBindingResult, getSysAdminUser());
   }
 
-  @After
+  @AfterEach
   public void disableDataCiteConnection() throws BindException {
     ApiInventorySystemSettings update = new ApiInventorySystemSettings();
     update.getDatacite().setEnabled("false");

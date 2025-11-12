@@ -1,6 +1,6 @@
 package com.researchspace.testutils;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.core.testutil.Invokable;
 import com.researchspace.core.testutil.SequencedRunnableRunner;
@@ -11,22 +11,22 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Example test cases for how to run multiple stepwise tests. */
 public class SequenceRunnerRunnableTestIT extends RealTransactionSpringTestBase {
 
   ShiroTestUtils shiroUtils;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     shiroUtils = new ShiroTestUtils();
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
     shiroUtils.clearSubject();

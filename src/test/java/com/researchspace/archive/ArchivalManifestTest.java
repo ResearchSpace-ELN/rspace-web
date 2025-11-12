@@ -1,25 +1,23 @@
 package com.researchspace.archive;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.version.SemanticVersion;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ArchivalManifestTest {
   ArchiveManifest manifest;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     manifest = new ArchiveManifest();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

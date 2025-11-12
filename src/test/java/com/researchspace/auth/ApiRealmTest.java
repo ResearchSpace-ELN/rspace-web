@@ -1,8 +1,6 @@
 package com.researchspace.auth;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.dao.UserApiKeyDao;
 import com.researchspace.model.User;
@@ -11,9 +9,9 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.cache.CacheManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -27,7 +25,7 @@ public class ApiRealmTest extends SpringTransactionalTest {
   private User subject = null;
   String key = "";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     subject = createAndSaveRandomUser();
     key = RandomStringUtils.randomAlphabetic(16);
@@ -35,7 +33,7 @@ public class ApiRealmTest extends SpringTransactionalTest {
     apiKeyDao.save(apikey);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

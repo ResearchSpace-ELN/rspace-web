@@ -2,9 +2,7 @@ package com.researchspace.api.v1.controller;
 
 import static com.researchspace.api.v1.controller.BaseApiController.EXPORT_INTERNAL_ENDPOINT;
 import static com.researchspace.api.v1.controller.BaseApiController.JOBS_INTERNAL_ENDPOINT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -15,8 +13,8 @@ import com.researchspace.testutils.TestGroup;
 import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
@@ -27,7 +25,7 @@ public class ExportApiControllerMVCIT extends API_MVC_TestBase {
 
   @Autowired ExportApiController exportApiController;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
   }

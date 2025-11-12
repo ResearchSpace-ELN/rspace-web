@@ -1,8 +1,8 @@
 package com.researchspace.service.impl;
 
 import static com.researchspace.service.impl.EmailBroadcastImp.TEXT_ONLY_EMAIL_DEFAULT;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.comms.CommunicationTarget;
@@ -24,7 +24,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EmailBroadcastVanillaJunit {
   // this oracle comes from the library class whose function we are testing.

@@ -1,14 +1,14 @@
 package com.researchspace.model.dtos;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.core.testutil.CoreTestUtils;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class UserSearchCriteriaTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {}
 
   @Test

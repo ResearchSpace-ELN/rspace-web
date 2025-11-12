@@ -1,9 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.Constants;
@@ -28,23 +25,25 @@ import java.util.Collections;
 import java.util.Set;
 import net.fortuna.ical4j.validate.ValidationException;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class MessageAndRequestControllerTest {
 
   @InjectMocks MessageAndRequestController ctrller;
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
 
   @Mock CommunicationTargetFinderPolicy comTargetPolicy;
   @Mock UserManager usrMgr;
@@ -57,25 +56,29 @@ public class MessageAndRequestControllerTest {
   IPermissionUtils permUtilsStub;
 
   //
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     permUtilsStub = new PermissionsUtilsStub();
     request = new MockHttpServletRequest();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void testGetMessageTypesFromStringTypesRejectsNonAdminSendingToAll() {
-    User notAdmin = TestFactory.createAnyUserWithRole("sender", Constants.PI_ROLE);
-    User recipient = TestFactory.createAnyUser("target");
-    MsgOrReqstCreationCfg cfg = new MsgOrReqstCreationCfg(notAdmin, permUtilsStub);
-    cfg.setMessageType(MessageType.GLOBAL_MESSAGE);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          User notAdmin = TestFactory.createAnyUserWithRole("sender", Constants.PI_ROLE);
+          User recipient = TestFactory.createAnyUser("target");
+          MsgOrReqstCreationCfg cfg = new MsgOrReqstCreationCfg(notAdmin, permUtilsStub);
+          cfg.setMessageType(MessageType.GLOBAL_MESSAGE);
 
-    BindingResult result = new BeanPropertyBindingResult(cfg, "cfg");
-    ctrller.getUsernamesFromInput(
-        notAdmin, cfg, result, comTargetPolicy, TransformerUtils.toSet(recipient));
+          BindingResult result = new BeanPropertyBindingResult(cfg, "cfg");
+          ctrller.getUsernamesFromInput(
+              notAdmin, cfg, result, comTargetPolicy, TransformerUtils.toSet(recipient));
+        });
   }
 
   @Test

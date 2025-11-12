@@ -1,7 +1,7 @@
 package com.researchspace.dao.hibernate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.researchspace.dao.CollaborationGroupTrackerDao;
 import com.researchspace.dao.UserDao;
@@ -13,9 +13,9 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StringType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Sandbox extends SpringTransactionalTest {
@@ -24,10 +24,10 @@ public class Sandbox extends SpringTransactionalTest {
 
   @Autowired UserDao userDao;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }
@@ -150,6 +150,6 @@ public class Sandbox extends SpringTransactionalTest {
     String abs1 = "/abc/file_store/c/file_store/c/d/e";
     String rel1 = "c/d/e";
     String relFromAbs = abs1.substring(abs1.lastIndexOf("file_store") + 11);
-    assertEquals(relFromAbs, rel1, relFromAbs);
+    assertEquals(rel1, relFromAbs, relFromAbs);
   }
 }

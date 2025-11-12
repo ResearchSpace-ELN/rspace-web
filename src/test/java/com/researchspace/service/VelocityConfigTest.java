@@ -1,11 +1,11 @@
 package com.researchspace.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.HashMap;
 import org.apache.velocity.app.VelocityEngine;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.ui.velocity.VelocityEngineUtils;

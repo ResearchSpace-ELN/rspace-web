@@ -9,16 +9,19 @@ import com.researchspace.service.NotificationConfig;
 import com.researchspace.service.impl.RecordDeletionManagerImpl.DeletionContext;
 import java.util.Collections;
 import java.util.Set;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class RecordDeletionManagerImplTest {
   static class RecordDeletionManagerImplTSS extends RecordDeletionManagerImpl {
 
@@ -27,17 +30,16 @@ public class RecordDeletionManagerImplTest {
     }
   }
 
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock CommunicationManager commMgr;
   private User user;
   @InjectMocks RecordDeletionManagerImplTSS tss;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     user = TestFactory.createAnyUser("any");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

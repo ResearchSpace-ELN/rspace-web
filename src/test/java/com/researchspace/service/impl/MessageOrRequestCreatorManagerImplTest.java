@@ -20,17 +20,18 @@ import com.researchspace.service.CommunicationManager;
 import com.researchspace.service.IMessageAndNotificationTracker;
 import com.researchspace.service.OperationFailedMessageGenerator;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class MessageOrRequestCreatorManagerImplTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   private @Mock CommunicationDao commDao;
   private @Mock IPermissionUtils permUtils;
   private @Mock GroupDao grpDao;
@@ -46,7 +47,7 @@ public class MessageOrRequestCreatorManagerImplTest {
   Group group;
   User pi, anyUser, notInGroup, toInvite;
 
-  @Before
+  @BeforeEach
   public void before() {
     anyUser = TestFactory.createAnyUser("any");
     notInGroup = TestFactory.createAnyUser("notInGroup");

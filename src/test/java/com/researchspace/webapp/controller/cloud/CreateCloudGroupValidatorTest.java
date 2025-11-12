@@ -1,17 +1,17 @@
 package com.researchspace.webapp.controller.cloud;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.dtos.CreateCloudGroup;
 import com.researchspace.model.dtos.CreateCloudGroupValidator;
 import com.researchspace.model.dtos.ValidationTestUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -21,12 +21,12 @@ public class CreateCloudGroupValidatorTest extends SpringTransactionalTest {
   private CreateCloudGroup createCloudGroup;
   private @Autowired CreateCloudGroupValidator createCloudGroupValidator;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     createCloudGroup = new CreateCloudGroup();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

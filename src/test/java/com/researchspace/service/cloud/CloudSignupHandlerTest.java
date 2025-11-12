@@ -1,9 +1,6 @@
 package com.researchspace.service.cloud;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,18 +16,19 @@ import com.researchspace.properties.PropertyHolder;
 import com.researchspace.service.UserExistsException;
 import com.researchspace.service.UserManager;
 import com.researchspace.service.cloud.impl.CommunityManualUserSignupPolicy;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class CloudSignupHandlerTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock UserManager mgr;
   @Mock CommunityUserManager cloudUserMgr;
   @Mock AnalyticsManager analyticsMgr;
@@ -40,7 +38,7 @@ public class CloudSignupHandlerTest {
 
   private MockHttpServletRequest request;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     cloudSignupPolicy = new CommunityManualUserSignupPolicy();
     props = new PropertyHolder();
@@ -53,13 +51,17 @@ public class CloudSignupHandlerTest {
     request.setRemoteAddr("127.0.0.5");
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testSaveUserThrowsISEIfNotConfiguredForCloud() throws UserExistsException {
-    props.setCloud("false");
-    cloudSignupPolicy.saveUser(TestFactory.createAnyUser("any"), request);
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          props.setCloud("false");
+          cloudSignupPolicy.saveUser(TestFactory.createAnyUser("any"), request);
+        });
   }
 
-  @Test()
+  @Test
   public void testSaveInvitedUserHappyCase() throws UserExistsException {
     final User user = TestFactory.createAnyUser("any");
     final TokenBasedVerification token = createAToken(user);
@@ -153,23 +155,27 @@ public class CloudSignupHandlerTest {
     verify(cloudUserMgr, never()).activateUser(Mockito.anyString());
   }
 
-  @Test(expected = UserExistsException.class)
-  public void attemptToSaveInvitedUserWithDuplicatedNameThrowsUEE() throws UserExistsException {
-    final User preexistingUser = TestFactory.createAnyUser("any");
-    preexistingUser.setEmail("preexistinguser@test.com");
-    final User user = TestFactory.createAnyUser("any");
-    final TokenBasedVerification token = createAToken(user);
-    user.setToken(token.getToken());
-    props.setCloud("true");
-    // case where user is already existing as temp user ( perhaps via an invitation)
-    when(cloudUserMgr.checkTempCloudUser(user.getEmail())).thenReturn(true);
-    when(mgr.userExists(user.getUsername())).thenReturn(true);
-    when(mgr.getUserByUsername(user.getUsername())).thenReturn(preexistingUser);
+  @Test
+  public void attemptToSaveInvitedUserWithDuplicatedNameThrowsUEE() {
+    assertThrows(
+        UserExistsException.class,
+        () -> {
+          final User preexistingUser = TestFactory.createAnyUser("any");
+          preexistingUser.setEmail("preexistinguser@test.com");
+          final User user = TestFactory.createAnyUser("any");
+          final TokenBasedVerification token = createAToken(user);
+          user.setToken(token.getToken());
+          props.setCloud("true");
+          // case where user is already existing as temp user ( perhaps via an invitation)
+          when(cloudUserMgr.checkTempCloudUser(user.getEmail())).thenReturn(true);
+          when(mgr.userExists(user.getUsername())).thenReturn(true);
+          when(mgr.getUserByUsername(user.getUsername())).thenReturn(preexistingUser);
 
-    cloudSignupPolicy.saveUser(user, request);
+          cloudSignupPolicy.saveUser(user, request);
 
-    verify(mgr, never()).saveUser(Mockito.any(User.class));
-    verify(cloudUserMgr, never()).activateUser(Mockito.anyString());
+          verify(mgr, never()).saveUser(Mockito.any(User.class));
+          verify(cloudUserMgr, never()).activateUser(Mockito.anyString());
+        });
   }
 
   private TokenBasedVerification createAnInvalidToken(User user) {

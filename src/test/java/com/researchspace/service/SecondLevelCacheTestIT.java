@@ -1,7 +1,7 @@
 package com.researchspace.service;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.core.testutil.CoreTestUtils;
 import com.researchspace.dao.ArchiveDao;
@@ -22,9 +22,9 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import org.apache.commons.lang.time.StopWatch;
 import org.hibernate.CacheMode;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,13 +39,13 @@ public class SecondLevelCacheTestIT extends RealTransactionSpringTestBase {
   private @Autowired DocumentHTMLPreviewHandler previewer;
   private @Autowired RecordManager recordMgr;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     sessionFactory.getStatistics().setStatisticsEnabled(true);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     sessionFactory.getStatistics().setStatisticsEnabled(false);
     contentInitializer.setCustomInitActive(true);

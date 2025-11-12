@@ -1,7 +1,7 @@
 package com.researchspace.slack;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,10 +13,10 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -24,17 +24,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-@Ignore("requires correct real secret webhook")
+@Disabled("requires correct real secret webhook")
 @RunWith(ConditionalTestRunner.class)
 public class SlackPosterTest extends SpringTransactionalTest {
 
   @Value("${slack.realConnectionTest.webhookUrl}")
   private String slackTestWebhookUrl;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

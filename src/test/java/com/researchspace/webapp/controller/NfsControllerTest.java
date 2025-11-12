@@ -3,13 +3,9 @@ package com.researchspace.webapp.controller;
 import static com.researchspace.model.netfiles.NfsFileSystemOption.USER_DIRS_REQUIRED;
 import static com.researchspace.webapp.controller.NfsController.MODEL_SHOW_EXTRA_DIRS_FLAG;
 import static com.researchspace.webapp.controller.NfsController.NEED_LOG_IN_MSG;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -43,8 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -83,7 +79,7 @@ public class NfsControllerTest extends SpringTransactionalTest {
   private NfsClient nfsClientMock;
   private NfsAuthentication nfsAuthenticationMock;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IllegalAddChildOperation {
 
     model = new ExtendedModelMap();
@@ -305,7 +301,7 @@ public class NfsControllerTest extends SpringTransactionalTest {
             eq("username"),
             eq("password"),
             anyMap(),
-            anyObject(),
+            any(),
             eq("target_dir")))
         .thenReturn("logged.as.username");
     loginResult =
@@ -371,15 +367,15 @@ public class NfsControllerTest extends SpringTransactionalTest {
 
     File tempFile = new File(downloadPath);
     File tempParentFolder = tempFile.getParentFile();
-    assertTrue("download path should point to temp file", tempFile.exists());
+    assertTrue(tempFile.exists(), "download path should point to temp file");
     assertEquals(testDownlodaFileName, tempFile.getName());
 
     controller.downloadNfsFile(request, response);
     assertEquals("application/octet-stream", response.getContentType());
     assertEquals(testDownloadFileContent, response.getContentAsString());
 
-    assertFalse("after download file should be deleted", tempFile.exists());
-    assertFalse("temp parent folder should be deleted", tempParentFolder.exists());
+    assertFalse(tempFile.exists(), "after download file should be deleted");
+    assertFalse(tempParentFolder.exists(), "temp parent folder should be deleted");
   }
 
   @Test
@@ -396,7 +392,7 @@ public class NfsControllerTest extends SpringTransactionalTest {
     // checking that key is in the db
     UserKeyPair registeredKeyPair = userKeyManager.getUserKeyPair(testUser);
     assertNotNull(
-        "controller should register new key for testUser, but is null", registeredKeyPair);
+        registeredKeyPair, "controller should register new key for testUser, but is null");
     assertEquals(returnedKey, registeredKeyPair.getPublicKey());
 
     // reloaded view should contain new public key

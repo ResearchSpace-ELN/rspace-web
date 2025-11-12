@@ -1,9 +1,6 @@
 package com.researchspace.files.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.api.client.util.IOUtils;
 import com.researchspace.dao.FileMetadataDao;
@@ -21,8 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +40,7 @@ public class FileStoreConfiguredForExternalFS extends SpringTransactionalTest {
   EcatDocumentFile mediaFile;
   File someFile;
 
-  @Before
+  @BeforeEach
   public void before() throws IOException, URISyntaxException, InterruptedException {
     anyUser = createInitAndLoginAnyUser();
     mediaFile = addDocumentToGallery(anyUser);

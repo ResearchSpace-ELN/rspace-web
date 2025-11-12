@@ -1,30 +1,39 @@
 package com.axiope.userimport;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.researchspace.model.dto.UserRegistrationInfo;
 import com.researchspace.model.field.ErrorList;
 import java.util.Collections;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UserImportResultTest {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUserImportResultNoNullArgs1() {
-    new UserImportResult(Collections.<UserRegistrationInfo>emptyList(), null, null, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new UserImportResult(Collections.<UserRegistrationInfo>emptyList(), null, null, null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUserImportResultNoNullArgs2() {
-    new UserImportResult(null, null, null, new ErrorList());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new UserImportResult(null, null, null, new ErrorList());
+        });
   }
 
   @Test

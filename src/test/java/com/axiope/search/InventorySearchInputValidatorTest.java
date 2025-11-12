@@ -4,19 +4,17 @@ import static com.axiope.search.SearchConstants.FULL_TEXT_SEARCH_OPTION;
 import static com.axiope.search.SearchConstants.OWNER_SEARCH_OPTION;
 import static com.axiope.search.SearchConstants.TAG_SEARCH_OPTION;
 import static com.researchspace.Constants.SYSADMIN_ROLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.record.TestFactory;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
-public class InventorySearchInputValidatorTest {
+class InventorySearchInputValidatorTest {
 
   InventorySearchInputValidator validator;
   SearchConfig input;
@@ -40,7 +38,7 @@ public class InventorySearchInputValidatorTest {
 
   User user;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     user = TestFactory.createAnyUser("any");
     input = new WorkspaceSearchConfig();
@@ -48,24 +46,24 @@ public class InventorySearchInputValidatorTest {
   }
 
   @Test
-  public void testSupports() {
-    assertTrue(validator.supports(SearchConfig.class));
+  void testSupports() {
+    Assertions.assertTrue(validator.supports(SearchConfig.class));
   }
 
   @Test
-  public void testValidate() {
+  void testValidate() {
     Errors errors = reinitializeErrors();
     validator.validate(input, errors);
 
-    assertTrue(errors.hasGlobalErrors());
+    Assertions.assertTrue(errors.hasGlobalErrors());
     // no input data
-    assertEquals(2, errors.getErrorCount());
+    Assertions.assertEquals(2, errors.getErrorCount());
 
     // ok
     errors = reinitializeErrors();
     input = createSearchConfig(user, OKOPTION, OKTERM);
     validator.validate(input, errors);
-    assertFalse(errors.hasGlobalErrors());
+    Assertions.assertFalse(errors.hasGlobalErrors());
 
     // 1-digit parentId or parentSampleId search is ok
     errors = reinitializeErrors();
@@ -75,39 +73,39 @@ public class InventorySearchInputValidatorTest {
     validator.validate(input, errors);
     input = createSearchConfig(user, PARENTSAMPLEID_OPTION, SHORT_ID_TERM);
     validator.validate(input, errors);
-    assertFalse(errors.hasGlobalErrors());
+    Assertions.assertFalse(errors.hasGlobalErrors());
 
     // more terms than options
     errors = reinitializeErrors();
     input = createSearchConfig(user, OKOPTION, OKTERMLENGHT2);
     validator.validate(input, errors);
-    assertTrue(errors.hasGlobalErrors());
-    assertEquals(1, errors.getErrorCount());
-    assertEquals("errors.termsoptionsmismatch", errors.getAllErrors().get(0).getCode());
+    Assertions.assertTrue(errors.hasGlobalErrors());
+    Assertions.assertEquals(1, errors.getErrorCount());
+    Assertions.assertEquals("errors.termsoptionsmismatch", errors.getAllErrors().get(0).getCode());
 
     // unknown search option
     errors = reinitializeErrors();
     input = createSearchConfig(user, UUNKNOWNOPTION, OKTERM);
     validator.validate(input, errors);
-    assertTrue(errors.hasGlobalErrors());
-    assertEquals(1, errors.getErrorCount());
-    assertEquals("errors.unknownsearchoption", errors.getAllErrors().get(0).getCode());
+    Assertions.assertTrue(errors.hasGlobalErrors());
+    Assertions.assertEquals(1, errors.getErrorCount());
+    Assertions.assertEquals("errors.unknownsearchoption", errors.getAllErrors().get(0).getCode());
 
     // empty search term
     errors = reinitializeErrors();
     input = createSearchConfig(user, OKOPTION, BLANKTERM);
     validator.validate(input, errors);
-    assertTrue(errors.hasGlobalErrors());
-    assertEquals(1, errors.getErrorCount());
-    assertEquals("errors.searchtermblank", errors.getAllErrors().get(0).getCode());
+    Assertions.assertTrue(errors.hasGlobalErrors());
+    Assertions.assertEquals(1, errors.getErrorCount());
+    Assertions.assertEquals("errors.searchtermblank", errors.getAllErrors().get(0).getCode());
 
     // too long search term
     errors = reinitializeErrors();
     input = createSearchConfig(user, OKOPTION, TOO_LONG_SEARCHTERM);
     validator.validate(input, errors);
-    assertTrue(errors.hasGlobalErrors());
-    assertEquals(1, errors.getErrorCount());
-    assertEquals("errors.searchtermtoolong", errors.getAllErrors().get(0).getCode());
+    Assertions.assertTrue(errors.hasGlobalErrors());
+    Assertions.assertEquals(1, errors.getErrorCount());
+    Assertions.assertEquals("errors.searchtermtoolong", errors.getAllErrors().get(0).getCode());
   }
 
   private SearchConfig createSearchConfig(User user, String[] options, String[] terms) {
@@ -122,7 +120,7 @@ public class InventorySearchInputValidatorTest {
   }
 
   @Test
-  public void searchTermMinimumLengthAndSysadminRestrictions() {
+  void searchTermMinimumLengthAndSysadminRestrictions() {
     Errors errors = reinitializeErrors();
     User sysadmin = TestFactory.createAnyUserWithRole("sys", SYSADMIN_ROLE);
 
@@ -130,32 +128,32 @@ public class InventorySearchInputValidatorTest {
     SearchConfig cfg =
         createSearchConfig(sysadmin, new String[] {TAG_SEARCH_OPTION}, new String[] {"a"});
     validator.validate(cfg, errors);
-    assertTrue(errors.hasGlobalErrors());
+    Assertions.assertTrue(errors.hasGlobalErrors());
 
     // sysadmin must be >=5 chars RSPAC-907 unless tag option RSPAC-468
     cfg =
         createSearchConfig(sysadmin, new String[] {FULL_TEXT_SEARCH_OPTION}, new String[] {"a234"});
     validator = new InventorySearchInputValidator(sysadmin);
     validator.validate(cfg, errors);
-    assertTrue(errors.hasGlobalErrors());
+    Assertions.assertTrue(errors.hasGlobalErrors());
     cfg = createSearchConfig(sysadmin, new String[] {TAG_SEARCH_OPTION}, new String[] {"a234"});
     errors = reinitializeErrors();
     validator.validate(cfg, errors);
-    assertFalse("Tag option fails with small tag value", errors.hasGlobalErrors());
+    Assertions.assertFalse(errors.hasGlobalErrors(), "Tag option fails with small tag value");
 
     // unless it's a user (owner) search, where short names are fine (as long as more than 1 char)
     cfg = createSearchConfig(sysadmin, new String[] {OWNER_SEARCH_OPTION}, new String[] {"dude"});
     validator = new InventorySearchInputValidator(sysadmin);
     validator.validate(cfg, errors);
-    assertFalse(errors.hasGlobalErrors());
+    Assertions.assertFalse(errors.hasGlobalErrors());
     cfg = createSearchConfig(sysadmin, new String[] {OWNER_SEARCH_OPTION}, new String[] {"G"});
     validator = new InventorySearchInputValidator(sysadmin);
     validator.validate(cfg, errors);
-    assertTrue(errors.hasGlobalErrors());
+    Assertions.assertTrue(errors.hasGlobalErrors());
 
     // .. and no wildcards RSPAC-907
     cfg = createSearchConfig(sysadmin, new String[] {TAG_SEARCH_OPTION}, new String[] {"a2345*"});
     validator.validate(cfg, errors);
-    assertTrue(errors.hasGlobalErrors());
+    Assertions.assertTrue(errors.hasGlobalErrors());
   }
 }

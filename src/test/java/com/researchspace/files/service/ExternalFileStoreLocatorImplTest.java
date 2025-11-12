@@ -1,9 +1,7 @@
 package com.researchspace.files.service;
 
 import static com.researchspace.model.record.TestFactory.createAnyUser;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.model.User;
@@ -12,23 +10,24 @@ import com.researchspace.model.record.TestFactory;
 import com.researchspace.service.UserConnectionManager;
 import java.io.IOException;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ExternalFileStoreLocatorImplTest {
-
-  public @Rule MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock UserConnectionManager userConnectionMgr;
   @Mock ExternalFileStore extFileStore;
   ExternalFileStoreLocatorImpl extFileLocator;
   User user;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     user = createAnyUser("user");
     extFileLocator =

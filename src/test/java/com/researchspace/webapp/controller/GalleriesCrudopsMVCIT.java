@@ -1,6 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -11,9 +11,9 @@ import com.researchspace.model.dtos.WorkspaceSettings;
 import com.researchspace.model.record.BaseRecord;
 import com.researchspace.model.record.Folder;
 import java.util.Map;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -31,14 +31,14 @@ public class GalleriesCrudopsMVCIT extends MVCTestBase {
   private User user;
   private PaginationCriteria<BaseRecord> pgcrit = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     user = createInitAndLoginAnyUser();
     pgcrit = PaginationCriteria.createDefaultForClass(BaseRecord.class);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

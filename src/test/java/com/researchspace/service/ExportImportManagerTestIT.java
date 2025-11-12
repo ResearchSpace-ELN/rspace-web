@@ -16,17 +16,10 @@ import static org.apache.commons.lang.StringUtils.join;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import com.axiope.search.SearchConstants;
@@ -139,31 +132,37 @@ import org.hibernate.query.NativeQuery;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 import software.amazon.awssdk.http.SdkHttpResponse;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodName.class)
 public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
-  public @Rule TemporaryFolder tempExportFolder = new TemporaryFolder();
-  public @Rule TemporaryFolder tempExportFolder2 = new TemporaryFolder();
-  public @Rule TemporaryFolder tempImportFolder = new TemporaryFolder();
-  public @Rule TemporaryFolder tempImportFolder2 = new TemporaryFolder();
-  public @Rule TemporaryFolder spareFolder = new TemporaryFolder();
+  private AutoCloseable mocks;
+
+  @TempDir public File tempExportFolder;
+
+  @TempDir public File tempExportFolder2;
+
+  @TempDir public File tempImportFolder;
+
+  @TempDir public File tempImportFolder2;
+
+  @TempDir public File spareFolder;
 
   private @Autowired ExportImport exportImportMgr;
   private @Autowired Collection<ArchiveExportServiceManager> archiverServiceManagers;
@@ -184,15 +183,16 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
   @InjectMocks
   private PostArchiveCompletion standardPostExport;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
-    initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
+    mocks.close();
   }
 
   private Folder getRootRecordForUser(User user) {
@@ -213,7 +213,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     User sysadmin = logoutAndLoginAsSysAdmin();
 
     final Group grp = createGroupForUsers(sysadmin, pi.getUsername(), "", pi, u1, u2);
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.XML);
     cfg.setExportScope(ExportScope.GROUP);
     cfg.setUserOrGroupId(grp.getOid());
@@ -240,31 +240,35 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
   }
 
   // Ideally, should be AuthorizationException, but failing async method throws ExecutionException
-  @Test(expected = ExecutionException.class)
+  @Test
   public void RSPAC1129_LabAdminWithoutViewAllCannotExportGroupsWork() throws Exception {
-    User userPI = createAndSaveUser(getRandomAlphabeticString("pi"), Constants.PI_ROLE);
-    User user = createAndSaveUser(getRandomAlphabeticString("user"));
-    User labAdmin = createAndSaveUser(getRandomAlphabeticString("labadmin"));
-    initUsers(true, userPI, user, labAdmin);
+    assertThrows(
+        ExecutionException.class,
+        () -> {
+          User userPI = createAndSaveUser(getRandomAlphabeticString("pi"), Constants.PI_ROLE);
+          User user = createAndSaveUser(getRandomAlphabeticString("user"));
+          User labAdmin = createAndSaveUser(getRandomAlphabeticString("labadmin"));
+          initUsers(true, userPI, user, labAdmin);
 
-    User sysadmin = logoutAndLoginAsSysAdmin();
-    if (!sysadmin.isContentInitialized()) {
-      initUser(sysadmin);
-    }
-    Group group =
-        createGroupForUsers(
-            sysadmin, userPI.getUsername(), labAdmin.getUsername(), userPI, user, labAdmin);
+          User sysadmin = logoutAndLoginAsSysAdmin();
+          if (!sysadmin.isContentInitialized()) {
+            initUser(sysadmin);
+          }
+          Group group =
+              createGroupForUsers(
+                  sysadmin, userPI.getUsername(), labAdmin.getUsername(), userPI, user, labAdmin);
 
-    logoutAndLoginAs(labAdmin);
+          logoutAndLoginAs(labAdmin);
 
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
-    cfg.setArchiveType(ArchiveExportConfig.XML);
-    cfg.setExportScope(ExportScope.GROUP);
-    cfg.setUserOrGroupId(group.getOid());
+          final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
+          cfg.setArchiveType(ArchiveExportConfig.XML);
+          cfg.setExportScope(ExportScope.GROUP);
+          cfg.setUserOrGroupId(group.getOid());
 
-    exportImportMgr
-        .asyncExportGroupToArchive(cfg, labAdmin, group.getId(), anyURI(), standardPostExport)
-        .get();
+          exportImportMgr
+              .asyncExportGroupToArchive(cfg, labAdmin, group.getId(), anyURI(), standardPostExport)
+              .get();
+        });
   }
 
   @Test
@@ -296,7 +300,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     StructuredDocument publicLabAdminDocument =
         createBasicDocumentInRootFolderWithText(labAdmin, "test contents");
 
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.XML);
     cfg.setExportScope(ExportScope.GROUP);
     cfg.setUserOrGroupId(group.getOid());
@@ -323,9 +327,9 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     User exporter = createAndSaveUser(getRandomAlphabeticString("exporter"));
     // set up an export already made
     File surrogateExport = RSpaceTestUtils.getResource("archives/v22.zip");
-    FileUtils.copyFileToDirectory(surrogateExport, tempExportFolder.getRoot(), false);
+    FileUtils.copyFileToDirectory(surrogateExport, tempExportFolder, false);
     // sanity check that copy worked OK
-    assertTrue(new File(tempExportFolder.getRoot(), surrogateExport.getName()).exists());
+    assertTrue(new File(tempExportFolder, surrogateExport.getName()).exists());
     ArchivalCheckSum acs = TestFactory.createAnArchivalChecksum();
     acs.setExporter(exporter);
     acs.setZipName(surrogateExport.getName());
@@ -338,19 +342,19 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     // assert should be removed.
     // just ensure it is set to be deleted.
     archiveRemover.setRemovalPolicy(ExportRemovalPolicy.TRUE);
-    properties.setExportFolderLocation(tempExportFolder.getRoot().getAbsolutePath());
+    properties.setExportFolderLocation(tempExportFolder.getAbsolutePath());
 
     exportImportMgr.removeOldArchives();
     // file should be removed, and DB query should be OK
     assertEquals(initialExportCount, mgr.getCurrentArchiveMetadatas().size());
-    assertFalse(new File(tempExportFolder.getRoot(), surrogateExport.getName()).exists());
+    assertFalse(new File(tempExportFolder, surrogateExport.getName()).exists());
   }
 
   @Test
   public void testHTMLExportConfig() throws FileNotFoundException, Exception {
     User user = createInitAndLoginAnyUser();
     StructuredDocument doc = createBasicDocumentInRootFolderWithText(user, "any");
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
     Future<ArchiveResult> result =
         exportImportMgr.asyncExportSelectionToArchive(
@@ -376,7 +380,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     recordMgr.move(imagae.getId(), gallrySubFolder.getId(), imageTopFlder.getId(), user);
     // we now have an image in a subfolder; and document in top of Documents folder
     // export a folder and the document
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
 
     ExportSelection exportSelection =
         ExportSelection.createRecordsExportSelection(
@@ -387,8 +391,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             exportSelection, cfg, user, new URI("http://www.google.com"), standardPostExport);
 
     File zipFile = result.get().getExportFile();
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(user, tempImportFolder.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(user, tempImportFolder);
     ImportArchiveReport importReport =
         exportImportMgr.importArchive(
             fileToMultipartfile(zipFile.getName(), zipFile),
@@ -431,7 +434,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     Notebook notebook = createNotebookWithNEntries(root.getId(), "testNotebook", 1, user);
     documentTagManager.saveTag(notebook.getId(), "notebookTag", user);
 
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     // export top-level folder, complex document, notebook
     ExportSelection exportSelection =
         ExportSelection.createRecordsExportSelection(
@@ -444,8 +447,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
     // reload user and import
     user = userMgr.getUserByUsername(user.getUsername());
-    ArchivalImportConfig iconfig =
-        createDefaultArchiveImportConfig(user, tempImportFolder.getRoot());
+    ArchivalImportConfig iconfig = createDefaultArchiveImportConfig(user, tempImportFolder);
     final int B4ImportCount = totalAllChildrenInFolder(root.getId()).intValue();
     ArchivalImportConfig importCfg = new ArchivalImportConfig();
     ImportArchiveReport report =
@@ -470,20 +472,20 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(1, res.getTotalHits().intValue());
     assertEquals("folder2", res.getFirstResult().getName());
     assertNotEquals(
-        "ids are same but should be different", f2.getId(), res.getFirstResult().getId());
+        f2.getId(), res.getFirstResult().getId(), "ids are same but should be different");
 
     res = recordMgr.listFolderRecords(res.getFirstResult().getId(), DEFAULT_RECORD_PAGINATION);
     assertEquals(1, res.getTotalHits().intValue());
     assertEquals("folder3", res.getFirstResult().getName());
     assertEquals("folderTag", ((Folder) res.getFirstResult()).getDocTag());
     assertNotEquals(
-        "ids are same but should be different", f3.getId(), res.getFirstResult().getId());
+        f3.getId(), res.getFirstResult().getId(), "ids are same but should be different");
 
     res = recordMgr.listFolderRecords(res.getFirstResult().getId(), DEFAULT_RECORD_PAGINATION);
     assertEquals(1, res.getTotalHits().intValue());
     assertEquals(SIMPLED_DOC_NAME, res.getFirstResult().getName());
     assertNotEquals(
-        "ids are same but should be different", f3.getId(), res.getFirstResult().getId());
+        f3.getId(), res.getFirstResult().getId(), "ids are same but should be different");
 
     // now assert that imported doc has form with same field count
     StructuredDocument importedComplex = getImportedComplexDoc(complexDoc, user, root);
@@ -491,9 +493,9 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     RSForm importedForm = importedComplex.getForm();
     RSForm originalForm = sd.getForm();
     assertEquals(
-        "Imported form has different field count!",
         importedForm.getFieldForms().size(),
-        originalForm.getFieldForms().size());
+        originalForm.getFieldForms().size(),
+        "Imported form has different field count!");
 
     Field original = complexDoc.getFields().get(0);
     Field importedData = importedComplex.getFields().get(0);
@@ -504,9 +506,9 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
           FieldContents importedContents =
               fieldParser.findFieldElementsInContent(importedData.getFieldData());
           assertEquals(
-              "Original and imported have different linked field count",
               origcontents.getAllLinks().size(),
-              importedContents.getAllLinks().size());
+              importedContents.getAllLinks().size(),
+              "Original and imported have different linked field count");
         });
 
     // find created notebook
@@ -534,7 +536,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
   public void testExportUserHTML() throws Exception {
     final User userToExport = createAndSaveUser(getRandomAlphabeticString("user"));
     initUsers(true, userToExport);
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
     cfg.setDescription("a description");
     logoutAndLoginAs(userToExport);
@@ -559,9 +561,8 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     return extractZipArchive(result, tempImportFolder);
   }
 
-  private File extractZipArchive(ArchiveResult result, TemporaryFolder tmpFolder)
-      throws IOException {
-    File zipFolder = tmpFolder.getRoot();
+  private File extractZipArchive(ArchiveResult result, File tmpFolder) throws IOException {
+    File zipFolder = tmpFolder;
     ZipUtils.extractZip(result.getExportFile(), zipFolder);
     return zipFolder;
   }
@@ -572,7 +573,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     final User msgRecipient = createAndSaveUser(getRandomAlphabeticString("other"));
     initUsers(true, userToExport);
 
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.XML);
     cfg.setExportScope(ExportScope.USER);
     cfg.setUserOrGroupId(userToExport.getOid());
@@ -588,11 +589,10 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
                 cfg, userToExport, anyURI(), userToExport, standardPostExport)
             .get();
     File zipFile = result.getExportFile();
-    ZipUtils.extractZip(zipFile, spareFolder.getRoot());
+    ZipUtils.extractZip(zipFile, spareFolder);
 
-    assertTrue(ArchiveTestUtils.archiveContainsFile(spareFolder.getRoot(), ExportImport.MESSAGES));
-    assertTrue(
-        ArchiveTestUtils.archiveFileHasContent(spareFolder.getRoot(), ExportImport.MESSAGES));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(spareFolder, ExportImport.MESSAGES));
+    assertTrue(ArchiveTestUtils.archiveFileHasContent(spareFolder, ExportImport.MESSAGES));
 
     ArchivalImportConfig importCfg = new ArchivalImportConfig();
 
@@ -615,7 +615,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     int b4ITest = getFieldAttachmentCount();
     final User userToExport = createAndSaveUser(getRandomAlphabeticString("user"));
     initUsers(true, userToExport);
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.XML);
     cfg.setExportScope(ExportScope.USER);
     cfg.setUserOrGroupId(userToExport.getOid());
@@ -646,11 +646,11 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
     // RSPAC-1081
     assertTrue(
+        addedCount >= 2 * b4ImportCount && addedCount != 0,
         "after import there should be twice as many fieldAttachments - but was "
             + b4ImportCount
             + ",  after import was "
-            + addedCount,
-        addedCount >= 2 * b4ImportCount && addedCount != 0);
+            + addedCount);
   }
 
   private Integer getFieldAttachmentCount() {
@@ -666,7 +666,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
   }
 
   @Test
-  @Ignore // requires instance of chemistry service
+  @Disabled // requires instance of chemistry service
   public void checkOldAndNewChemicalImport() throws Exception {
     // want to check that document with external links is imported OK
     final User userToImport = createAndSaveUser(getRandomAlphabeticString("user"));
@@ -739,7 +739,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     StructuredDocument doc = createBasicDocumentInRootFolderWithText(anyUser, "any");
     StructuredDocument template =
         createTemplateFromDocumentAndAddtoTemplateFolder(doc.getId(), anyUser);
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
 
     ArchiveResult result =
@@ -826,7 +826,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void RSPAC_1807() throws Exception {
     User u2 = createInitAndLoginAnyUser();
     // 2 folders in Gallery; f1 and f2 wit
@@ -844,7 +844,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     Set<BaseRecord> records = report.getImportedRecords();
     final int finalFieldCount = countRowsInTable(jdbcTemplate, "Field");
     assertEquals(
-        " was " + finalFieldCount + " fields added", initialFieldCount + 37, finalFieldCount);
+        initialFieldCount + 37, finalFieldCount, " was " + finalFieldCount + " fields added");
   }
 
   @Test
@@ -882,7 +882,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     addImageToField(linkedTo.getFields().get(0), u1);
     addLinkToOtherRecord(mainDoc.getFields().get(0), linkedTo, false);
     ExportSelection selection = getSingleRecordExportSelection(mainDoc.getId(), "NORMAL");
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     ArchiveResult result =
         exportImportMgr
             .asyncExportSelectionToArchive(selection, cfg, u1, anyURI(), standardPostExport)
@@ -919,7 +919,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     StructuredDocument u2Doc = createBasicDocumentInRootFolderWithText(u2, "u2doc");
     addLinkToOtherRecord(u2Doc.getFields().get(0), u1Doc);
 
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u2, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u2, tempExportFolder);
 
     cfg.setArchiveType(ArchiveExportConfig.HTML);
     cfg.configureUserExport(u2);
@@ -953,7 +953,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
       initUser(sysadmin);
     }
     final Group grp = createGroupForUsers(sysadmin, pi.getUsername(), "", pi, u1, u2);
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(piUser, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
 
     // removed as perm checking is done higher up now
@@ -1017,7 +1017,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     String htmlToAdd = orig.getFields().get(0).getFieldData();
     appendContentToField(u1DocToExport.getFields().get(0), htmlToAdd, u1);
 
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
     ArchiveResult result =
         exportImportMgr
@@ -1050,7 +1050,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     EcatImage image = addImageToField(field, u1);
     EcatImage updatedImage = updateImageInGallery(image.getId(), u1);
 
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.XML);
     cfg.setHasAllVersion(true);
 
@@ -1064,8 +1064,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
                 standardPostExport)
             .get();
     File zipFolder = extractZipArchive(result);
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(u1, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(u1, tempImportFolder2);
     IArchiveModel model =
         doInTransaction(
             () -> {
@@ -1079,16 +1078,12 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     ArchivalGalleryMetadata meta =
         ref.getArchivalDocument().getListFields().get(0).getLinkMeta().get(0);
     assertTrue(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder2.getRoot(), meta.getLinkFile() + ".xml"));
+        ArchiveTestUtils.archiveContainsFile(tempImportFolder2, meta.getLinkFile() + ".xml"));
 
     Collection<File> archiveContents = ArchiveTestUtils.getAllFilesInArchive(zipFolder);
     assertEquals(28, archiveContents.size());
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder2.getRoot(), image.getFileName()));
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder2.getRoot(), updatedImage.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder2, image.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder2, updatedImage.getFileName()));
   }
 
   @Test
@@ -1104,7 +1099,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(initialImageCount + 4, getImageCount().intValue());
     assertEquals(initialAnnotationCount + 2, getImageAnnotationCount().intValue());
 
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     ArchiveResult result =
         exportImportMgr
             .asyncExportSelectionToArchive(
@@ -1115,8 +1110,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
                 standardPostExport)
             .get();
 
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(u1, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(u1, tempImportFolder2);
     ImportArchiveReport report =
         exportImportMgr.importArchive(
             fileToMultipartfile(result.getExportFile().getName(), result.getExportFile()),
@@ -1166,7 +1160,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     EcatMediaFile video = addVideoFileToField(docField, user);
     EcatDocumentFile txtFile = addFileAttachmentToField(docField, user);
     final int attachmentCount = 4;
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setExportScope(ExportScope.USER);
     cfg.setUserOrGroupId(user.getOid());
     ArchiveResult result =
@@ -1175,8 +1169,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             .get();
     // check archive content - should contain updated attachments, not the original ones
     long mediaFileCountb4Import = getCountOfEntityTable("EcatMediaFile");
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(user, tempImportFolder.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(user, tempImportFolder);
     File exportZip = result.getExportFile();
     ImportArchiveReport report =
         exportImportMgr.importArchive(
@@ -1209,7 +1202,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     addLinkToOtherRecord(docB.getFields().get(0), docA);
 
     // now export all userB work to XML
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(userB, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(userB, tempExportFolder);
 
     cfg.setExportScope(ExportScope.USER);
     cfg.setUserOrGroupId(userB.getOid());
@@ -1218,10 +1211,10 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             .asyncExportUserWorkToArchive(cfg, userB, anyURI(), userB, standardPostExport)
             .get();
     File zipFile = result.getExportFile();
-    ZipUtils.extractZip(zipFile, spareFolder.getRoot());
+    ZipUtils.extractZip(zipFile, spareFolder);
 
     // the linked attached file should be included as a top-level media file.
-    assertEquals(1, ArchiveTestUtils.getTopLevelMediaFileCount(spareFolder.getRoot()));
+    assertEquals(1, ArchiveTestUtils.getTopLevelMediaFileCount(spareFolder));
   }
 
   /*
@@ -1256,7 +1249,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     /*
      * unsigned doc export
      */
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     ArchiveResult firstDocExport =
         exportImportMgr
             .asyncExportSelectionToArchive(
@@ -1268,34 +1261,22 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             .get();
 
     // check archive content - should contain updated attachments, not the original ones
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(user, tempImportFolder.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(user, tempImportFolder);
     doInTransaction(
         () -> {
           return archiveParser.loadArchive(
               firstDocExport.getExportFile(), new ImportArchiveReport(), importCfg);
         });
     // archive should contains updated versions of image/audio/video/txt
-    assertFalse(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder.getRoot(), image.getFileName()));
+    assertFalse(ArchiveTestUtils.archiveContainsFile(tempImportFolder, image.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder, updatedImage.getFileName()));
+    assertFalse(ArchiveTestUtils.archiveContainsFile(tempImportFolder, audio.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder, updatedAudio.getFileName()));
+    assertFalse(ArchiveTestUtils.archiveContainsFile(tempImportFolder, video.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder, updatedVideo.getFileName()));
+    assertFalse(ArchiveTestUtils.archiveContainsFile(tempImportFolder, txtFile.getFileName()));
     assertTrue(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder.getRoot(), updatedImage.getFileName()));
-    assertFalse(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder.getRoot(), audio.getFileName()));
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder.getRoot(), updatedAudio.getFileName()));
-    assertFalse(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder.getRoot(), video.getFileName()));
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder.getRoot(), updatedVideo.getFileName()));
-    assertFalse(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder.getRoot(), txtFile.getFileName()));
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder.getRoot(), updatedTxtFile.getFileName()));
+        ArchiveTestUtils.archiveContainsFile(tempImportFolder, updatedTxtFile.getFileName()));
 
     // unsigned doc import
     ImportArchiveReport report =
@@ -1326,7 +1307,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     /*
      * signed doc export
      */
-    final ArchiveExportConfig cfg2 = createDefaultArchiveConfig(user, tempExportFolder2.getRoot());
+    final ArchiveExportConfig cfg2 = createDefaultArchiveConfig(user, tempExportFolder2);
     ArchiveResult signedDocExport =
         exportImportMgr
             .asyncExportSelectionToArchive(
@@ -1338,34 +1319,25 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             .get();
 
     // check archive content - should contain updated attachments, not the original ones
-    ArchivalImportConfig importCfg2 =
-        createDefaultArchiveImportConfig(user, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg2 = createDefaultArchiveImportConfig(user, tempImportFolder2);
     doInTransaction(
         () -> {
           return archiveParser.loadArchive(
               signedDocExport.getExportFile(), new ImportArchiveReport(), importCfg2);
         });
     // archive should contains initial versions of image/audio/video/txt
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder2.getRoot(), image.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder2, image.getFileName()));
     assertFalse(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder2.getRoot(), updatedImage.getFileName()));
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder2.getRoot(), audio.getFileName()));
+        ArchiveTestUtils.archiveContainsFile(tempImportFolder2, updatedImage.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder2, audio.getFileName()));
     assertFalse(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder2.getRoot(), updatedAudio.getFileName()));
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder2.getRoot(), video.getFileName()));
+        ArchiveTestUtils.archiveContainsFile(tempImportFolder2, updatedAudio.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder2, video.getFileName()));
     assertFalse(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder2.getRoot(), updatedVideo.getFileName()));
-    assertTrue(
-        ArchiveTestUtils.archiveContainsFile(tempImportFolder2.getRoot(), txtFile.getFileName()));
+        ArchiveTestUtils.archiveContainsFile(tempImportFolder2, updatedVideo.getFileName()));
+    assertTrue(ArchiveTestUtils.archiveContainsFile(tempImportFolder2, txtFile.getFileName()));
     assertFalse(
-        ArchiveTestUtils.archiveContainsFile(
-            tempImportFolder2.getRoot(), updatedTxtFile.getFileName()));
+        ArchiveTestUtils.archiveContainsFile(tempImportFolder2, updatedTxtFile.getFileName()));
 
     // signed doc import
     ImportArchiveReport report2 =
@@ -1401,7 +1373,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     Notebook createdNotebook =
         createNotebookWithNEntriesAndDelayBetweenEntries(
             getRootFolderForUser(u1).getId(), "nb1", NUM_NOTEBOOK_ENTRIES, u1, 1000);
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     ArchiveResult result =
         exportImportMgr
             .asyncExportSelectionToArchive(
@@ -1413,8 +1385,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
                 standardPostExport)
             .get();
 
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(u1, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(u1, tempImportFolder2);
     exportImportMgr.importArchive(
         fileToMultipartfile(result.getExportFile().getName(), result.getExportFile()),
         u1.getUsername(),
@@ -1440,10 +1411,12 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
               .forEach(
                   i ->
                       assertTrue(
+                          copiedEntries.get(i).getName().equals(originalEntries.get(i).getName()),
                           String.format(
                               "Looking at entry %d. copy is %s but original is %s",
-                              i, copiedEntries.get(i).getName(), originalEntries.get(i).getName()),
-                          copiedEntries.get(i).getName().equals(originalEntries.get(i).getName())));
+                              i,
+                              copiedEntries.get(i).getName(),
+                              originalEntries.get(i).getName())));
         });
   }
 
@@ -1489,7 +1462,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     addLinkToOtherRecord(sdocD.getFields().get(0), sdocB);
     addLinkToOtherRecord(sdocD.getFields().get(0), sdocA);
     // export A and D
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
 
     ExportSelection exportSelection =
         ExportSelection.createRecordsExportSelection(
@@ -1500,8 +1473,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             .asyncExportSelectionToArchive(exportSelection, cfg, u1, anyURI(), standardPostExport)
             .get();
 
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(u1, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(u1, tempImportFolder2);
     ImportArchiveReport importReport =
         exportImportMgr.importArchive(
             fileToMultipartfile(result.getExportFile().getName(), result.getExportFile()),
@@ -1568,7 +1540,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     formMgr.save(originalForm, u1);
     StructuredDocument sdoc = createDocumentInFolder(getRootFolderForUser(u1), originalForm, u1);
     long iconCount = getIconEntityCount();
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     ArchiveResult result =
         exportImportMgr
             .asyncExportSelectionToArchive(
@@ -1579,8 +1551,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
                 standardPostExport)
             .get();
 
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(u1, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(u1, tempImportFolder2);
     ImportArchiveReport importReport =
         exportImportMgr.importArchive(
             fileToMultipartfile(result.getExportFile().getName(), result.getExportFile()),
@@ -1606,7 +1577,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     // create bidirectional link a<->b
     addLinkToOtherRecord(sdocA.getFields().get(0), sdocB);
     addLinkToOtherRecord(sdocB.getFields().get(0), sdocA);
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     // B is linked, but depth is 0 and B not selected. So A-B link should be absolute link, as B
     // not included in export.
     // this is action 4 in RSPAC-1330
@@ -1634,7 +1605,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     // now export both files. Even though link depth 0, internal link will be generated, as B is
     // selected.
     // this is action 2 in RSPAC-1330
-    cfg.setTopLevelExportFolder(spareFolder.getRoot()); // use new folder for clean results
+    cfg.setTopLevelExportFolder(spareFolder); // use new folder for clean results
     ExportSelection exportSelection =
         ExportSelection.createRecordsExportSelection(
             new Long[] {sdocA.getId(), sdocB.getId()},
@@ -1670,7 +1641,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
     Long initImgCount = getImageCount();
     Long initAudioCount = getCountOfEntityTable("EcatAudio");
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.XML);
     ExportSelection exportSelection =
         ExportSelection.createRecordsExportSelection(
@@ -1684,8 +1655,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     Collection<File> xmlFiles = ArchiveTestUtils.getAllXMLFilesInArchive(zipFolder);
     assertEquals(5, xmlFiles.size()); // 2 default + 3 for exported media items
 
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(u1, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(u1, tempImportFolder2);
     ImportArchiveReport importReport =
         exportImportMgr.importArchive(
             fileToMultipartfile(result.getExportFile().getName(), result.getExportFile()),
@@ -1753,7 +1723,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     recordMgr.save(firstDoc, user);
 
     // export firstDoc only. link level 0, so all links will be changed to absolute URLs
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setMaxLinkLevel(0);
     ArchiveResult result =
         exportImportMgr
@@ -1765,8 +1735,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
                 standardPostExport)
             .get();
 
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(user, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(user, tempImportFolder2);
     exportImportMgr.importArchive(
         fileToMultipartfile(result.getExportFile().getName(), result.getExportFile()),
         user.getUsername(),
@@ -1784,23 +1753,23 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     String fieldData = importedDoc.getFirstFieldData();
     // document links should be made relative again
     String expectedTargetDocLink = "href=\"/globalId/" + targetDoc.getGlobalIdentifier();
-    assertTrue(fieldData, fieldData.contains(expectedTargetDocLink));
+    assertTrue(fieldData.contains(expectedTargetDocLink), fieldData);
     String expectedTargetFolderLink = "href=\"/globalId/" + folder.getGlobalIdentifier();
-    assertTrue(fieldData, fieldData.contains(expectedTargetFolderLink));
+    assertTrue(fieldData.contains(expectedTargetFolderLink), fieldData);
     String expectedTargetNotebookLink = "href=\"/globalId/" + notebook.getGlobalIdentifier();
-    assertTrue(fieldData, fieldData.contains(expectedTargetNotebookLink));
+    assertTrue(fieldData.contains(expectedTargetNotebookLink), fieldData);
 
     // the absolute URL in external link should be imported, and the span.internalLinkAbsoluteUrl
     // added
     assertTrue(
-        fieldData,
-        fieldData.contains(externalServerUrl + "/globalId/" + firstDoc.getGlobalIdentifier()));
+        fieldData.contains(externalServerUrl + "/globalId/" + firstDoc.getGlobalIdentifier()),
+        fieldData);
 
     // the absolute link to itself should be made relative
     String expectedFirstDocLink = "href=\"/globalId/" + firstDoc.getGlobalIdentifier();
-    assertTrue(fieldData, fieldData.contains(expectedFirstDocLink));
+    assertTrue(fieldData.contains(expectedFirstDocLink), fieldData);
     // there should be no more references to current server url left in field content
-    assertFalse(fieldData, fieldData.contains(currentServerUrl));
+    assertFalse(fieldData.contains(currentServerUrl), fieldData);
   }
 
   @Test
@@ -1822,14 +1791,14 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     String orgFolderLinkFragment = "href=\"/globalId/" + folder.getGlobalIdentifier();
     String orgNotebookLinkFragment = "href=\"/globalId/" + notebook.getGlobalIdentifier();
     String orgFieldData = docField.getData();
-    assertTrue(orgFieldData, orgFieldData.contains(orgFolderLinkFragment));
-    assertTrue(orgFieldData, orgFieldData.contains(orgNotebookLinkFragment));
+    assertTrue(orgFieldData.contains(orgFolderLinkFragment), orgFieldData);
+    assertTrue(orgFieldData.contains(orgNotebookLinkFragment), orgFieldData);
 
     int initialRecords =
         recordMgr.listFolderRecords(rootFolder.getId(), brPg()).getTotalHits().intValue();
 
     // export firstDoc, folder and notebook
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setMaxLinkLevel(0);
     ExportSelection exportSelection =
         ExportSelection.createRecordsExportSelection(
@@ -1848,8 +1817,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             .map(BaseRecord::getId)
             .collect(Collectors.toList());
     // import
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(user, tempImportFolder2.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(user, tempImportFolder2);
     exportImportMgr.importArchive(
         fileToMultipartfile(result.getExportFile().getName(), result.getExportFile()),
         user.getUsername(),
@@ -1881,13 +1849,13 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
     /* internal links should point to newly created folder and notebook, and not to old ids */
     String expectedTargetFolderLink = "href=\"/globalId/" + importedFolder.getGlobalIdentifier();
-    assertTrue(importedFieldData, importedFieldData.contains(expectedTargetFolderLink));
-    assertFalse(importedFieldData, importedFieldData.contains(orgFolderLinkFragment));
+    assertTrue(importedFieldData.contains(expectedTargetFolderLink), importedFieldData);
+    assertFalse(importedFieldData.contains(orgFolderLinkFragment), importedFieldData);
 
     String expectedTargetNotebookLink =
         "href=\"/globalId/" + importedNotebook.getGlobalIdentifier();
-    assertTrue(importedFieldData, importedFieldData.contains(expectedTargetNotebookLink));
-    assertFalse(importedFieldData, importedFieldData.contains(orgNotebookLinkFragment));
+    assertTrue(importedFieldData.contains(expectedTargetNotebookLink), importedFieldData);
+    assertFalse(importedFieldData.contains(orgNotebookLinkFragment), importedFieldData);
   }
 
   @Test
@@ -1911,7 +1879,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     addAttachmentDocumentToField(smallerFile1MB, fieldB, user);
 
     // try exporting
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
     ExportSelection exportSelection =
         ExportSelection.createRecordsExportSelection(
@@ -1925,7 +1893,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
       fail("expected to fail as archive size above the limit");
     } catch (Exception e) {
       assertTrue(
-          "unexpected msg: " + e.getMessage(), e.getMessage().contains("DiskSpaceLimitException"));
+          e.getMessage().contains("DiskSpaceLimitException"), "unexpected msg: " + e.getMessage());
     }
 
     // restore max archive limit
@@ -1952,7 +1920,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     NfsFileStore store = nfsMgr.getNfsFileStore(element.getFileStoreId());
 
     // HTML EXPORT
-    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfg = createDefaultArchiveConfig(u1, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
     ArchiveResult result =
         exportImportMgr
@@ -1995,7 +1963,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
     // XML EXPORT with revision history to test RSPAC-1387
     renameDocumentNTimes(sdocA, 3); // create some revisions
-    final ArchiveExportConfig cfgXml = createDefaultArchiveConfig(u1, tempExportFolder2.getRoot());
+    final ArchiveExportConfig cfgXml = createDefaultArchiveConfig(u1, tempExportFolder2);
 
     cfgXml.setHasAllVersion(true);
     ArchiveResult resultXml =
@@ -2070,8 +2038,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(0, getNewNotificationCount(user));
 
     // HTML EXPORT
-    final ArchiveExportConfig cfgHtml =
-        createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfgHtml = createDefaultArchiveConfig(user, tempExportFolder);
     cfgHtml.setArchiveType(ArchiveExportConfig.HTML);
     cfgHtml.setIncludeNfsLinks(true);
     cfgHtml.setAvailableNfsClients(nfsClientMap);
@@ -2113,21 +2080,20 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(Integer.valueOf(1), newNotifications.getHits());
     Notification htmlNotification = newNotifications.getFirstResult();
     String htmlExportNotificationMsg = htmlNotification.getNotificationMessage();
-    assertTrue(htmlExportNotificationMsg, htmlExportNotificationMsg.contains("-html-"));
-    assertTrue(htmlExportNotificationMsg, htmlExportNotificationMsg.contains("/export/report/"));
+    assertTrue(htmlExportNotificationMsg.contains("-html-"), htmlExportNotificationMsg);
+    assertTrue(htmlExportNotificationMsg.contains("/export/report/"), htmlExportNotificationMsg);
     assertTrue(
-        htmlExportNotificationMsg, htmlExportNotificationMsg.contains("2 linked filestore items"));
+        htmlExportNotificationMsg.contains("2 linked filestore items"), htmlExportNotificationMsg);
     NotificationData htmlNotificationData = htmlNotification.getNotificationDataObject();
     assertNotNull(htmlNotificationData);
     String htmlDownloadLink =
         ((ArchiveExportNotificationData) htmlNotificationData).getDownloadLink();
     assertTrue(
-        "unexpected download link: " + htmlDownloadLink,
-        htmlDownloadLink.startsWith("http") && htmlDownloadLink.contains("-html-"));
+        htmlDownloadLink.startsWith("http") && htmlDownloadLink.contains("-html-"),
+        "unexpected download link: " + htmlDownloadLink);
 
     // XML EXPORT
-    final ArchiveExportConfig cfgXml =
-        createDefaultArchiveConfig(user, tempExportFolder2.getRoot());
+    final ArchiveExportConfig cfgXml = createDefaultArchiveConfig(user, tempExportFolder2);
     cfgXml.setIncludeNfsLinks(true);
     cfgXml.setAvailableNfsClients(nfsClientMap);
     // reset input stream on test file returned by nfsClient mock
@@ -2164,18 +2130,18 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(Integer.valueOf(2), newNotifications.getHits());
     Notification xmlNotification = newNotifications.getLastResult();
     String xmlExportNotificationMsg = xmlNotification.getNotificationMessage();
-    assertTrue(xmlExportNotificationMsg, xmlExportNotificationMsg.contains("-xml-"));
-    assertTrue(xmlExportNotificationMsg, xmlExportNotificationMsg.contains("/export/report/"));
+    assertTrue(xmlExportNotificationMsg.contains("-xml-"), xmlExportNotificationMsg);
+    assertTrue(xmlExportNotificationMsg.contains("/export/report/"), xmlExportNotificationMsg);
     assertTrue(
-        xmlExportNotificationMsg, xmlExportNotificationMsg.contains("2 linked filestore items"));
+        xmlExportNotificationMsg.contains("2 linked filestore items"), xmlExportNotificationMsg);
 
     NotificationData xmlNotificationData = xmlNotification.getNotificationDataObject();
     assertNotNull(xmlNotificationData);
     String xmlDownloadLink =
         ((ArchiveExportNotificationData) xmlNotificationData).getDownloadLink();
     assertTrue(
-        "unexpected download link: " + xmlDownloadLink,
-        xmlDownloadLink.startsWith("http") && xmlDownloadLink.contains("-xml-"));
+        xmlDownloadLink.startsWith("http") && xmlDownloadLink.contains("-xml-"),
+        "unexpected download link: " + xmlDownloadLink);
   }
 
   @Test
@@ -2187,8 +2153,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     String imgHtml = String.format(linkedImageHtmlF, anyImageLink);
     User user = createInitAndLoginAnyUser();
     StructuredDocument sdocA = createBasicDocumentInRootFolderWithText(user, imgHtml);
-    final ArchiveExportConfig cfgHtml =
-        createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfgHtml = createDefaultArchiveConfig(user, tempExportFolder);
     cfgHtml.setArchiveType(ArchiveExportConfig.HTML);
     ArchiveResult resultHtml =
         exportImportMgr
@@ -2220,8 +2185,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
             + " allowfullscreen=\"\"></iframe></div>";
     User user = createInitAndLoginAnyUser();
     StructuredDocument sdocA = createBasicDocumentInRootFolderWithText(user, joveAccessHtml);
-    final ArchiveExportConfig cfgHtml =
-        createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfgHtml = createDefaultArchiveConfig(user, tempExportFolder);
     cfgHtml.setArchiveType(ArchiveExportConfig.HTML);
     ArchiveResult resultHtml =
         exportImportMgr
@@ -2301,8 +2265,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(0, getNewNotificationCount(user));
 
     // HTML EXPORT
-    final ArchiveExportConfig cfgHtml =
-        createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    final ArchiveExportConfig cfgHtml = createDefaultArchiveConfig(user, tempExportFolder);
     cfgHtml.setArchiveType(ArchiveExportConfig.HTML);
     cfgHtml.setIncludeNfsLinks(true);
     cfgHtml.setMaxNfsFileSize(1_000_000);
@@ -2347,17 +2310,17 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(Integer.valueOf(1), newNotifications.getHits());
     Notification htmlNotification = newNotifications.getFirstResult();
     String htmlExportNotificationMsg = htmlNotification.getNotificationMessage();
-    assertTrue(htmlExportNotificationMsg, htmlExportNotificationMsg.contains("-html-"));
-    assertTrue(htmlExportNotificationMsg, htmlExportNotificationMsg.contains("/export/report/"));
+    assertTrue(htmlExportNotificationMsg.contains("-html-"), htmlExportNotificationMsg);
+    assertTrue(htmlExportNotificationMsg.contains("/export/report/"), htmlExportNotificationMsg);
     assertTrue(
-        htmlExportNotificationMsg, htmlExportNotificationMsg.contains("1 linked filestore item"));
+        htmlExportNotificationMsg.contains("1 linked filestore item"), htmlExportNotificationMsg);
     NotificationData htmlNotificationData = htmlNotification.getNotificationDataObject();
     assertNotNull(htmlNotificationData);
     String htmlDownloadLink =
         ((ArchiveExportNotificationData) htmlNotificationData).getDownloadLink();
     assertTrue(
-        "unexpected download link: " + htmlDownloadLink,
-        htmlDownloadLink.startsWith("http") && htmlDownloadLink.contains("-html-"));
+        htmlDownloadLink.startsWith("http") && htmlDownloadLink.contains("-html-"),
+        "unexpected download link: " + htmlDownloadLink);
   }
 
   // rspac-2240
@@ -2368,7 +2331,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
     StructuredDocument doc = createBasicDocumentInRootFolderWithText(user, "any");
     EcatImage ecatImage = addImageToField(doc.getFields().get(0), user);
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setMaxLinkLevel(0);
     ArchiveResult resultXml =
         exportImportMgr
@@ -2395,7 +2358,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
   public void testExportNotificationWithMockAwsS3() throws Exception {
     User user = createInitAndLoginAnyUser();
     StructuredDocument doc = createBasicDocumentInRootFolderWithText(user, "any");
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     cfg.setArchiveType(ArchiveExportConfig.HTML);
     // Mock S3 Utilities
     SdkHttpResponse sdkHttpResponse = SdkHttpResponse.builder().statusCode(200).build();
@@ -2428,10 +2391,10 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
     assertEquals(Integer.valueOf(1), newNotifications.getHits());
     Notification htmlNotification = newNotifications.getFirstResult();
     String htmlExportNotificationMsg = htmlNotification.getNotificationMessage();
-    assertTrue(htmlExportNotificationMsg, htmlExportNotificationMsg.contains("-html-"));
-    assertTrue(htmlExportNotificationMsg, htmlExportNotificationMsg.contains("/export/report/"));
+    assertTrue(htmlExportNotificationMsg.contains("-html-"), htmlExportNotificationMsg);
+    assertTrue(htmlExportNotificationMsg.contains("/export/report/"), htmlExportNotificationMsg);
     assertTrue(
-        htmlExportNotificationMsg, htmlExportNotificationMsg.contains("http://www.google.com"));
+        htmlExportNotificationMsg.contains("http://www.google.com"), htmlExportNotificationMsg);
     NotificationData htmlNotificationData = htmlNotification.getNotificationDataObject();
     assertNotNull(htmlNotificationData);
 
@@ -2478,7 +2441,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
 
     // export and reimport. Leave a short wait, as there is some loss of precision with millis being
     // rounded to nearest second.
-    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder.getRoot());
+    ArchiveExportConfig cfg = createDefaultArchiveConfig(user, tempExportFolder);
     ArchiveResult archiveResult =
         exportImportMgr
             .asyncExportSelectionToArchive(
@@ -2489,8 +2452,7 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
                 standardPostExport)
             .get();
 
-    ArchivalImportConfig importCfg =
-        createDefaultArchiveImportConfig(user, tempImportFolder.getRoot());
+    ArchivalImportConfig importCfg = createDefaultArchiveImportConfig(user, tempImportFolder);
     ImportArchiveReport report =
         exportImportMgr.importArchive(
             fileToMultipartfile(

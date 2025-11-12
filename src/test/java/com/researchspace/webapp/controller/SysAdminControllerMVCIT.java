@@ -5,13 +5,7 @@ import static com.researchspace.session.SessionAttributeUtils.USER_INFO;
 import static com.researchspace.session.UserSessionTracker.USERS_KEY;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasProperty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -59,14 +53,15 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockServletContext;
@@ -75,12 +70,12 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SysAdminControllerMVCIT extends MVCTestBase {
 
   private static final String DUPLICATE_EMAILOR_UNAME_MSG =
       "Please try a different username and/or email";
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock Logger log;
 
   private @Autowired MockServletContext servletContext;
@@ -92,13 +87,13 @@ public class SysAdminControllerMVCIT extends MVCTestBase {
   private @Autowired SysAdminController controller;
   private @Autowired UserManager userMgr;
 
-  @After
+  @AfterEach
   public void teardown() throws Exception {
     getBeanOfClass(ConfigurableLogger.class).setLoggerDefault();
     super.tearDown();
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
     sysAdmin = createAndSaveUser(CoreTestUtils.getRandomName(10), Constants.SYSADMIN_ROLE);
@@ -600,8 +595,8 @@ public class SysAdminControllerMVCIT extends MVCTestBase {
     MvcResult removeResult = mockMvc.perform(removeBuilder).andExpect(status().isOk()).andReturn();
     String removeResultString = removeResult.getResponse().getContentAsString();
     assertTrue(
-        "expected remove success: " + removeResultString,
-        removeResultString.contains("] deleted\""));
+        removeResultString.contains("] deleted\""),
+        "expected remove success: " + removeResultString);
     assertFalse(imageFile.exists());
   }
 
@@ -783,7 +778,7 @@ public class SysAdminControllerMVCIT extends MVCTestBase {
   }
 
   private void assertSuccessResponse(String resultString) {
-    assertTrue("Result string was " + resultString, resultString.contains("Success"));
+    assertTrue(resultString.contains("Success"), "Result string was " + resultString);
   }
 
   @Test

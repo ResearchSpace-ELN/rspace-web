@@ -3,8 +3,8 @@ package com.axiope.service.cfg;
 import static com.researchspace.auth.ApiRealm.API_REALM_NAME;
 import static com.researchspace.auth.ExternalAuthPassThruRealm.EXT_OAUTH_REAM_NAME;
 import static com.researchspace.auth.SSOPassThruRealm.SSO_REALM_NAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.auth.LdapRealm;
 import com.researchspace.auth.ShiroRealm;
@@ -22,9 +22,10 @@ import com.researchspace.testutils.CommunityTestContext;
 import com.researchspace.testutils.SSOTestContext;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -52,10 +53,10 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 })
 public class SecurityRealmConfigTest {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   // mocking some dependencies mean we don't have to load all the classes in prod configuration,
@@ -173,8 +174,9 @@ public class SecurityRealmConfigTest {
     }
   }
 
+  @Nested
   @TestPropertySource(properties = {"deployment.standalone=true"})
-  public static class StandaloneEnterpriseProdConfigTest extends ProdSecurityTestBase {
+  public class StandaloneEnterpriseProdConfigTest extends ProdSecurityTestBase {
     @Test
     public void testRealm() {
       assertEquals(3, realmMgr.getRealms().size());
@@ -184,9 +186,10 @@ public class SecurityRealmConfigTest {
     }
   }
 
+  @Nested
   @TestPropertySource(
       properties = {"deployment.standalone=true", "ldap.authentication.enabled=true"})
-  public static class StandaloneLdapEnterpriseProdConfigTest extends ProdSecurityTestBase {
+  public class StandaloneLdapEnterpriseProdConfigTest extends ProdSecurityTestBase {
     @Test
     public void testRealm() {
       assertEquals(4, realmMgr.getRealms().size());
@@ -198,7 +201,8 @@ public class SecurityRealmConfigTest {
   }
 
   @CommunityTestContext
-  public static class CommunityProdConfigTest extends ProdSecurityTestBase {
+  @Nested
+  public class CommunityProdConfigTest extends ProdSecurityTestBase {
     @Test
     public void testRealm() {
       assertEquals(4, realmMgr.getRealms().size());
@@ -209,8 +213,9 @@ public class SecurityRealmConfigTest {
     }
   }
 
+  @Nested
   @SSOTestContext
-  public static class SSOProdConfigTest extends ProdSecurityTestBase {
+  public class SSOProdConfigTest extends ProdSecurityTestBase {
     @Test
     public void testRealm() {
       assertEquals(3, realmMgr.getRealms().size());
@@ -220,9 +225,10 @@ public class SecurityRealmConfigTest {
     }
   }
 
+  @Nested
   @SSOTestContext
   @TestPropertySource(properties = {"deployment.sso.adminLogin.enabled=true"})
-  public static class SSOAdminLoginProdConfigTest extends ProdSecurityTestBase {
+  public class SSOAdminLoginProdConfigTest extends ProdSecurityTestBase {
     @Test
     public void testRealm() {
       assertEquals(4, realmMgr.getRealms().size());
@@ -233,8 +239,9 @@ public class SecurityRealmConfigTest {
     }
   }
 
+  @Nested
   @TestPropertySource(properties = {"deployment.standalone=true", "collabora.wopi.enabled=true"})
-  public static class CollaboraProdConfigTest extends ProdSecurityTestBase {
+  public class CollaboraProdConfigTest extends ProdSecurityTestBase {
     @Test
     public void testRealm() {
       assertEquals(4, realmMgr.getRealms().size());
@@ -245,8 +252,9 @@ public class SecurityRealmConfigTest {
     }
   }
 
+  @Nested
   @TestPropertySource(properties = {"deployment.standalone=true", "msoffice.wopi.enabled=true"})
-  public static class MsOfficeProdConfigTest extends ProdSecurityTestBase {
+  public class MsOfficeProdConfigTest extends ProdSecurityTestBase {
     @Test
     public void testRealm() {
       assertEquals(4, realmMgr.getRealms().size());

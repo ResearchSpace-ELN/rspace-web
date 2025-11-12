@@ -1,8 +1,6 @@
 package com.researchspace.integrations.galaxy.service;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.galaxy.model.output.upload.DatasetCollection;
 import com.researchspace.model.externalWorkflows.ExternalWorkFlowData;

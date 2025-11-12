@@ -1,6 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,8 +22,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -46,7 +46,7 @@ public class ThumbnailControllerMVCIT extends MVCTestBase {
   Field field;
   Long documentId;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     super.setUp();

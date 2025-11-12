@@ -1,6 +1,6 @@
 package com.researchspace.testutils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.Constants;
 import com.researchspace.dao.*;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.search.Search;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener;
@@ -48,7 +48,7 @@ public abstract class SpringTransactionalTest extends BaseManagerTestCaseBase {
   protected @Autowired InternalFileStore fileStore;
   protected @Autowired UserConnectionManager connMgr;
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     contentInitializer.setCustomInitActive(true); // restore defaults
   }

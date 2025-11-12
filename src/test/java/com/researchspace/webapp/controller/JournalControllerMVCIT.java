@@ -2,9 +2,7 @@ package com.researchspace.webapp.controller;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,12 +21,12 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,7 +37,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @WebAppConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodName.class)
 @RunWith(ConditionalTestRunner.class)
 public class JournalControllerMVCIT extends MVCTestBase {
 
@@ -48,13 +46,13 @@ public class JournalControllerMVCIT extends MVCTestBase {
   private MockMvc mockMvc;
   @Autowired private MvcTestUtils mvcUtils;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     RSpaceTestUtils.logout();
   }
@@ -211,8 +209,8 @@ public class JournalControllerMVCIT extends MVCTestBase {
     assertNull(result.getResolvedException());
     // initial entry retrieval may be a bit longer, as classes/tables are being loaded first time
     assertTrue(
-        "opening notebook should take under 4 seconds, but was: " + notebookOpeningTime.toString(),
-        notebookOpeningTime.getSeconds() < 4);
+        notebookOpeningTime.getSeconds() < 4,
+        "opening notebook should take under 4 seconds, but was: " + notebookOpeningTime.toString());
 
     // switch to next entry
     Instant nextEntryStart = Instant.now();
@@ -229,7 +227,7 @@ public class JournalControllerMVCIT extends MVCTestBase {
     assertNull(result2.getResolvedException());
     // subsequent entry retrieval should be faster
     assertTrue(
-        "switching entry should take under 2 second, but was: " + entrySwitchTime.toString(),
-        entrySwitchTime.getSeconds() < 2);
+        entrySwitchTime.getSeconds() < 2,
+        "switching entry should take under 2 second, but was: " + entrySwitchTime.toString());
   }
 }

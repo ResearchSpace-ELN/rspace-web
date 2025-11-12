@@ -1,10 +1,12 @@
 package com.axiope.service.cfg;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.service.impl.EmailBroadcastImp;
 import com.researchspace.service.impl.StrictEmailContentGenerator;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -28,8 +30,8 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
  *
  * <p>
  */
-@RunWith(Suite.class)
-@SuiteClasses({EmailBroadcasterConfigTest.TestBase.class})
+@org.junit.platform.suite.api.Suite
+@SelectClasses({EmailBroadcasterConfigTest.TestBase.class})
 public class EmailBroadcasterConfigTest {
 
   @Configuration
@@ -66,9 +68,10 @@ public class EmailBroadcasterConfigTest {
    * to test the logic in the configuration class.
    */
   @ContextConfiguration(classes = {EmailConfig.class})
+  @Nested
   @ActiveProfiles(profiles = {"emailConfig"})
   @TestPropertySource(properties = {"mail.maxEmailsPerSecond=23", "mail.addressChunkSize=21"})
-  public static class TestBase extends AbstractJUnit4SpringContextTests {
+  public class TestBase extends AbstractJUnit4SpringContextTests {
     private @Autowired EmailBroadcastImp emailImpl;
 
     @Test

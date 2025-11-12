@@ -5,22 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.api.v1.model.ApiSubSample;
 import com.researchspace.model.record.BaseRecord;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SubsampleApiPutValidatorTest extends InventoryRecordValidationTestBase {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
 
   @Autowired private SubSampleApiPutValidator subSampleValidator;
 
-  @Before
+  @BeforeEach
   public void setup() {
     validator = subSampleValidator;
   }

@@ -2,8 +2,9 @@ package com.researchspace.service;
 
 import static com.researchspace.testutils.RSpaceTestUtils.logout;
 import static com.researchspace.testutils.RSpaceTestUtils.logoutCurrUserAndLoginAs;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.TransformerUtils;
 import com.researchspace.dao.FormCreateMenuDao;
@@ -22,9 +23,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FormManagerTest extends SpringTransactionalTest {
@@ -38,14 +39,14 @@ public class FormManagerTest extends SpringTransactionalTest {
 
   User user = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     user = createAndSaveUserIfNotExists(getRandomAlphabeticString("frmMgr"));
     initialiseContentWithEmptyContent(user);
     logoutAndLoginAs(user);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     logout();
   }
@@ -85,15 +86,19 @@ public class FormManagerTest extends SpringTransactionalTest {
     formMgr.create(user);
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void publishFormTestRequiresAuthorization() {
-    // check permissionsAreNeeded
-    // need
-    RSForm form = formMgr.create(user);
-    // this user does not have rights to share the template.
-    logoutCurrUserAndLoginAs(USER1A, USER1APWD);
-    User u = userDao.getUserByUsername(USER1A);
-    formMgr.publish(form.getId(), true, null, u);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          // check permissionsAreNeeded
+          // need
+          RSForm form = formMgr.create(user);
+          // this user does not have rights to share the template.
+          logoutCurrUserAndLoginAs(USER1A, USER1APWD);
+          User u = userDao.getUserByUsername(USER1A);
+          formMgr.publish(form.getId(), true, null, u);
+        });
   }
 
   @Test
@@ -133,15 +138,19 @@ public class FormManagerTest extends SpringTransactionalTest {
     assertEquals("date2", form2.getFieldForms().iterator().next().getName());
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void updateFieldFormTestIsAuthorised() throws Exception {
-    RSForm form = formMgr.create(user);
-    DateFieldDTO<DateFieldForm> dto = createAnyDTO("date");
-    DateFieldDTO<DateFieldForm> dto2 = createAnyDTO("date2");
-    DateFieldForm dft = formMgr.createFieldForm(dto, form.getId(), user);
-    logoutCurrUserAndLoginAs(USER1A, USER1APWD);
-    User imposter = userDao.getUserByUsername(USER1A);
-    formMgr.updateFieldForm(dto2, dft.getId(), imposter);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          RSForm form = formMgr.create(user);
+          DateFieldDTO<DateFieldForm> dto = createAnyDTO("date");
+          DateFieldDTO<DateFieldForm> dto2 = createAnyDTO("date2");
+          DateFieldForm dft = formMgr.createFieldForm(dto, form.getId(), user);
+          logoutCurrUserAndLoginAs(USER1A, USER1APWD);
+          User imposter = userDao.getUserByUsername(USER1A);
+          formMgr.updateFieldForm(dto2, dft.getId(), imposter);
+        });
   }
 
   @Test
@@ -183,13 +192,17 @@ public class FormManagerTest extends SpringTransactionalTest {
     assertEquals(1, form2.getNumActiveFields());
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void createFieldFormIsAuthorised() {
-    RSForm form = formMgr.create(user);
-    NumberFieldDTO<NumberFieldForm> dto = createAnyNumberFieldDTO();
-    logoutCurrUserAndLoginAs(USER1A, USER1APWD);
-    User imposter = userDao.getUserByUsername(USER1A);
-    formMgr.createFieldForm(dto, form.getId(), imposter);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          RSForm form = formMgr.create(user);
+          NumberFieldDTO<NumberFieldForm> dto = createAnyNumberFieldDTO();
+          logoutCurrUserAndLoginAs(USER1A, USER1APWD);
+          User imposter = userDao.getUserByUsername(USER1A);
+          formMgr.createFieldForm(dto, form.getId(), imposter);
+        });
   }
 
   private NumberFieldDTO<NumberFieldForm> createAnyNumberFieldDTO() {
@@ -510,7 +523,7 @@ public class FormManagerTest extends SpringTransactionalTest {
     assertTrue(currTime.before(new Date(altered.getModificationDate())));
   }
 
-  @Test()
+  @Test
   public void testDeleteForm() throws Exception {
     RSForm form = formMgr.create(user);
     assertTrue(form.isNewState());

@@ -1,7 +1,7 @@
 package com.researchspace.dao.hibernate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.axiope.search.SearchConstants;
 import com.researchspace.model.PaginationCriteria;
@@ -12,9 +12,9 @@ import com.researchspace.model.record.TestFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NameDateFilterTest {
 
@@ -27,12 +27,12 @@ public class NameDateFilterTest {
 
   NameDateFilterImpl ndf;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     ndf = new NameDateFilterTSS();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

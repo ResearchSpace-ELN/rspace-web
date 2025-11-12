@@ -28,21 +28,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class OntologyDocManagerTest {
   public static final long ONTOLOGY_FOLDER_ID = 111L;
   public static final long USER_ROOT_FOLDER_ID = 666L;
   public static final long ICON_ID = 777L;
   public static final long ONTOLOGY_FORM_ID = 1001L;
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   @Mock private RecordManager recordMgr;
   @Mock private UserManager userManager;
   @Mock private FolderManager folderManagerMock;
@@ -70,7 +72,7 @@ public class OntologyDocManagerTest {
   @Mock private Folder ontologyFolderMock;
   private String[] witnesses;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ClassLoader classLoader = getClass().getClassLoader();
     lineBreakMidQuotedStringontologyDocument =

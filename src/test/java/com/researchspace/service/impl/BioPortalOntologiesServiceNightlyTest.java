@@ -3,7 +3,7 @@ package com.researchspace.service.impl;
 import static com.researchspace.service.impl.OntologyDocManager.RSPACE_EXTONTOLOGY_NAME_DELIM;
 import static com.researchspace.service.impl.OntologyDocManager.RSPACE_EXTONTOLOGY_URL_DELIMITER;
 import static com.researchspace.service.impl.OntologyDocManager.RSPACE_EXTONTOLOGY_VERSION_DELIM;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.client.BioPortalOntologiesClient;
 import java.util.List;

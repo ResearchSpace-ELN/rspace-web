@@ -21,21 +21,21 @@ import com.researchspace.model.field.TextFieldForm;
 import com.researchspace.model.record.RSForm;
 import com.researchspace.testutils.RealTransactionSpringTestBase;
 import javax.validation.ConstraintViolationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FormManagerIT extends RealTransactionSpringTestBase {
 
   private @Autowired FormManager formMgr;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

@@ -5,9 +5,7 @@ import static com.researchspace.model.record.TestFactory.createAnyGroup;
 import static com.researchspace.model.record.TestFactory.createAnyMessageForRecipientOfType;
 import static com.researchspace.model.record.TestFactory.createAnyUser;
 import static com.researchspace.model.record.TestFactory.createAnyUserWithRole;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.ISearchResults;
 import com.researchspace.dao.CommunicationDao;
@@ -22,18 +20,20 @@ import com.researchspace.model.comms.MessageType;
 import com.researchspace.model.dtos.MessageTypeFilter;
 import com.researchspace.model.permissions.IGroupPermissionUtils;
 import com.researchspace.service.impl.PiChangeHandlerImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class PostPiChangeHandlerTest {
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   @Mock CommunicationManager commMgr;
   @Mock CommunicationDao commDao;
   @Mock SignatureDao sigDao;
@@ -42,10 +42,10 @@ public class PostPiChangeHandlerTest {
 
   @InjectMocks PiChangeHandlerImpl handler;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

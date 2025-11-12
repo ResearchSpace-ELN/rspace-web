@@ -1,10 +1,6 @@
 package com.researchspace.recordsandbox;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.User;
 import com.researchspace.model.core.RecordType;
@@ -13,16 +9,16 @@ import com.researchspace.model.record.Folder;
 import com.researchspace.model.record.IllegalAddChildOperation;
 import com.researchspace.model.record.RSPath;
 import com.researchspace.model.record.TestFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FolderRelnTest {
 
   static User owner, user2, u3, u4, ROOT;
   static Folder p1, p2, p3, p4, ROOT_NODE, a, b, c, d, cP;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     owner = TestFactory.createAnyUser("user1");
     u3 = TestFactory.createAnyUser("u3");
@@ -31,7 +27,7 @@ public class FolderRelnTest {
     user2 = TestFactory.createAnyUser("user2");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -53,36 +49,47 @@ public class FolderRelnTest {
     assertFalse(parent.removeChild(TestFactory.createAFolder("3", owner)));
   }
 
-  @Test(expected = IllegalAddChildOperation.class)
-  public void testAddRemoveChildNoSelfEdges() throws IllegalAddChildOperation {
-    Folder parent = TestFactory.createAFolder("1", owner);
-    Folder child = TestFactory.createAFolder("2", owner);
-    parent.addChild(parent, owner);
+  @Test
+  public void testAddRemoveChildNoSelfEdges() {
+    assertThrows(
+        IllegalAddChildOperation.class,
+        () -> {
+          Folder parent = TestFactory.createAFolder("1", owner);
+          Folder child = TestFactory.createAFolder("2", owner);
+          parent.addChild(parent, owner);
+        });
   }
 
-  @Test(expected = IllegalAddChildOperation.class)
-  public void testCannotCreateSimpleCycles() throws IllegalAddChildOperation {
-    Folder parent = TestFactory.createAFolder("1", owner);
-    Folder child = TestFactory.createAFolder("2", owner);
-    Folder grandchild = TestFactory.createAFolder("3", owner);
+  @Test
+  public void testCannotCreateSimpleCycles() {
+    assertThrows(
+        IllegalAddChildOperation.class,
+        () -> {
+          Folder parent = TestFactory.createAFolder("1", owner);
+          Folder child = TestFactory.createAFolder("2", owner);
+          Folder grandchild = TestFactory.createAFolder("3", owner);
 
-    parent.addChild(child, owner);
-    child.addChild(grandchild, owner);
+          parent.addChild(child, owner);
+          child.addChild(grandchild, owner);
 
-    assertNull(grandchild.addChild(parent, owner));
-    assertNull(grandchild.addChild(child, owner));
+          assertNull(grandchild.addChild(parent, owner));
+          assertNull(grandchild.addChild(child, owner));
+        });
   }
 
-  @Test(expected = IllegalAddChildOperation.class)
-  public void testCannotCreateCyclesWithMultipleParents() throws IllegalAddChildOperation {
+  @Test
+  public void testCannotCreateCyclesWithMultipleParents() {
+    assertThrows(
+        IllegalAddChildOperation.class,
+        () -> {
+          Folder parent = TestFactory.createAFolder("1", owner);
+          Folder parent2 = TestFactory.createAFolder("2", owner);
+          Folder child = TestFactory.createAFolder("3", owner);
+          parent.addChild(child, owner);
+          parent2.addChild(child, owner);
 
-    Folder parent = TestFactory.createAFolder("1", owner);
-    Folder parent2 = TestFactory.createAFolder("2", owner);
-    Folder child = TestFactory.createAFolder("3", owner);
-    parent.addChild(child, owner);
-    parent2.addChild(child, owner);
-
-    assertNull(child.addChild(parent2, owner));
+          assertNull(child.addChild(parent2, owner));
+        });
   }
 
   @Test

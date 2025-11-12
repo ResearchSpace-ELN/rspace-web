@@ -1,9 +1,6 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.testutil.CoreTestUtils;
 import com.researchspace.core.testutil.StringAppenderForTestLogging;
@@ -39,9 +36,9 @@ import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 
@@ -98,7 +95,7 @@ public class EmailBroadcastTest extends SpringTransactionalTest {
   private EmailBroadcastImp broadcast = new EmailBroadcastImp();
   EmailBroadcast api = broadcast;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // we need to explicitly create this, as it is only created by Spring in 'prod' profile
     // and these tests run in dev profile.
@@ -108,7 +105,7 @@ public class EmailBroadcastTest extends SpringTransactionalTest {
     broadcast.init();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -216,8 +213,8 @@ public class EmailBroadcastTest extends SpringTransactionalTest {
     broadcast.sendHtmlEmail("any", anyHtmlBody(), Collections.emptyList(), null);
     String firstMessage = testStringAppender.logContents;
     assertTrue(
-        "unexpected content: " + firstMessage,
-        firstMessage.startsWith(EmailBroadcastImp.AUTHENTICATION_FAILURE_PREFIX));
+        firstMessage.startsWith(EmailBroadcastImp.AUTHENTICATION_FAILURE_PREFIX),
+        "unexpected content: " + firstMessage);
 
     testStringAppender.clearLog();
     SendFailureBroadcasterStub broadcast2 = new SendFailureBroadcasterStub();
@@ -225,8 +222,8 @@ public class EmailBroadcastTest extends SpringTransactionalTest {
     broadcast2.sendHtmlEmail("any", anyHtmlBody(), Collections.emptyList(), null);
     firstMessage = testStringAppender.logContents;
     assertTrue(
-        "unexpected content: " + firstMessage,
-        firstMessage.startsWith(EmailBroadcastImp.SEND_FAILURE_PREFIX));
+        firstMessage.startsWith(EmailBroadcastImp.SEND_FAILURE_PREFIX),
+        "unexpected content: " + firstMessage);
 
     testStringAppender.clearLog();
     IllegalWriteFailureBroadcasterStub broadcast3 = new IllegalWriteFailureBroadcasterStub();
@@ -234,8 +231,8 @@ public class EmailBroadcastTest extends SpringTransactionalTest {
     broadcast3.sendHtmlEmail("any", anyHtmlBody(), Collections.emptyList(), null);
     firstMessage = testStringAppender.logContents;
     assertTrue(
-        "unexpected content: " + firstMessage,
-        firstMessage.startsWith(EmailBroadcastImp.GENERAL_FAILURE_PREFIX));
+        firstMessage.startsWith(EmailBroadcastImp.GENERAL_FAILURE_PREFIX),
+        "unexpected content: " + firstMessage);
   }
 
   @Test

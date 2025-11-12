@@ -1,10 +1,8 @@
 package com.researchspace.documentconversion.ext;
 
 import static org.apache.commons.io.FilenameUtils.getBaseName;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.version.SemanticVersion;
 import com.researchspace.documentconversion.spi.ConversionResult;
@@ -19,8 +17,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +41,7 @@ public class AsposeWebAppClientTestIT extends AbstractJUnit4SpringContextTests {
   final int EXPECTED_WORDFILE_TO_HTML_LENGTH = 26210;
   final int EXPECTED_HTML_TO_DOC = 166400;
 
-  @Before
+  @BeforeEach
   public void before() throws URISyntaxException {
     URI uri = new URI(env.getProperty("aspose.web.url"));
     client = new AsposeWebAppClient(uri, null, () -> "AsposeWebAppClientTestIT");

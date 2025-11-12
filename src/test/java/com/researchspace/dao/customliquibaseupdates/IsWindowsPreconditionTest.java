@@ -1,21 +1,21 @@
 package com.researchspace.dao.customliquibaseupdates;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import liquibase.exception.CustomPreconditionErrorException;
 import liquibase.exception.CustomPreconditionFailedException;
 import liquibase.precondition.CustomPrecondition;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IsWindowsPreconditionTest {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

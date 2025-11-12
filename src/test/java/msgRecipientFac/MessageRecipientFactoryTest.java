@@ -1,10 +1,7 @@
 package msgRecipientFac;
 
 import static com.researchspace.core.util.TransformerUtils.toSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.User;
 import com.researchspace.model.comms.CommunicationTarget;
@@ -19,9 +16,9 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.MimeMessage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MessageRecipientFactoryTest {
   MessageRecipientFactory fac = null;
@@ -29,12 +26,12 @@ public class MessageRecipientFactoryTest {
   User recip1 = TestFactory.createAnyUser("u2");
   User recip2 = TestFactory.createAnyUser("u3");
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     fac = new MessageRecipientFactory();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

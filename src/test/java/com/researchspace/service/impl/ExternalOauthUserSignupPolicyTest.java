@@ -1,6 +1,7 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.core.util.TransformerUtils;
@@ -10,35 +11,34 @@ import com.researchspace.service.UserExistsException;
 import com.researchspace.service.UserManager;
 import java.util.Collections;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.ObjectRetrievalFailureException;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ExternalOauthUserSignupPolicyTest {
 
   @InjectMocks ExternalOauthUserSignupPolicy policy;
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   @Mock UserManager userMgr;
   MockHttpServletRequest req;
   ;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     req = new MockHttpServletRequest();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -61,30 +61,38 @@ public class ExternalOauthUserSignupPolicyTest {
 
   }
 
-  @Test(expected = UserExistsException.class)
-  public void testSaveNewUserExistingUsername() throws UserExistsException {
-    User user = TestFactory.createAnyUser("user1");
-    User fromDBUserWithSameUsername = TestFactory.createAnyUser("user1");
-    fromDBUserWithSameUsername.setEmail("differeentEmail@test.com");
+  @Test
+  public void testSaveNewUserExistingUsername() {
+    assertThrows(
+        UserExistsException.class,
+        () -> {
+          User user = TestFactory.createAnyUser("user1");
+          User fromDBUserWithSameUsername = TestFactory.createAnyUser("user1");
+          fromDBUserWithSameUsername.setEmail("differeentEmail@test.com");
 
-    List<User> fromDB = Collections.emptyList();
-    when(userMgr.saveNewUser(user)).thenThrow(userExistsException());
-    when(userMgr.getUserByEmail(user.getEmail())).thenReturn(fromDB);
-    policy.saveUser(user, req);
+          List<User> fromDB = Collections.emptyList();
+          when(userMgr.saveNewUser(user)).thenThrow(userExistsException());
+          when(userMgr.getUserByEmail(user.getEmail())).thenReturn(fromDB);
+          policy.saveUser(user, req);
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testSaveNewUserISEForUnlikelyScenario() throws UserExistsException {
-    // diff usernames and email but not signed up
-    User user = TestFactory.createAnyUser("user1");
-    User other = TestFactory.createAnyUser("user2");
-    other.setEmail("differeentEmail@test.com");
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          // diff usernames and email but not signed up
+          User user = TestFactory.createAnyUser("user1");
+          User other = TestFactory.createAnyUser("user2");
+          other.setEmail("differeentEmail@test.com");
 
-    List<User> fromDB = Collections.emptyList();
-    when(userMgr.saveNewUser(user)).thenThrow(userExistsException());
-    when(userMgr.getUserByEmail(user.getEmail())).thenReturn(fromDB);
-    when(userMgr.getUserByUsername(user.getUsername())).thenThrow(objectRetrievalEXc());
-    policy.saveUser(user, req);
+          List<User> fromDB = Collections.emptyList();
+          when(userMgr.saveNewUser(user)).thenThrow(userExistsException());
+          when(userMgr.getUserByEmail(user.getEmail())).thenReturn(fromDB);
+          when(userMgr.getUserByUsername(user.getUsername())).thenThrow(objectRetrievalEXc());
+          policy.saveUser(user, req);
+        });
   }
 
   private ObjectRetrievalFailureException objectRetrievalEXc() {

@@ -1,10 +1,5 @@
 package com.axiope.service.cfg;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import com.researchspace.document.importer.ExternalFileImporter;
 import com.researchspace.document.importer.MSWordImporter;
 import com.researchspace.document.importer.RSpaceDocumentCreator;
@@ -14,10 +9,10 @@ import com.researchspace.service.FolderManager;
 import com.researchspace.service.LicenseService;
 import com.researchspace.service.impl.license.NoCheckLicenseService;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +24,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This test class tests how different deployment property settings affect the connfiguration of
@@ -42,8 +42,8 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
  * cfg.embeddedAsposeDocumentConversionService() is called, we'll just get the DummyConverter back.
  * This is fine, we just want to test here the conditions under which it is called.
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@Suite
+@SelectClasses({
   DocConverterConfigTest.EmbeddedNotUsedTest.class,
   DocConverterConfigTest.AppTest.class,
   DocConverterConfigTest.AppConverterNotSetIfNoExecutableFileFound.class,
@@ -139,7 +139,8 @@ public class DocConverterConfigTest {
     }
   }
 
-  public static class EmbeddedNotUsedTest extends TestBase {
+  @Nested
+  public class EmbeddedNotUsedTest extends TestBase {
     // no aspose.app application path property set by default, so null converter should be set.
     @Test
     public void testEmbeddedConfig() {
@@ -151,17 +152,18 @@ public class DocConverterConfigTest {
 
   // any file that exists in project should work OK here.
   //  aspose.app application path property IS set , so application converter should be set.
+  @Nested
   @TestPropertySource(
       properties = {
         "aspose.app=src/test/resources/TestResources/file.sh",
         "aspose.license=src/test/resources/TestResources/file.sh"
       })
-  public static class AppTest extends TestBase {
+  public class AppTest extends TestBase {
     @Test
     public void testAppConfig() {
       List<DocumentConversionService> delegates = getConverterList();
       assertEquals(2, delegates.size());
-      assertNotNull("cfg is null", cfg);
+      assertNotNull(cfg, "cfg is null");
       assertTrue(delegates.contains(cfg.asyncConverterService()));
       assertFalse(delegates.contains(cfg.nullService()));
     }
@@ -169,32 +171,34 @@ public class DocConverterConfigTest {
 
   // any file that exists in project should work OK here.
   //  aspose.app application path property IS set , so application converter should be set.
+  @Nested
   @TestPropertySource(
       properties = {"aspose.app=src/test/resources/TestResources/file.sh", "aspose.license="})
-  public static class NoopAddedIfNoAsposeLicense extends TestBase {
+  public class NoopAddedIfNoAsposeLicense extends TestBase {
     @Test
     public void testAppConfig() {
       List<DocumentConversionService> delegates = getConverterList();
       assertEquals(2, delegates.size());
-      assertNotNull("cfg is null", cfg);
+      assertNotNull(cfg, "cfg is null");
       assertFalse(delegates.contains(cfg.asyncConverterService()));
       assertTrue(delegates.contains(cfg.nullService()));
     }
   }
 
   // if web app url is set, this overrides aspose-app properties
+  @Nested
   @TestPropertySource(
       properties = {
         "aspose.app=src/test/resources/TestResources/file.sh",
         "aspose.license=src/test/resources/TestResources/file.sh",
         "aspose.web.url=http://something.com"
       })
-  public static class WebappConverterIfURLSet extends TestBase {
+  public class WebappConverterIfURLSet extends TestBase {
     @Test
     public void testAppConfig() {
       List<DocumentConversionService> delegates = getConverterList();
       assertEquals(2, delegates.size());
-      assertNotNull("cfg is null", cfg);
+      assertNotNull(cfg, "cfg is null");
 
       assertFalse(delegates.contains(cfg.asyncConverterService()));
       assertFalse(delegates.contains(cfg.nullService()));
@@ -210,13 +214,14 @@ public class DocConverterConfigTest {
         DocConverterProdConfigTSSNonExecutableAsposePathTSS.class,
         DocConverterBaseConfig.class
       })
+  @Nested
   @ActiveProfiles(profiles = "prod")
-  public static class AppConverterNotSetIfNoExecutableFileFound extends TestBase {
+  public class AppConverterNotSetIfNoExecutableFileFound extends TestBase {
     @Test
     public void testAppConfig() {
       List<DocumentConversionService> delegates = getConverterList();
       assertEquals(2, delegates.size());
-      assertNotNull("cfg is null", cfg);
+      assertNotNull(cfg, "cfg is null");
       // is not added, embedded is used as a fallback
       assertFalse(delegates.contains(cfg.asyncConverterService()));
     }

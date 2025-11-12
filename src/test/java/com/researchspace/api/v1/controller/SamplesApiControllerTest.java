@@ -2,13 +2,7 @@ package com.researchspace.api.v1.controller;
 
 import static com.researchspace.api.v1.controller.SamplesApiControllerMVCIT.NUM_FIELDS_IN_COMPLEX_SAMPLE;
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -52,8 +46,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -73,7 +67,7 @@ public class SamplesApiControllerTest extends SpringTransactionalTest {
   private static final String PIC1_THUMBNAIL_CONTENT_HASH =
       "9ffa3fa76ae55473cdc319ae72218c1cd375fca2f75c63ff782b6b26bc2debbe";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     openMocks(this);
     sampleDao.resetDefaultTemplateOwner();

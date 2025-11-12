@@ -6,7 +6,8 @@ import com.axiope.service.cfg.EcatMediaFactorySetupTest.EcatMediaFactorySetupTes
 import com.axiope.service.cfg.EcatMediaFactorySetupTest.EcatMediaFactorySetupTestNonDefault;
 import com.researchspace.service.IMediaFactory;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -19,7 +20,8 @@ import org.springframework.test.context.TestPropertySource;
 @SuiteClasses({EcatMediaFactorySetupTestDefault.class, EcatMediaFactorySetupTestNonDefault.class})
 public class EcatMediaFactorySetupTest {
 
-  public static class EcatMediaFactorySetupTestDefault extends SpringTransactionalTest {
+  @Nested
+  public class EcatMediaFactorySetupTestDefault extends SpringTransactionalTest {
     private @Autowired IMediaFactory factory;
 
     @Test
@@ -29,8 +31,9 @@ public class EcatMediaFactorySetupTest {
     }
   }
 
+  @Nested
   @TestPropertySource(properties = {"max.tiff.conversionSize=100"})
-  public static class EcatMediaFactorySetupTestNonDefault extends SpringTransactionalTest {
+  public class EcatMediaFactorySetupTestNonDefault extends SpringTransactionalTest {
     private @Autowired IMediaFactory factory;
 
     @Test

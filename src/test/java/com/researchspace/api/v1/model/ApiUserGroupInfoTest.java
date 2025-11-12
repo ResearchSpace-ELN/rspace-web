@@ -4,7 +4,7 @@ import static com.researchspace.model.record.TestFactory.createAnyGroup;
 import static com.researchspace.model.record.TestFactory.createAnyUser;
 import static com.researchspace.model.record.TestFactory.createAnyUserWithRole;
 import static java.util.Collections.emptySet;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.model.Group;
 import com.researchspace.model.RoleInGroup;

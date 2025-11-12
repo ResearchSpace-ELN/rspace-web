@@ -1,10 +1,7 @@
 package com.researchspace.webapp.controller;
 
 import static com.researchspace.testutils.RSpaceTestUtils.assertAuthExceptionThrown;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -18,18 +15,19 @@ import com.researchspace.service.MessageSourceUtils;
 import com.researchspace.service.NfsManager;
 import com.researchspace.service.UserManager;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.ui.ExtendedModelMap;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class NfsSysAdminControllerTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock NfsManager netFilesMgr;
   @Mock UserManager userMgr;
   @Mock MessageSourceUtils msgSource;
@@ -37,7 +35,7 @@ public class NfsSysAdminControllerTest {
   User sysadmin, otherUser;
   NfsFileSystem nfs = null;
 
-  @Before
+  @BeforeEach
   public void setup() {
     nfsSystemCtrller = new NfsSysAdminController();
     nfsSystemCtrller.setUserManager(userMgr);
@@ -66,11 +64,15 @@ public class NfsSysAdminControllerTest {
     verify(netFilesMgr, atLeastOnce()).getFileSystems();
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void getFileSystemsListFailsForNonSysadmin() throws Exception {
-    when(userMgr.getAuthenticatedUserInSession()).thenReturn(otherUser);
-    nfsSystemCtrller.getFileSystemsList();
-    verify(netFilesMgr, never()).getFileSystems();
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          when(userMgr.getAuthenticatedUserInSession()).thenReturn(otherUser);
+          nfsSystemCtrller.getFileSystemsList();
+          verify(netFilesMgr, never()).getFileSystems();
+        });
   }
 
   @Test
@@ -79,11 +81,15 @@ public class NfsSysAdminControllerTest {
     verify(netFilesMgr, atLeastOnce()).saveNfsFileSystem(nfs);
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void saveFileSystemsListFailsForNonSysadmin() throws Exception {
-    when(userMgr.getAuthenticatedUserInSession()).thenReturn(otherUser);
-    nfsSystemCtrller.saveFileSystem(nfs);
-    verify(netFilesMgr, never()).saveNfsFileSystem(nfs);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          when(userMgr.getAuthenticatedUserInSession()).thenReturn(otherUser);
+          nfsSystemCtrller.saveFileSystem(nfs);
+          verify(netFilesMgr, never()).saveNfsFileSystem(nfs);
+        });
   }
 
   @Test
@@ -95,10 +101,14 @@ public class NfsSysAdminControllerTest {
     assertFalse(nfsSystemCtrller.deleteFileSystem(12L));
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void deleteFileSystemFailsForNonSysadmin() throws Exception {
-    when(userMgr.getAuthenticatedUserInSession()).thenReturn(otherUser);
-    nfsSystemCtrller.saveFileSystem(nfs);
-    verify(netFilesMgr, never()).deleteNfsFileSystem(Mockito.anyLong());
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          when(userMgr.getAuthenticatedUserInSession()).thenReturn(otherUser);
+          nfsSystemCtrller.saveFileSystem(nfs);
+          verify(netFilesMgr, never()).deleteNfsFileSystem(Mockito.anyLong());
+        });
   }
 }

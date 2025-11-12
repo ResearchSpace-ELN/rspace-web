@@ -1,8 +1,6 @@
 package com.researchspace.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.testutil.CoreTestUtils;
 import com.researchspace.model.Group;
@@ -13,7 +11,7 @@ import com.researchspace.model.record.Notebook;
 import com.researchspace.model.record.RSForm;
 import com.researchspace.model.record.Record;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SharingHandlerTest extends SpringTransactionalTest {

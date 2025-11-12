@@ -3,8 +3,8 @@ package com.researchspace.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -35,19 +35,20 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class RSChemElementMgrTest {
-
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
 
   @Mock FieldManager mockFieldMgr;
   @Mock IPermissionUtils mockPermissionUtils;
@@ -60,7 +61,7 @@ public class RSChemElementMgrTest {
   String exampleContent;
   RSChemElementManagerImpl chemElementManager;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     user = TestFactory.createAnyUser("any");
     exampleContent = RSpaceTestUtils.getExampleFieldContent();
@@ -75,7 +76,7 @@ public class RSChemElementMgrTest {
     chemElementManager.setFileStore(filestore);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

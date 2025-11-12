@@ -1,8 +1,6 @@
 package com.researchspace.testutils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.auth.GlobalInitSysadminAuthenticationToken;
 import com.researchspace.model.Group;
@@ -22,9 +20,9 @@ import com.researchspace.spring.taskexecutors.ShiroThreadBindingSubjectThreadPoo
 import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +35,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 @RunWith(ConditionalTestRunner.class)
 @TestPropertySource(
     properties = {"docConverter.taskExecutor.max=251", "index.taskExecutor.queue=123"})
-@Ignore // ignore for now, as failinig in open-source branch
+@Disabled // ignore for now, as failinig in open-source branch
 public class ProdConfigWiringTest extends AbstractJUnit4SpringContextTests {
 
   @Autowired private UserManager userManager;
@@ -59,7 +57,7 @@ public class ProdConfigWiringTest extends AbstractJUnit4SpringContextTests {
   @Autowired private GroupManager groupManager;
   @Autowired private FolderManager folderManager;
 
-  @BeforeClass
+  @BeforeAll
   public static void BeforeClass() throws Exception {
     TestRunnerController.ignoreIfFastRun();
   }

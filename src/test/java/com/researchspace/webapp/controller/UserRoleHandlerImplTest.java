@@ -2,8 +2,7 @@ package com.researchspace.webapp.controller;
 
 import static com.researchspace.model.record.TestFactory.createAnyGroup;
 import static com.researchspace.model.record.TestFactory.createAnyUser;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -19,18 +18,19 @@ import com.researchspace.service.IContentInitializer;
 import com.researchspace.service.RoleManager;
 import com.researchspace.service.UserManager;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class UserRoleHandlerImplTest {
-
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
   @Mock UserManager userManager;
   @Mock UserPermissionUtils userPermUtils;
   @Mock IPermissionUtils permUtils;
@@ -39,7 +39,7 @@ public class UserRoleHandlerImplTest {
   @InjectMocks UserRoleHandlerImpl roleHandler;
   User admin;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     admin = TestFactory.createAnyUserWithRole("admin", Role.SYSTEM_ROLE.getName());
     when(roleMgr.getRole(Role.PI_ROLE.getName())).thenReturn(Role.PI_ROLE);
@@ -65,12 +65,16 @@ public class UserRoleHandlerImplTest {
     return u;
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void grantPiRoleRequiresAuth() {
-    User toPromote = TestFactory.createAnyUser("user");
-    setUpThrowAuthException(toPromote);
-    roleHandler.grantGlobalPiRoleToUser(admin, toPromote);
-    verify(userManager, never()).save(toPromote);
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          User toPromote = TestFactory.createAnyUser("user");
+          setUpThrowAuthException(toPromote);
+          roleHandler.grantGlobalPiRoleToUser(admin, toPromote);
+          verify(userManager, never()).save(toPromote);
+        });
   }
 
   private void setUpThrowAuthException(User target) {
@@ -100,20 +104,28 @@ public class UserRoleHandlerImplTest {
     assertTrue(user.hasRole(Role.USER_ROLE));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void revokePiRoleFailsIfPiIsPiOfGroup() {
-    User toDemote = createAPi();
-    Group grp = createAnyGroup(toDemote, null);
-    toDemote = roleHandler.revokeGlobalPiRoleFromUser(admin, toDemote);
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          User toDemote = createAPi();
+          Group grp = createAnyGroup(toDemote, null);
+          toDemote = roleHandler.revokeGlobalPiRoleFromUser(admin, toDemote);
+        });
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void revokePiRoleRequiresAuth() {
-    User toDemote = createAPi();
-    toDemote.addRole(Role.USER_ROLE); // pi's always have user role too
-    setUpThrowAuthException(toDemote);
-    toDemote = roleHandler.revokeGlobalPiRoleFromUser(admin, toDemote);
-    verify(userManager, never()).save(toDemote);
-    assertTrue(toDemote.hasRole(Role.PI_ROLE));
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          User toDemote = createAPi();
+          toDemote.addRole(Role.USER_ROLE); // pi's always have user role too
+          setUpThrowAuthException(toDemote);
+          toDemote = roleHandler.revokeGlobalPiRoleFromUser(admin, toDemote);
+          verify(userManager, never()).save(toDemote);
+          assertTrue(toDemote.hasRole(Role.PI_ROLE));
+        });
   }
 }

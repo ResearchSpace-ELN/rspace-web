@@ -2,9 +2,7 @@ package com.researchspace.service;
 
 import static com.researchspace.model.record.TestFactory.createAnyUser;
 import static com.researchspace.repository.spi.IdentifierScheme.ORCID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.model.User;
@@ -14,28 +12,30 @@ import com.researchspace.service.impl.UserExternalIdResolverImpl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class UserExternalIdResolverTest {
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   UserExternalIdResolverImpl idResolver = null;
   @Mock IntegrationsHandler handler;
   User anyUser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     idResolver = new UserExternalIdResolverImpl();
     idResolver.setAppHandler(handler);
     anyUser = createAnyUser("any");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

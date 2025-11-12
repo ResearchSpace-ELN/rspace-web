@@ -1,9 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -30,22 +27,23 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.security.Principal;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class NotebookEditorControllerTest extends SpringTransactionalTest {
-
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
 
   private final String TEXT_FIELD_TEST_DATA = "I AM A TEXT FIELD BELONING TO ";
   private final String TEXT_FIELD_NAME = "TEXT ";
@@ -74,7 +72,7 @@ public class NotebookEditorControllerTest extends SpringTransactionalTest {
         }
       };
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     openMocks(this);
     when(anonymousUser.getUniqueName()).thenReturn(RecordGroupSharing.ANONYMOUS_USER);
@@ -93,19 +91,23 @@ public class NotebookEditorControllerTest extends SpringTransactionalTest {
     notebookEditorController.setServletContext(servletContext);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     RSpaceTestUtils.logout();
     FolderManagerStub.noteBooksArePublished = false;
   }
 
-  @Test(expected = AuthorizationException.class)
-  public void handleRequestNoPermission() throws AuthorizationException {
-    // what happens when you have no permission to edit record
-    when(permissionUtils.isPermitted(
-            any(BaseRecord.class), any(PermissionType.class), any(User.class)))
-        .thenReturn(false);
-    notebookEditorController.openNotebook(1L, null, "", "2", model, mockPrincipal);
+  @Test
+  public void handleRequestNoPermission() {
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
+          // what happens when you have no permission to edit record
+          when(permissionUtils.isPermitted(
+                  any(BaseRecord.class), any(PermissionType.class), any(User.class)))
+              .thenReturn(false);
+          notebookEditorController.openNotebook(1L, null, "", "2", model, mockPrincipal);
+        });
   }
 
   @Test
@@ -191,10 +193,14 @@ public class NotebookEditorControllerTest extends SpringTransactionalTest {
     notebookEditorController.deleteEntry(1L, 1L, mockPrincipal);
   }
 
-  @Test(expected = RecordAccessDeniedException.class)
+  @Test
   public void deleteEntryTestAccessDenied() throws Exception {
-    recordManagerStub.canEdit(false);
-    notebookEditorController.deleteEntry(1L, 1L, mockPrincipal);
+    assertThrows(
+        RecordAccessDeniedException.class,
+        () -> {
+          recordManagerStub.canEdit(false);
+          notebookEditorController.deleteEntry(1L, 1L, mockPrincipal);
+        });
   }
 
   private StructuredDocument createRecordWithId(Long id) {

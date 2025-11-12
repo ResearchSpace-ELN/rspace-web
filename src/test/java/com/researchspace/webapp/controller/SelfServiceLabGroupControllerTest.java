@@ -33,25 +33,23 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SelfServiceLabGroupControllerTest {
-
-  public @Rule MockitoRule mockito = MockitoJUnit.rule();
   @InjectMocks private SelfServiceLabGroupController controller;
   @Mock private CloudGroupManager cloudGroupManager;
   @Mock private GroupManager groupManager;
@@ -72,7 +70,7 @@ public class SelfServiceLabGroupControllerTest {
   @Mock private MessageSourceUtils messages;
   private Long newLabGroupID = 10L;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     when(createCloudGroup.getEmails()).thenReturn(new String[] {""});
     when(createCloudGroup.getGroupName()).thenReturn("grpName");

@@ -1,13 +1,13 @@
 package com.researchspace.api.v1.model;
 
 import static com.researchspace.core.testutil.CoreTestUtils.assertIllegalArgumentException;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.researchspace.api.v1.model.ApiField.ApiFieldType;
 import com.researchspace.api.v1.model.ApiSampleField.ApiInventoryFieldDef;
 import java.util.Arrays;
 import java.util.EnumSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ApiFieldToModelFieldFactoryTest {
 

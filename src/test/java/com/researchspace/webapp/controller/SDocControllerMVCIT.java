@@ -4,15 +4,10 @@ import static com.researchspace.testutils.RSpaceTestUtils.getResource;
 import static com.researchspace.webapp.controller.StructuredDocumentController.STRUCTURED_DOCUMENT_EDITOR_URL;
 import static org.apache.commons.io.FileUtils.readFileToByteArray;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -68,9 +63,9 @@ import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.criterion.Projections;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
@@ -84,12 +79,12 @@ public class SDocControllerMVCIT extends MVCTestBase {
   private @Autowired AuditManager auditMgr;
   @Autowired DocumentCopyManager docCopyMgr;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }
@@ -222,19 +217,21 @@ public class SDocControllerMVCIT extends MVCTestBase {
     commitTransaction();
     String templateContent = template.getFirstFieldData();
     assertEquals(
+        0,
+        StringUtils.countMatches(templateContent, "id=\"" + docFieldId + "-"),
         "template content: "
             + templateContent
             + " shouldn't contain orginal field id: "
-            + docFieldId,
-        0,
-        StringUtils.countMatches(templateContent, "id=\"" + docFieldId + "-"));
+            + docFieldId);
     Set<FieldAttachment> templateFieldAttachments =
         fieldMgr.getWithLoadedMediaLinks(templateFieldId, u1).get().getLinkedMediaFiles();
     assertEquals(
-        "template should have as many FieldAttachments as original doc",
         docFieldAttachmentsCount,
-        templateFieldAttachments.size()
-            - 1); // template creation adds image from annotation as extra FieldAttachment
+        templateFieldAttachments.size() - 1,
+        "template should have as many FieldAttachments as original doc"); // template creation adds
+    // image from annotation
+    // as extra
+    // FieldAttachment
 
     shareRecordWithGroup(u1, grp, template);
 
@@ -243,18 +240,18 @@ public class SDocControllerMVCIT extends MVCTestBase {
     Long fromTemplateFieldId = fromTemplate.getFields().get(0).getId();
     String fromTemplateContent = fromTemplate.getFirstFieldData();
     assertEquals(
+        0,
+        StringUtils.countMatches(fromTemplateContent, "id=\"" + templateFieldId + "-"),
         "fromTemplate content: "
             + fromTemplateContent
             + " shouldn't contain template field id: "
-            + templateFieldId,
-        0,
-        StringUtils.countMatches(fromTemplateContent, "id=\"" + templateFieldId + "-"));
+            + templateFieldId);
     Set<FieldAttachment> fromTemplateFieldAttachments =
         fieldMgr.getWithLoadedMediaLinks(fromTemplateFieldId, u1).get().getLinkedMediaFiles();
     assertEquals(
-        "fromTemplate should have as many FieldAttachments as original doc",
         templateFieldAttachments.size(),
-        fromTemplateFieldAttachments.size());
+        fromTemplateFieldAttachments.size(),
+        "fromTemplate should have as many FieldAttachments as original doc");
 
     assertAllLinkedElementsNotLinkedDocsCanBeRead(u2, fromTemplate);
 
@@ -287,12 +284,12 @@ public class SDocControllerMVCIT extends MVCTestBase {
     String templateContent = templateField.getFieldData();
     commitTransaction();
     assertEquals(
+        0,
+        StringUtils.countMatches(templateContent, "id=\"" + docField.getId() + "-"),
         "template content: "
             + templateContent
             + " shouldn't contain orginal field id: "
-            + docField.getId(),
-        0,
-        StringUtils.countMatches(templateContent, "id=\"" + docField.getId() + "-"));
+            + docField.getId());
     assertEquals(2, mediaMgr.getIdsOfLinkedDocuments(image.getId()).size());
 
     // share template with group
@@ -304,12 +301,12 @@ public class SDocControllerMVCIT extends MVCTestBase {
     Field fromTemplateField = fromTemplate.getFields().get(0);
     String fromTemplateContent = fromTemplateField.getFieldData();
     assertEquals(
+        0,
+        StringUtils.countMatches(fromTemplateContent, "id=\"" + templateField.getId() + "-"),
         "fromTemplate content: "
             + fromTemplateContent
             + " shouldn't contain template field id: "
-            + templateField.getId(),
-        0,
-        StringUtils.countMatches(fromTemplateContent, "id=\"" + templateField.getId() + "-"));
+            + templateField.getId());
     assertEquals(3, mediaMgr.getIdsOfLinkedDocuments(image.getId()).size());
   }
 
@@ -473,9 +470,9 @@ public class SDocControllerMVCIT extends MVCTestBase {
 
     int finalSigHashCount = getSigHashCount();
     assertEquals(
-        "Correct number of signature hashes weren't generated ",
         initialSignaturehasCount + EXPECTED_NEW_SIG_HASHES,
-        finalSigHashCount);
+        finalSigHashCount,
+        "Correct number of signature hashes weren't generated ");
 
     openTransaction();
     Folder root = folderDao.getRootRecordForUser(piUser);
@@ -730,7 +727,7 @@ public class SDocControllerMVCIT extends MVCTestBase {
     assertTrue(createdEntries.stream().allMatch(BaseRecord::isNotebookEntry));
     Collections.sort(createdEntries, BaseRecord.CREATION_DATE_COMPARATOR);
 
-    assertEquals("two new entries were expected ", 2, createdEntries.size());
+    assertEquals(2, createdEntries.size(), "two new entries were expected ");
     BaseRecord createdEntry1 = createdEntries.get(0);
 
     assertEquals(defaultEntryId, createdEntry1.getId());
@@ -937,13 +934,13 @@ public class SDocControllerMVCIT extends MVCTestBase {
 
     MvcResult result = getUpdatedFields(doc, newerDate);
     List<Field> rc = getFromJsonAjaxReturnObject(result, List.class);
-    assertTrue("field list wasn't empty but should be", rc.isEmpty());
+    assertTrue(rc.isEmpty(), "field list wasn't empty but should be");
     assertFalse(result.getResponse().getContentAsString().contains("text2"));
     // simulates an older modification date on client, so client data is stale and needs refreshing
     Date olderDate = DateUtils.addMinutes(new Date(), -5);
     result = getUpdatedFields(doc, olderDate);
     rc = getFromJsonAjaxReturnObject(result, List.class);
-    assertFalse("field list was empty but should contain updated fields", rc.isEmpty());
+    assertFalse(rc.isEmpty(), "field list was empty but should contain updated fields");
     assertTrue(result.getResponse().getContentAsString().contains("text2"));
   }
 

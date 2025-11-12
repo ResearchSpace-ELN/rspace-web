@@ -11,7 +11,7 @@ import com.researchspace.model.User;
 import com.researchspace.model.inventory.Container;
 import com.researchspace.testutils.RealTransactionSpringTestBase;
 import javax.validation.ConstraintViolationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ContainerApiManagerIT extends RealTransactionSpringTestBase {
 

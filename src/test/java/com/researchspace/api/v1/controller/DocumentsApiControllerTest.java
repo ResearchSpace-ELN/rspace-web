@@ -4,12 +4,7 @@ import static com.researchspace.api.v1.controller.DocumentApiPaginationCriteria.
 import static com.researchspace.api.v1.controller.DocumentApiPaginationCriteria.LAST_MODIFIED_ASC_API_PARAM;
 import static com.researchspace.api.v1.model.ApiLinkItem.NEXT_REL;
 import static com.researchspace.api.v1.model.ApiLinkItem.PREV_REL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,9 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.NotFoundException;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
@@ -72,7 +67,7 @@ public class DocumentsApiControllerTest extends SpringTransactionalTest {
 
   BindingResult mockBindingResult = mock(BindingResult.class);
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testUser = createAndSaveUserIfNotExists(getRandomAlphabeticString("api"));
     initialiseContentWithEmptyContent(testUser);
@@ -90,7 +85,7 @@ public class DocumentsApiControllerTest extends SpringTransactionalTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testGetAllDocuments() throws Exception {
 
     // create 3 docs for our user
@@ -348,10 +343,14 @@ public class DocumentsApiControllerTest extends SpringTransactionalTest {
     assertEquals("https://myrspace/documents?pageSize=10&pageNumber=4", last.getLink());
   }
 
-  @Test(expected = NotFoundException.class)
+  @Test
   public void testGetDocumentByIdHandlesImageIDs() throws Exception {
-    EcatImage image = addImageToGallery(testUser);
-    documentsApi.getDocumentById(image.getId(), testUser);
+    assertThrows(
+        NotFoundException.class,
+        () -> {
+          EcatImage image = addImageToGallery(testUser);
+          documentsApi.getDocumentById(image.getId(), testUser);
+        });
   }
 
   @Test
@@ -435,8 +434,8 @@ public class DocumentsApiControllerTest extends SpringTransactionalTest {
     assertNotNull(createdDoc.getId());
     String retrievedContent = createdDoc.getFields().get(0).getContent();
     assertTrue(
-        "unexpected content: " + retrievedContent,
-        retrievedContent.startsWith(expectedSavedContentStart));
+        retrievedContent.startsWith(expectedSavedContentStart),
+        "unexpected content: " + retrievedContent);
   }
 
   @Test
@@ -576,14 +575,14 @@ public class DocumentsApiControllerTest extends SpringTransactionalTest {
     String combinedHtmlFragment = updatedExp.getFields().get(4).getContent();
 
     assertEquals("test", updatedExp.getFields().get(0).getContent());
-    assertTrue("should contain image", imageHtmlFragment.contains(expectedImageFragment));
+    assertTrue(imageHtmlFragment.contains(expectedImageFragment), "should contain image");
     // assertTrue("should contain audio", audioHtmlFragment.contains(expectedAudioFragment));
-    assertTrue("should contain doc  ", docAttachmentHtmlFragment.contains(expectedDocFragment));
+    assertTrue(docAttachmentHtmlFragment.contains(expectedDocFragment), "should contain doc  ");
     assertTrue(
-        "should contain image, audio and doc, was: " + combinedHtmlFragment,
         combinedHtmlFragment.contains(expectedImageFragment)
             // && combinedHtmlFragment.contains(expectedAudioFragment)
-            && combinedHtmlFragment.contains(expectedDocFragment));
+            && combinedHtmlFragment.contains(expectedDocFragment),
+        "should contain image, audio and doc, was: " + combinedHtmlFragment);
     assertEquals("", updatedExp.getFields().get(5).getContent());
     assertEquals("updated", updatedExp.getFields().get(6).getContent());
   }
@@ -688,9 +687,9 @@ public class DocumentsApiControllerTest extends SpringTransactionalTest {
 
     documentsApi.convertApiFieldsToMatchDocFields(apiDocument, testDocFields);
     assertEquals(
-        "if fields are empty, conversion should leave them empty",
         0,
-        apiDocument.getFields().size());
+        apiDocument.getFields().size(),
+        "if fields are empty, conversion should leave them empty");
 
     // only one api field provided
     List<ApiDocumentField> oneApiField = new ArrayList<>();
@@ -703,14 +702,14 @@ public class DocumentsApiControllerTest extends SpringTransactionalTest {
     // conversion should put the field in right place and add empty surrounding fields
     documentsApi.convertApiFieldsToMatchDocFields(apiDocument, testDocFields);
     assertEquals(
-        "if fields are omitted, conversion adds empty fields", 3, apiDocument.getFields().size());
-    assertNull("empty apiField expected at index 0", apiDocument.getFields().get(0).getId());
-    assertEquals("provided apiField expected at index 1", field, apiDocument.getFields().get(1));
+        3, apiDocument.getFields().size(), "if fields are omitted, conversion adds empty fields");
+    assertNull(apiDocument.getFields().get(0).getId(), "empty apiField expected at index 0");
+    assertEquals(field, apiDocument.getFields().get(1), "provided apiField expected at index 1");
     assertEquals(
-        "provided apiField expected at index 1",
         field.getContent(),
-        apiDocument.getFields().get(1).getContent());
-    assertNull("empty apiField expected at index 2", apiDocument.getFields().get(2).getId());
+        apiDocument.getFields().get(1).getContent(),
+        "provided apiField expected at index 1");
+    assertNull(apiDocument.getFields().get(2).getId(), "empty apiField expected at index 2");
   }
 
   @Test

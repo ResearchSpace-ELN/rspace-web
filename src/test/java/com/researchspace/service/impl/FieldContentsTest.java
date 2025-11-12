@@ -1,19 +1,19 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.linkedelements.FieldContentDelta;
 import com.researchspace.linkedelements.FieldContents;
 import com.researchspace.model.RSChemElement;
 import com.researchspace.model.record.TestFactory;
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FieldContentsTest {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
   @Test

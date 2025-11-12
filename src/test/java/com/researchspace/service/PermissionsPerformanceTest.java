@@ -1,7 +1,7 @@
 package com.researchspace.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.Constants;
 import com.researchspace.auth.PermissionUtils;
@@ -28,15 +28,18 @@ import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 @RunWith(ConditionalTestRunnerNotSpring.class)
 public class PermissionsPerformanceTest {
   private static final int NUM_RECORDS_TO_CREATE = 500;
@@ -44,12 +47,11 @@ public class PermissionsPerformanceTest {
   IPermissionUtils utils;
   ShiroTestUtils shiroUtils;
   @Mock Subject subject;
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
 
   Map<String, User> map = new HashMap<>();
   ShiroTestUtils testUtils;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     permFac = new DefaultPermissionFactory();
     utils = new PermissionUtils();
@@ -57,7 +59,7 @@ public class PermissionsPerformanceTest {
     shiroUtils.setSubject(subject);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     shiroUtils.clearSubject();
   }
@@ -91,8 +93,9 @@ public class PermissionsPerformanceTest {
     sw.split();
     System.err.println("Filtering took: " + sw.toSplitString());
     assertTrue(
-        "Should be less than 1500ms but was " + sw.getSplitTime(),
-        sw.getSplitTime() < 1500); // check that 10000 records->500 takes < 1.5 second.
+        sw.getSplitTime() < 1500,
+        "Should be less than 1500ms but was "
+            + sw.getSplitTime()); // check that 10000 records->500 takes < 1.5 second.
     assertEquals(NUM_RECORDS_TO_CREATE, toFilter.size());
   }
 

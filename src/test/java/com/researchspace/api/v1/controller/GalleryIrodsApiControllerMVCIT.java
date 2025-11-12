@@ -5,10 +5,7 @@ import static com.researchspace.api.v1.GalleryIrodsApi.PARAM_RECORD_IDS;
 import static com.researchspace.api.v1.controller.GalleryIrodsApiController.Operation;
 import static com.researchspace.api.v1.controller.GalleryIrodsApiController.Operation.copy;
 import static com.researchspace.api.v1.controller.GalleryIrodsApiController.Operation.move;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.researchspace.api.v1.model.ApiExternalStorageInfo;
@@ -36,9 +33,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.irods.jargon.core.connection.IRODSAccount;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -153,7 +150,7 @@ public class GalleryIrodsApiControllerMVCIT extends API_MVC_TestBase {
           + "  } ]\n"
           + "}";
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
     IRODS_TARGET_PATH = IRODS_HOME_DIR + "/test";
@@ -182,7 +179,7 @@ public class GalleryIrodsApiControllerMVCIT extends API_MVC_TestBase {
     irodsClient = new IRODSClient(iRodsAccount, new JargonFacade());
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }
@@ -260,7 +257,7 @@ public class GalleryIrodsApiControllerMVCIT extends API_MVC_TestBase {
           .andExpect(status().isOk())
           .andReturn();
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName1));
+          irodsClient.iRodsFileExists(irodsFileName1), "The file has not been created in IRODS");
     } catch (Exception e) {
       teardownIrods(irodsFileName1);
       throw new RuntimeException(e);
@@ -319,11 +316,11 @@ public class GalleryIrodsApiControllerMVCIT extends API_MVC_TestBase {
       }
 
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName1));
+          irodsClient.iRodsFileExists(irodsFileName1), "The file has not been created in IRODS");
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName2));
+          irodsClient.iRodsFileExists(irodsFileName2), "The file has not been created in IRODS");
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName3));
+          irodsClient.iRodsFileExists(irodsFileName3), "The file has not been created in IRODS");
 
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -352,7 +349,7 @@ public class GalleryIrodsApiControllerMVCIT extends API_MVC_TestBase {
           .andExpect(status().isOk())
           .andReturn();
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName1));
+          irodsClient.iRodsFileExists(irodsFileName1), "The file has not been created in IRODS");
     } catch (Exception e) {
       teardownIrods(irodsFileName1);
       throw new RuntimeException(e);
@@ -413,11 +410,11 @@ public class GalleryIrodsApiControllerMVCIT extends API_MVC_TestBase {
       }
 
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName1));
+          irodsClient.iRodsFileExists(irodsFileName1), "The file has not been created in IRODS");
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName2));
+          irodsClient.iRodsFileExists(irodsFileName2), "The file has not been created in IRODS");
       assertTrue(
-          "The file has not been created in IRODS", irodsClient.iRodsFileExists(irodsFileName3));
+          irodsClient.iRodsFileExists(irodsFileName3), "The file has not been created in IRODS");
 
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -447,7 +444,7 @@ public class GalleryIrodsApiControllerMVCIT extends API_MVC_TestBase {
       throw new RuntimeException(e);
     }
     assertTrue(
-        "It was not possible to delete the iRods file: " + absolutePathFilename, deleteResult);
+        deleteResult, "It was not possible to delete the iRods file: " + absolutePathFilename);
   }
 
   private Long createIrodsFileStore(NfsFileSystem fileSystem, String name, String path) {

@@ -3,17 +3,13 @@ package com.researchspace.webapp.controller;
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static com.researchspace.session.SessionAttributeUtils.USER_INFO;
 import static com.researchspace.webapp.controller.UserProfileController.API_KEY_IS_ACTIVE;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,8 +62,8 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -84,7 +80,7 @@ public class UserProfileControllerMVCIT extends MVCTestBase {
   private @Autowired SystemPropertyManager systemPropertyManager;
   private @Autowired GroupManager groupManager;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
   }
@@ -299,8 +295,8 @@ public class UserProfileControllerMVCIT extends MVCTestBase {
 
     String responseAsString = result3.getResponse().getContentAsString();
     assertTrue(
-        "unexpected response: " + responseAsString,
-        responseAsString.contains(getMsgFromResourceBundler("errors.password.conflict")));
+        responseAsString.contains(getMsgFromResourceBundler("errors.password.conflict")),
+        "unexpected response: " + responseAsString);
   }
 
   @Test

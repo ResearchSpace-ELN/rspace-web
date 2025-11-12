@@ -1,12 +1,9 @@
 package com.researchspace.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import com.researchspace.api.v1.model.ApiMaterialUsage;
@@ -58,9 +55,9 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -82,12 +79,12 @@ public class UserDeletionManagerTestIT extends RealTransactionSpringTestBase {
   private @Autowired StoichiometryManager stoichiometryMgr;
   private @Autowired RSChemElementManager rsChemElementMgr;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     RSpaceTestUtils.logout();
     super.tearDown();
@@ -224,9 +221,9 @@ public class UserDeletionManagerTestIT extends RealTransactionSpringTestBase {
     // assert attachment file is now deleted from filestore
     int deletedResourcesCount = deleteResourcesResult.getEntity();
     assertEquals(
-        "unexpected number of deleted filestore resources after user removal",
         23,
-        deletedResourcesCount);
+        deletedResourcesCount,
+        "unexpected number of deleted filestore resources after user removal");
     assertFalse(attachmentOnFilestore.exists());
   }
 

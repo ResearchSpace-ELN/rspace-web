@@ -10,24 +10,25 @@ import com.researchspace.service.SystemPropertyManager;
 import com.researchspace.service.SystemPropertyName;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SystemConfigurationInitializorTest extends SpringTransactionalTest {
-
-  public @Rule MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock private SystemPropertyManager mockSystemPropertyManager;
 
   private SystemConfigurationInitialisor systemConfigurationInitialisor;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
 
@@ -35,7 +36,7 @@ public class SystemConfigurationInitializorTest extends SpringTransactionalTest 
     systemConfigurationInitialisor.setSystemPropertyManager(mockSystemPropertyManager);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

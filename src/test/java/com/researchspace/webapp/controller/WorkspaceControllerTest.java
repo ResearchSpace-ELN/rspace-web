@@ -3,10 +3,7 @@ package com.researchspace.webapp.controller;
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static com.researchspace.core.util.TransformerUtils.toList;
 import static com.researchspace.session.UserSessionTracker.USERS_KEY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -66,16 +63,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -88,10 +86,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 // there is a mixture of mocks and stubs so until we can refactor this to use just mocks
 // we need a guaranteed order
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
+@TestMethodOrder(MethodName.class)
 public class WorkspaceControllerTest extends SpringTransactionalTest {
-
-  @Rule public MockitoRule mockery = MockitoJUnit.rule();
 
   @Mock AuditManager mockAuditMgr;
   @Mock UserManager mockUserMgr;
@@ -129,7 +127,7 @@ public class WorkspaceControllerTest extends SpringTransactionalTest {
   private Principal mockPrincipal = () -> "user1a";
   private Principal mockPrincipalNonPI = () -> "user2b";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     anyUser = TestFactory.createAnyUser("any");
     anyUser.setId(666L);
@@ -166,7 +164,7 @@ public class WorkspaceControllerTest extends SpringTransactionalTest {
     systemPropertyManager.save(existingPublicSeoValue, sysadmin1);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     workspaceController.setRecordManager(recordManager);
     RSpaceTestUtils.logout();
@@ -498,8 +496,8 @@ public class WorkspaceControllerTest extends SpringTransactionalTest {
               names[0] = getRandomName(i);
               workspaceController.fitNameToMaxSize(names, 0);
               assertTrue(
-                  "Failed for names string of length " + i,
-                  names[0].length() <= BaseRecord.DEFAULT_VARCHAR_LENGTH);
+                  names[0].length() <= BaseRecord.DEFAULT_VARCHAR_LENGTH,
+                  "Failed for names string of length " + i);
             });
   }
 

@@ -1,15 +1,12 @@
 package com.researchspace.webapp.integrations.wopi;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.User;
 import com.researchspace.model.record.TestFactory;
 import com.researchspace.webapp.integrations.wopi.WopiAccessTokenHandler.WopiAccessToken;
 import java.time.Instant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WopiAccessTokenHandlerTest {
 

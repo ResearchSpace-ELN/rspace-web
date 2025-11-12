@@ -1,11 +1,7 @@
 package com.researchspace.webapp.integrations.digitalcommonsdata;
 
 import static com.researchspace.service.IntegrationsHandler.DIGITAL_COMMONS_DATA_APP_NAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -23,9 +19,9 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -67,7 +63,7 @@ public class DigitalCommonsDataControllerTest extends SpringTransactionalTest {
 
   @Mock private RestTemplate restTemplate;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
     digitalCommonsDataController.setRestTemplate(restTemplate);
@@ -83,7 +79,7 @@ public class DigitalCommonsDataControllerTest extends SpringTransactionalTest {
             testUser.getUsername(), DIGITAL_COMMONS_DATA_APP_NAME, "ProviderUserIdNotNeeded");
   }
 
-  @After
+  @AfterEach
   public void tearDownConnection() {
     userConnectionManager.deleteByUserAndProvider(
         DIGITAL_COMMONS_DATA_APP_NAME, testUser.getUsername());

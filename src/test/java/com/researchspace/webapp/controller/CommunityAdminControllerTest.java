@@ -1,9 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,14 +19,15 @@ import com.researchspace.service.MessageSourceUtils;
 import com.researchspace.service.SystemPropertyPermissionManager;
 import com.researchspace.service.UserManager;
 import java.util.Arrays;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ExtendedModelMap;
@@ -37,8 +35,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class CommunityAdminControllerTest {
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   private CommunityAdminController controller;
 
   @Mock private CommunityServiceManager mockCommService;
@@ -50,7 +49,7 @@ public class CommunityAdminControllerTest {
   Model model;
   User subject;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     controller = new CommunityAdminController();
     ReflectionTestUtils.setField(
@@ -64,7 +63,7 @@ public class CommunityAdminControllerTest {
     subject = TestFactory.createAnyUser("any");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

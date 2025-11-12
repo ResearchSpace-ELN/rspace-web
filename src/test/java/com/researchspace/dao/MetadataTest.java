@@ -1,24 +1,24 @@
 package com.researchspace.dao;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.ArchiveVersionToAppVersion;
 import com.researchspace.model.Version;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MetadataTest extends SpringTransactionalTest {
   @Autowired RSMetaDataDao dao;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

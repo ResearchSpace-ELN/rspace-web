@@ -2,8 +2,8 @@ package com.researchspace.auth;
 
 import static com.researchspace.model.record.TestFactory.createAnyUser;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -18,17 +18,18 @@ import com.researchspace.service.UserManager;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class LdapRealmTest {
-
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
 
   @Mock private UserManager userManager;
   @Mock private UserLdapRepo userLdapRepo;
@@ -41,7 +42,7 @@ public class LdapRealmTest {
   private User user1sid2;
   private UsernamePasswordToken token;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // let's create 3 user objects representing user1: one without sid, and two with different sids
     testUsername = "user1";

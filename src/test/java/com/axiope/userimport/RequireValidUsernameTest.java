@@ -1,20 +1,17 @@
 package com.axiope.userimport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.researchspace.model.dto.UserRegistrationInfo;
 import com.researchspace.model.dtos.UserValidator;
 import com.researchspace.properties.IMutablePropertyHolder;
 import com.researchspace.properties.PropertyHolder;
 import com.researchspace.service.MessageSourceUtils;
 import java.util.HashSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-public class RequireValidUsernameTest {
+class RequireValidUsernameTest {
 
   private static final String VALID_UNAME = "abcdefg";
   private static final String SHORT_UNAME = "abcd";
@@ -23,8 +20,8 @@ public class RequireValidUsernameTest {
   private UserValidator userValidator;
   private IMutablePropertyHolder properties;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     validUNameOnly = new RequireValidUserNameStrategy();
     userValidator = new UserValidator();
     validUNameOnly.setValidator(userValidator);
@@ -41,16 +38,19 @@ public class RequireValidUsernameTest {
   }
 
   @Test
-  public void testCreateUserName() {
+  void testCreateUserName() {
     UserRegistrationInfo userRegInfo = new UserRegistrationInfo();
 
-    assertTrue(validUNameOnly.createUserName(VALID_UNAME, userRegInfo, new HashSet<String>()));
-    assertEquals(VALID_UNAME, userRegInfo.getUsername());
+    Assertions.assertTrue(
+        validUNameOnly.createUserName(VALID_UNAME, userRegInfo, new HashSet<String>()));
+    Assertions.assertEquals(VALID_UNAME, userRegInfo.getUsername());
 
     userRegInfo = new UserRegistrationInfo();
-    assertFalse(validUNameOnly.createUserName(SHORT_UNAME, userRegInfo, new HashSet<String>()));
+    Assertions.assertFalse(
+        validUNameOnly.createUserName(SHORT_UNAME, userRegInfo, new HashSet<String>()));
     // permissive validation OK
     properties.setStandalone("false");
-    assertTrue(validUNameOnly.createUserName(SHORT_UNAME, userRegInfo, new HashSet<String>()));
+    Assertions.assertTrue(
+        validUNameOnly.createUserName(SHORT_UNAME, userRegInfo, new HashSet<String>()));
   }
 }

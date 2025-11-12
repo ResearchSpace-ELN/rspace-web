@@ -1,7 +1,7 @@
 package com.researchspace.service.impl;
 
 import static com.researchspace.model.record.TestFactory.createAnyUser;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.comms.NotificationType;
@@ -14,17 +14,18 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.apache.velocity.app.VelocityEngine;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class AsyncDepositorImplTest {
-
-  public @Rule MockitoRule mockito = MockitoJUnit.rule();
   @Mock CommunicationManager comm;
 
   VelocityEngine engine;
@@ -41,7 +42,7 @@ public class AsyncDepositorImplTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     impl = new AsyncDepositorImplTSS();
     engine =

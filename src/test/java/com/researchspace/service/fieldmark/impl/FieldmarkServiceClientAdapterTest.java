@@ -2,12 +2,7 @@ package com.researchspace.service.fieldmark.impl;
 
 import static com.researchspace.fieldmark.model.utils.FieldmarkUtils.createFilesMap;
 import static com.researchspace.service.IntegrationsHandler.FIELDMARK_APP_NAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -38,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -71,7 +66,7 @@ public class FieldmarkServiceClientAdapterTest {
   private Map<String, byte[]> filesInRecords;
   private FieldmarkRecordsCsvExport csvRecords;
 
-  @Before
+  @BeforeEach
   public void init() throws IOException, URISyntaxException {
     MockitoAnnotations.openMocks(this);
     ObjectMapper mapper = new ObjectMapper();

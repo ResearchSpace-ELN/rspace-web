@@ -2,10 +2,7 @@ package com.researchspace.netfiles;
 
 import static com.researchspace.core.testutil.CoreTestUtils.assertExceptionThrown;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.User;
 import com.researchspace.model.UserKeyPair;
@@ -15,8 +12,8 @@ import com.researchspace.model.netfiles.NfsFileSystem;
 import com.researchspace.netfiles.samba.JcifsClient;
 import com.researchspace.netfiles.samba.SmbjClient;
 import com.researchspace.netfiles.sftp.SftpClient;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NfsFactoryTest {
 
@@ -29,7 +26,7 @@ public class NfsFactoryTest {
 
   private NfsFileSystem testFileSystem;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // dummy key pair
     testUserKeyPair = new UserKeyPair();
@@ -50,13 +47,13 @@ public class NfsFactoryTest {
     NfsClient sambaClient = factory.getNfsClient(testUsername, testPassword, testFileSystem);
     assertNotNull(sambaClient);
     assertTrue(
-        "factory not returning samba client with samba option", sambaClient instanceof JcifsClient);
+        sambaClient instanceof JcifsClient, "factory not returning samba client with samba option");
 
     testFileSystem.setClientType(NfsClientType.SFTP);
     NfsClient sftpClient = factory.getNfsClient(testUsername, testPassword, testFileSystem);
     assertNotNull(sftpClient);
     assertTrue(
-        "factory not returning sftp client with sftp option", sftpClient instanceof SftpClient);
+        sftpClient instanceof SftpClient, "factory not returning sftp client with sftp option");
 
     testFileSystem.setClientType(null);
     assertExceptionThrown(
@@ -87,8 +84,8 @@ public class NfsFactoryTest {
       fail("should throw exception about invalid privatekey");
     } catch (IllegalArgumentException e) {
       assertTrue(
-          "exception message cause should mention invalid privatekey",
-          e.getCause().getMessage().contains("invalid privatekey"));
+          e.getCause().getMessage().contains("invalid privatekey"),
+          "exception message cause should mention invalid privatekey");
     }
 
     testFileSystem.setAuthType(null);

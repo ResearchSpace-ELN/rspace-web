@@ -7,7 +7,7 @@ import static com.researchspace.model.preference.HierarchicalPermission.DENIED;
 import static com.researchspace.model.preference.HierarchicalPermission.DENIED_BY_DEFAULT;
 import static com.researchspace.model.record.TestFactory.createAFileProperty;
 import static com.researchspace.service.SystemPropertyName.SNAPGENE_AVAILABLE;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -38,20 +38,21 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class DNAViewerControllerTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock FileStore fileStore;
   @Mock UserManager userManager;
   @Mock SnapgeneWSClient wsClient;
@@ -67,7 +68,7 @@ public class DNAViewerControllerTest {
   EcatDocumentFile edf = TestFactory.createEcatDocument(1L, user);
   FileProperty fp = createAFileProperty(someGenbankFile, user, new FileStoreRoot("/"));
 
-  @Before
+  @BeforeEach
   public void before() {
     edf.setExtension("gb");
     when(systemPropertyManagerImpl.findByName(SNAPGENE_AVAILABLE)).thenReturn(isSnapgeneAllowed);

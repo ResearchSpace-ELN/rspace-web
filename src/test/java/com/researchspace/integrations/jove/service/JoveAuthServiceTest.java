@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
@@ -62,7 +62,7 @@ public class JoveAuthServiceTest {
 
   private MockRestServiceServer server;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     openMocks(this);
     restTemplate = new RestTemplate();
@@ -75,7 +75,7 @@ public class JoveAuthServiceTest {
     when(user.getUsername()).thenReturn("userName");
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     joveAuthService.setTokens(new HashMap<>());
   }

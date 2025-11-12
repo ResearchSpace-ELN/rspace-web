@@ -5,15 +5,11 @@ import static com.researchspace.api.v1.controller.BaseApiController.FOLDERS_ENDP
 import static com.researchspace.api.v1.controller.BaseApiController.FOLDER_TREE_ENDPOINT;
 import static com.researchspace.core.testutil.CoreTestUtils.assertIllegalArgumentException;
 import static com.researchspace.core.util.TransformerUtils.toSet;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -65,23 +61,24 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.ws.rs.NotFoundException;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class FolderApiControllerTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock FolderManager folderMgr;
   @Mock RecordManager recordMgr;
   @Mock RecordDeletionManager deletionMgr;
@@ -100,7 +97,7 @@ public class FolderApiControllerTest {
   StaticMessageSource msg = new StaticMessageSource();
   MockServletContext context = new MockServletContext();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.subject = TestFactory.createAnyUser("any");
     this.root = TestFactory.createAFolder(subject.getUsername(), subject);
@@ -128,7 +125,7 @@ public class FolderApiControllerTest {
     msg.addMessage("record.inaccessible", Locale.getDefault(), "inaccessible");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -195,40 +192,60 @@ public class FolderApiControllerTest {
             eq(subject), eq(sharedFolder), eq(createdNotebook.getId()), isNull());
   }
 
-  @Test(expected = BindException.class)
-  public void createNestedNotebookNotAllowed() throws BindException {
-    ApiFolder toCreate = createApiNotebookToPost();
-    toCreate.setParentFolderId(existingNotebook.getId()); // this should not be allowed
-    when(folderMgr.getFolder(existingNotebook.getId(), subject)).thenReturn(existingNotebook);
-    controller.createNewFolder(toCreate, new BeanPropertyBindingResult(toCreate, "bean"), subject);
+  @Test
+  public void createNestedNotebookNotAllowed() {
+    assertThrows(
+        BindException.class,
+        () -> {
+          ApiFolder toCreate = createApiNotebookToPost();
+          toCreate.setParentFolderId(existingNotebook.getId()); // this should not be allowed
+          when(folderMgr.getFolder(existingNotebook.getId(), subject)).thenReturn(existingNotebook);
+          controller.createNewFolder(
+              toCreate, new BeanPropertyBindingResult(toCreate, "bean"), subject);
+        });
   }
 
-  @Test(expected = BindException.class)
-  public void createTopLevelGalleryFolder() throws BindException {
-    ApiFolder toCreate = createApiFolderToPost();
-    toCreate.setParentFolderId(topLevelGalleryFolder.getId()); // this should not be allowed
-    when(folderMgr.getFolder(topLevelGalleryFolder.getId(), subject))
-        .thenReturn(topLevelGalleryFolder);
-    controller.createNewFolder(toCreate, new BeanPropertyBindingResult(toCreate, "bean"), subject);
+  @Test
+  public void createTopLevelGalleryFolder() {
+    assertThrows(
+        BindException.class,
+        () -> {
+          ApiFolder toCreate = createApiFolderToPost();
+          toCreate.setParentFolderId(topLevelGalleryFolder.getId()); // this should not be allowed
+          when(folderMgr.getFolder(topLevelGalleryFolder.getId(), subject))
+              .thenReturn(topLevelGalleryFolder);
+          controller.createNewFolder(
+              toCreate, new BeanPropertyBindingResult(toCreate, "bean"), subject);
+        });
   }
 
-  @Test(expected = BindException.class)
-  public void createNestedFolderInNotebookNotAllowed() throws BindException {
-    ApiFolder toCreate = createApiFolderToPost();
-    toCreate.setParentFolderId(existingNotebook.getId()); // this should not be allowed
-    when(folderMgr.getFolder(existingNotebook.getId(), subject)).thenReturn(existingNotebook);
-    controller.createNewFolder(toCreate, new BeanPropertyBindingResult(toCreate, "bean"), subject);
+  @Test
+  public void createNestedFolderInNotebookNotAllowed() {
+    assertThrows(
+        BindException.class,
+        () -> {
+          ApiFolder toCreate = createApiFolderToPost();
+          toCreate.setParentFolderId(existingNotebook.getId()); // this should not be allowed
+          when(folderMgr.getFolder(existingNotebook.getId(), subject)).thenReturn(existingNotebook);
+          controller.createNewFolder(
+              toCreate, new BeanPropertyBindingResult(toCreate, "bean"), subject);
+        });
   }
 
-  @Test(expected = BindException.class)
-  public void bindExceptionThrownIfValidationFails() throws BindException {
-    ApiFolder toCreate = createApiFolderToPost();
-    // validation is not actually performed in this test, this is just an example
-    toCreate.setName(RandomStringUtils.randomAlphabetic(300));
-    BeanPropertyBindingResult errors = new BeanPropertyBindingResult(toCreate, "bean");
-    errors.reject("some.value");
-    controller.createNewFolder(toCreate, errors, subject);
-    verify(folderMgr, never()).createNewFolder(Mockito.anyLong(), Mockito.anyString(), eq(subject));
+  @Test
+  public void bindExceptionThrownIfValidationFails() {
+    assertThrows(
+        BindException.class,
+        () -> {
+          ApiFolder toCreate = createApiFolderToPost();
+          // validation is not actually performed in this test, this is just an example
+          toCreate.setName(RandomStringUtils.randomAlphabetic(300));
+          BeanPropertyBindingResult errors = new BeanPropertyBindingResult(toCreate, "bean");
+          errors.reject("some.value");
+          controller.createNewFolder(toCreate, errors, subject);
+          verify(folderMgr, never())
+              .createNewFolder(Mockito.anyLong(), Mockito.anyString(), eq(subject));
+        });
   }
 
   @Test
@@ -276,10 +293,14 @@ public class FolderApiControllerTest {
     when(properties.getServerUrl()).thenReturn("http://somewhere.com");
   }
 
-  @Test(expected = NotFoundException.class)
+  @Test
   public void getFolderThrowsNotFoundExIfNoExists() throws BindException {
-    when(folderMgr.getFolderSafe(1L, subject)).thenReturn(Optional.empty());
-    controller.getFolder(1L, false, null, subject);
+    assertThrows(
+        NotFoundException.class,
+        () -> {
+          when(folderMgr.getFolderSafe(1L, subject)).thenReturn(Optional.empty());
+          controller.getFolder(1L, false, null, subject);
+        });
   }
 
   @Test

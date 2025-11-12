@@ -16,21 +16,22 @@ import com.researchspace.service.archive.ImportStrategy;
 import java.io.File;
 import java.io.IOException;
 import javax.servlet.http.HttpSession;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockHttpSession;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ExampleContentActionTest {
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
 
   private @Mock SystemPropertyManager sysPropMgr;
   private @Mock ExportImport exportImport;
@@ -39,7 +40,7 @@ public class ExampleContentActionTest {
   private HttpSession session;
   User anyUser = createAnyUser("any");
 
-  @Before
+  @BeforeEach
   public void setup() {
     session = new MockHttpSession();
   }

@@ -1,15 +1,13 @@
 package com.researchspace.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.PropertyDescriptor;
 import com.researchspace.model.system.SystemProperty;
 import com.researchspace.model.system.SystemPropertyTestFactory;
 import com.researchspace.model.system.SystemPropertyValue;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SystemPropertyDAOTest extends SpringTransactionalTest {

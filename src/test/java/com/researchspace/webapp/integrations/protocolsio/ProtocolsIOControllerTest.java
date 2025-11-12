@@ -1,6 +1,6 @@
 package com.researchspace.webapp.integrations.protocolsio;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -18,18 +18,19 @@ import com.researchspace.service.RecordManager;
 import com.researchspace.service.SharingHandler;
 import com.researchspace.service.UserManager;
 import com.researchspace.webapp.controller.AjaxReturnObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ProtocolsIOControllerTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   private @Mock ProtocolsIOToDocumentConverter converter;
   private @Mock UserManager userMgr;
   private @Mock FolderManager folderMgr;
@@ -45,7 +46,7 @@ public class ProtocolsIOControllerTest {
   private Protocol protocol = getAProtocol();
   private StructuredDocument anyDoc = getADocument();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     importsFolder.setId(3L);
     sharedFolder.setId(1L);
@@ -66,7 +67,7 @@ public class ProtocolsIOControllerTest {
     when(folderMgr.getFolder(workspaceRootFolder.getId(), subject)).thenReturn(workspaceRootFolder);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

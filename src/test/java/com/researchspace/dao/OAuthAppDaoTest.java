@@ -1,14 +1,12 @@
 package com.researchspace.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.CryptoUtils;
 import com.researchspace.model.User;
 import com.researchspace.model.oauth.OAuthApp;
 import com.researchspace.testutils.SpringTransactionalTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class OAuthAppDaoTest extends SpringTransactionalTest {

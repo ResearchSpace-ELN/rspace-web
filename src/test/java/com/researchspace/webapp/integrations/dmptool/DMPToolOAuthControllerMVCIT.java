@@ -1,10 +1,6 @@
 package com.researchspace.webapp.integrations.dmptool;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +23,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -176,7 +172,7 @@ public class DMPToolOAuthControllerMVCIT extends MVCTestBase {
           + "  ]\n"
           + "}";
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
     this.restTemplate = new RestTemplate();

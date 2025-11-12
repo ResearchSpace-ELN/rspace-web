@@ -1,8 +1,6 @@
 package com.researchspace.api.v1.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.api.v1.model.ApiDocument;
 import com.researchspace.api.v1.model.ApiUser;
@@ -10,9 +8,9 @@ import com.researchspace.core.util.DateUtil;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.mock.http.MockHttpOutputMessage;
 
@@ -20,12 +18,12 @@ public class SuperCSVMessageConverterTest {
 
   SuperCSVMessageConverter csvConverter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     csvConverter = new SuperCSVMessageConverter();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

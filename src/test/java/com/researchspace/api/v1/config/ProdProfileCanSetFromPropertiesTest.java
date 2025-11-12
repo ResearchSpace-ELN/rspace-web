@@ -2,8 +2,8 @@ package com.researchspace.api.v1.config;
 
 import static com.researchspace.api.v1.config.ProdAPIConfig.API_GLOBAL_MIN_INTERVAL;
 import static com.researchspace.api.v1.config.ProdAPIConfig.API_USER_MIN_INTERVAL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.analytics.service.AnalyticsManager;
 import com.researchspace.api.v1.auth.ApiAuthenticator;
@@ -19,7 +19,8 @@ import com.researchspace.service.FormManager;
 import com.researchspace.service.IconImageManager;
 import com.researchspace.service.UserApiKeyManager;
 import java.util.stream.IntStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -145,8 +146,9 @@ public class ProdProfileCanSetFromPropertiesTest {
   @TestPropertySource(
       properties = {API_USER_MIN_INTERVAL + "=1000", API_GLOBAL_MIN_INTERVAL + "=1234"})
   @ContextConfiguration(classes = {ApiProdConfigTestHelper.class, ProdApiConfTss.class})
+  @Nested
   @ActiveProfiles("api-prod-config-test")
-  public static class UserPropertiesSet extends APIProdConfigTestBase {
+  public class UserPropertiesSet extends APIProdConfigTestBase {
 
     @Autowired APIRequestThrottler userThrottler;
 
@@ -162,8 +164,9 @@ public class ProdProfileCanSetFromPropertiesTest {
   @TestPropertySource(
       properties = {"api.throttling.enabled=false", API_GLOBAL_MIN_INTERVAL + "=200000"})
   @ContextConfiguration(classes = {ApiProdConfigTestHelper.class, ProdApiConfTss.class})
+  @Nested
   @ActiveProfiles("api-prod-config-test")
-  public static class DisabledThrottling extends APIProdConfigTestBase {
+  public class DisabledThrottling extends APIProdConfigTestBase {
 
     @Test
     public void testNoLimitationWithApiThrottlingEnabledSetToFalse() {
@@ -183,8 +186,9 @@ public class ProdProfileCanSetFromPropertiesTest {
   @TestPropertySource(
       properties = {API_USER_MIN_INTERVAL + "=1000", API_GLOBAL_MIN_INTERVAL + "=500"})
   @ContextConfiguration(classes = {ApiProdConfigTestHelper.class, ProdApiConfTss.class})
+  @Nested
   @ActiveProfiles("api-prod-config-test")
-  public static class UserPropertiesSetWronglyLogsWarning extends APIProdConfigTestBase {
+  public class UserPropertiesSetWronglyLogsWarning extends APIProdConfigTestBase {
     @Autowired APIRequestThrottlingInterceptor apiThrottleInterceptor;
 
     @Test

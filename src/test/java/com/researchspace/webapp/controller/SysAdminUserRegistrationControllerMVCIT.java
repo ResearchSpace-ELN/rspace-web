@@ -4,10 +4,7 @@ import static com.researchspace.Constants.ADMIN_ROLE;
 import static com.researchspace.Constants.SYSADMIN_ROLE;
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static com.researchspace.webapp.filter.RemoteUserRetrievalPolicy.SSO_DUMMY_PASSWORD;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
@@ -31,12 +28,13 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -44,26 +42,26 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SysAdminUserRegistrationControllerMVCIT extends MVCTestBase {
 
   private static final String SYSTEM_USER_REGISTRATION_BATCH_CREATE =
       "/system/userRegistration/batchCreate";
   private static final String BATCH_REGISTRATION_COMPLETE_MSG = "Import complete";
 
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
-
   private Principal sysAdminPrincipal;
   private User sysAdmin;
 
   @Autowired private SysAdminUserRegistrationController controller;
 
-  @After
+  @AfterEach
   public void teardown() throws Exception {
     getBeanOfClass(ConfigurableLogger.class).setLoggerDefault();
     super.tearDown();
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
     sysAdmin = createAndSaveUser(getRandomName(10), Constants.SYSADMIN_ROLE);

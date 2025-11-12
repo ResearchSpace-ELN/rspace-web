@@ -1,8 +1,8 @@
 package com.researchspace.service;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.model.User;
 import com.researchspace.model.apps.UserAppConfig;
@@ -15,9 +15,9 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,13 +45,13 @@ public class ExternalMessageHandlerImplTest extends SpringTransactionalTest {
   private @Autowired UserAppConfigManager mgr;
   private User testUser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testUser = createAndSaveRandomUser();
     initialiseContentWithEmptyContent(testUser);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -127,7 +127,7 @@ public class ExternalMessageHandlerImplTest extends SpringTransactionalTest {
     assertFalse(response.isSucceeded());
   }
 
-  @Test()
+  @Test
   public void sendExternalMessagePermissions() throws Exception {
     Long cfgSetId = setUpAppConfigForUser(testUser, () -> getSlackDevDfg());
     logoutAndLoginAs(testUser);

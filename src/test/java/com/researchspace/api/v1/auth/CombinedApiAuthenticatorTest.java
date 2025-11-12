@@ -13,17 +13,18 @@ import com.researchspace.model.User;
 import com.researchspace.model.UserAuthenticationMethod;
 import com.researchspace.model.record.TestFactory;
 import com.researchspace.service.ApiAvailabilityHandler;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class CombinedApiAuthenticatorTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock ApiKeyAuthenticator apiKeyAuthenticator;
   @Mock OAuthTokenAuthenticator oAuthAuthenticator;
   @Mock AnalyticsManager analyticsManager;

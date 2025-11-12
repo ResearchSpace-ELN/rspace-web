@@ -1,11 +1,7 @@
 package com.researchspace.webapp.controller;
 
 import static com.researchspace.core.util.JacksonUtil.toJson;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,8 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang.RandomStringUtils;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
@@ -49,7 +45,7 @@ public class ScheduledMaintenanceControllerMVCIT extends MVCTestBase {
   private Date dateNext10mins;
   private Date dateNext20mins;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     initMaintenanceTestUsers();
     logoutAndLoginAs(sysUser);
@@ -103,7 +99,7 @@ public class ScheduledMaintenanceControllerMVCIT extends MVCTestBase {
                     .principal(sysUserPrincipal))
             .andReturn();
     String nextMaintenance = nextMaintenanceResult.getResponse().getContentAsString();
-    assertEquals("next maintenance should be empty", "", nextMaintenance);
+    assertEquals("", nextMaintenance, "next maintenance should be empty");
   }
 
   @Test
@@ -124,7 +120,7 @@ public class ScheduledMaintenanceControllerMVCIT extends MVCTestBase {
             .andReturn();
     String createResponse = createResult.getResponse().getContentAsString();
     assertNotNull(createResponse);
-    assertTrue("create maintenance response shouldn't be empty", createResponse.length() > 0);
+    assertTrue(createResponse.length() > 0, "create maintenance response shouldn't be empty");
     Long savedId = new Long(createResponse);
 
     ScheduledMaintenance createdMaintenance = maintenanceManager.getScheduledMaintenance(savedId);
@@ -149,9 +145,9 @@ public class ScheduledMaintenanceControllerMVCIT extends MVCTestBase {
     ScheduledMaintenance updatedMaintenance = maintenanceManager.getScheduledMaintenance(savedId);
     assertNotNull(updatedMaintenance);
     assertEquals(
-        "maintenance message should be updated",
         testUpdatedMessage,
-        updatedMaintenance.getMessage());
+        updatedMaintenance.getMessage(),
+        "maintenance message should be updated");
 
     MvcResult deleteResult =
         mockMvc
@@ -255,9 +251,9 @@ public class ScheduledMaintenanceControllerMVCIT extends MVCTestBase {
     ScheduledMaintenance createdMaintenance = maintenanceManager.getNextScheduledMaintenance();
     assertNotNull(createdMaintenance);
     assertEquals(
-        "created maintenance should be returned as next one", savedId, createdMaintenance.getId());
+        savedId, createdMaintenance.getId(), "created maintenance should be returned as next one");
     assertTrue(
-        "future maintenance should not stop user login", createdMaintenance.getCanUserLoginNow());
+        createdMaintenance.getCanUserLoginNow(), "future maintenance should not stop user login");
 
     // now add a new maintenance scheduled for earlier, and check this is returned as th
     // the next maintenance, i.e. that cache is evicted:
@@ -285,7 +281,7 @@ public class ScheduledMaintenanceControllerMVCIT extends MVCTestBase {
     Thread.sleep(1000); // wait until next second
     ScheduledMaintenance updatedMaintenance = maintenanceManager.getNextScheduledMaintenance();
     assertNotNull(updatedMaintenance);
-    assertFalse("stop login request should be applied", updatedMaintenance.getCanUserLoginNow());
+    assertFalse(updatedMaintenance.getCanUserLoginNow(), "stop login request should be applied");
 
     maintenanceManager.removeScheduledMaintenance(savedId, sysUser);
     maintenanceManager.removeScheduledMaintenance(earlierId, sysUser);

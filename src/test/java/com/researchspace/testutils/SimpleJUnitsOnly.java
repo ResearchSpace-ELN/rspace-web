@@ -1,6 +1,6 @@
 package com.researchspace.testutils;
 
-import org.junit.Assume;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -13,7 +13,7 @@ public class SimpleJUnitsOnly implements TestRule {
       return new Statement() {
         @Override
         public void evaluate() throws Throwable {
-          Assume.assumeTrue(1 != 1);
+          Assumptions.assumeTrue(1 != 1);
         }
       };
     } else {

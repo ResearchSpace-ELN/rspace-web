@@ -1,13 +1,11 @@
 package com.researchspace.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.SubnetUtils.SubnetInfo;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Usage testing; src code is taken from Apache commons net project */
 public class SubnetUtilsTest {
@@ -15,10 +13,10 @@ public class SubnetUtilsTest {
   private static final String VALID_IP = "123.222.111.192";
   private static final String VALID_CIDR = "123.222.111.192/27";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -32,9 +30,13 @@ public class SubnetUtilsTest {
     System.err.println(info.getNetworkAddress());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalid() {
-    new SubnetUtils(VALID_IP); // must be cidr
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new SubnetUtils(VALID_IP); // must be cidr
+        }); // must be cidr
   }
 
   @Test

@@ -1,9 +1,6 @@
 package com.researchspace.offline.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.Constants;
 import com.researchspace.linkedelements.RichTextUpdater;
@@ -26,8 +23,8 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 
@@ -50,7 +47,7 @@ public class MobileManagerTest extends SpringTransactionalTest {
 
   private boolean offlineUserInitialised;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     initOfflineUserWithTwoDocs();
   }
@@ -129,13 +126,18 @@ public class MobileManagerTest extends SpringTransactionalTest {
     assertEquals("/", record.getPath());
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void testGetRecordChecksPermissions() throws Exception {
+    assertThrows(
+        AuthorizationException.class,
+        () -> {
 
-    // permissions check is using SecurityUtils.getSubject(). at this point it is user2 who is
-    // logged
-    Record doc = createBasicDocumentInRootFolderWithText(offlineUser1, "testDocForOfflineUser1");
-    mobileManager.getRecord(doc.getId(), "offlineUser2");
+          // permissions check is using SecurityUtils.getSubject(). at this point it is user2 who is
+          // logged
+          Record doc =
+              createBasicDocumentInRootFolderWithText(offlineUser1, "testDocForOfflineUser1");
+          mobileManager.getRecord(doc.getId(), "offlineUser2");
+        });
   }
 
   @Test
@@ -185,17 +187,17 @@ public class MobileManagerTest extends SpringTransactionalTest {
 
     assertNotNull(retrievedRecord);
     assertEquals(testName, retrievedRecord.getName());
-    assertTrue("wrong content: " + retrievedContent, retrievedContent.startsWith(testContent));
+    assertTrue(retrievedContent.startsWith(testContent), "wrong content: " + retrievedContent);
     assertTrue(
-        "wrong content: " + retrievedContent, retrievedContent.contains(savedImageLinkStart));
-    assertTrue("wrong content: " + retrievedContent, retrievedContent.endsWith(savedImageLinkEnd));
+        retrievedContent.contains(savedImageLinkStart), "wrong content: " + retrievedContent);
+    assertTrue(retrievedContent.endsWith(savedImageLinkEnd), "wrong content: " + retrievedContent);
     assertEquals(OfflineWorkType.EDIT, retrievedRecord.getLockType());
 
     List<OfflineImage> images = retrievedRecord.getImages();
     assertNotNull(images);
     assertEquals(1, images.size());
 
-    assertTrue("saved image id == " + images.get(0).getId(), images.get(0).getId() > 0);
+    assertTrue(images.get(0).getId() > 0, "saved image id == " + images.get(0).getId());
     assertEquals(testSketchAnnotation, images.get(0).getAnnotation());
     assertEquals(new String(decodedBytes), new String(images.get(0).getData()));
   }
@@ -240,18 +242,18 @@ public class MobileManagerTest extends SpringTransactionalTest {
     assertNotNull(retrievedRecord);
     assertEquals(testName, retrievedRecord.getName());
     assertTrue(
-        "wrong content: " + retrievedContent, retrievedContent.startsWith(savedImageLinksStart));
+        retrievedContent.startsWith(savedImageLinksStart), "wrong content: " + retrievedContent);
     assertTrue(
-        "wrong content: " + retrievedContent, retrievedContent.contains(savedImageLinksMiddle));
-    assertTrue("wrong content: " + retrievedContent, retrievedContent.endsWith(savedImageLinkEnd));
+        retrievedContent.contains(savedImageLinksMiddle), "wrong content: " + retrievedContent);
+    assertTrue(retrievedContent.endsWith(savedImageLinkEnd), "wrong content: " + retrievedContent);
     assertEquals(OfflineWorkType.EDIT, retrievedRecord.getLockType());
 
     List<OfflineImage> images = retrievedRecord.getImages();
     assertNotNull(images);
     assertEquals(2, images.size());
 
-    assertTrue("first id == " + images.get(0).getId(), images.get(0).getId() > 0);
-    assertTrue("second id == " + images.get(1).getId(), images.get(1).getId() > 0);
+    assertTrue(images.get(0).getId() > 0, "first id == " + images.get(0).getId());
+    assertTrue(images.get(1).getId() > 0, "second id == " + images.get(1).getId());
   }
 
   @Test

@@ -1,8 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.testutil.CoreTestUtils;
 import com.researchspace.core.testutil.StringAppenderForTestLogging;
@@ -14,8 +12,8 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -31,7 +29,7 @@ public class LoggingInterceptorTest extends SpringTransactionalTest {
   private MockHttpServletResponse httpResponse;
   private StringAppenderForTestLogging strglogger;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     strglogger = configureTestLogger(LoggingInterceptor.getLog());
     httpRequest = new MockHttpServletRequest();

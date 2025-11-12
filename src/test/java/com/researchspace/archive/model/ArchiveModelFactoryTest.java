@@ -4,9 +4,7 @@ import static com.researchspace.model.field.FieldType.NUMBER;
 import static com.researchspace.model.netfiles.NetFilesTestFactory.createAnyNfsFileStore;
 import static com.researchspace.model.record.TestFactory.createAnySD;
 import static com.researchspace.model.record.TestFactory.createAnyUser;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.archive.ArchivalDocument;
 import com.researchspace.archive.ArchivalForm;
@@ -26,16 +24,16 @@ import com.researchspace.model.record.RSForm;
 import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.model.record.TestFactory;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ArchiveModelFactoryTest {
   RSForm form;
   ArchiveModelFactory factory;
   User anyUser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     factory = new ArchiveModelFactory();
     setUpFormwIthAllFormFieldDataSet();
@@ -46,7 +44,7 @@ public class ArchiveModelFactoryTest {
     form = TestFactory.createAnyForm();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

@@ -8,20 +8,21 @@ import com.researchspace.api.v1.model.ApiSampleTemplatePost;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class InventoryImportPostFullValidatorTest extends SpringTransactionalTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
 
   @Autowired
   @Qualifier("inventoryImportPostFullValidator")

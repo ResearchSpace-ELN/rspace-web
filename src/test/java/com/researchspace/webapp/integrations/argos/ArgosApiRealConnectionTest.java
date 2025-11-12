@@ -14,8 +14,8 @@ import com.researchspace.service.impl.RunIfSystemPropertyDefined;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,7 +30,7 @@ public class ArgosApiRealConnectionTest {
 
   @InjectMocks private ArgosDMPProvider argosClient;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     openMocks(this);
 

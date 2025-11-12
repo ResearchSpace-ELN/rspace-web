@@ -1,8 +1,8 @@
 package com.researchspace.service.archive;
 
 import static com.researchspace.core.util.progress.ProgressMonitor.NULL_MONITOR;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.researchspace.archive.ArchivalImportConfig;
 import com.researchspace.archive.ArchiveImportScope;
@@ -16,9 +16,8 @@ import java.io.FileInputStream;
 import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,7 +33,7 @@ import org.springframework.mock.web.MockMultipartFile;
 @RunWith(ConditionalTestRunner.class)
 public class BackwardsCompatibilityTestIT extends RealTransactionSpringTestBase {
 
-  @Rule public TemporaryFolder tempImportFolder = new TemporaryFolder();
+  @TempDir public File tempImportFolder;
 
   @Autowired ExportImport exportImportMger;
   private @Autowired @Qualifier("importUsersAndRecords") ImportStrategy importStrategy;
@@ -58,13 +57,13 @@ public class BackwardsCompatibilityTestIT extends RealTransactionSpringTestBase 
       ArchivalImportConfig cfg = new ArchivalImportConfig();
       cfg.setScope(ArchiveImportScope.IGNORE_USERS_AND_GROUPS);
       cfg.setUser(importer.getUsername());
-      cfg.setUnzipPath(tempImportFolder.getRoot().getAbsolutePath());
+      cfg.setUnzipPath(tempImportFolder.getAbsolutePath());
       MockMultipartFile multipart =
           new MockMultipartFile(zip.getName(), zip.getName(), "application/zip", fis);
       ImportArchiveReport report =
           exportImportMger.importArchive(
               multipart, importer.getUsername(), cfg, NULL_MONITOR, importStrategy::doImport);
-      assertTrue("Not successful import", report.isSuccessful());
+      assertTrue(report.isSuccessful(), "Not successful import");
       assertFalse(report.getErrorList().hasErrorMessages());
       BaseRecord imported = report.getImportedRecords().iterator().next();
     }

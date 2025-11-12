@@ -36,22 +36,23 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.ResponseEntity;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ImageControllerTest extends JavaxValidatorTest {
   RotationConfig cfg;
-
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock UserManager usrMgr;
   @Mock RecordManager recordMgr;
@@ -65,7 +66,7 @@ public class ImageControllerTest extends JavaxValidatorTest {
   @InjectMocks private ImageController imgController;
   User anyUser;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     anyUser = TestFactory.createAnyUser("any");
     StaticMessageSource msg = new StaticMessageSource();
@@ -73,7 +74,7 @@ public class ImageControllerTest extends JavaxValidatorTest {
     imgController.setMessageSource(new MessageSourceUtils(msg));
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

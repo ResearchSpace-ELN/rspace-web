@@ -3,10 +3,7 @@ package com.researchspace.webapp.controller;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -15,8 +12,8 @@ import com.researchspace.model.User;
 import com.researchspace.model.record.BaseRecord;
 import com.researchspace.offline.service.OfflineManager;
 import java.security.Principal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
@@ -33,7 +30,7 @@ public class MobileControllerMVCIT extends MVCTestBase {
 
   @Autowired private OfflineManager offlineManager;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     user = createAndSaveUser(getRandomAlphabeticString("user"));
     setUpUserWithInitialisedContent(user);
@@ -52,7 +49,7 @@ public class MobileControllerMVCIT extends MVCTestBase {
     assertNull(result.getResolvedException());
 
     String response = result.getResponse().getContentAsString();
-    assertEquals("mobile status response not ok", "OK", response);
+    assertEquals("OK", response, "mobile status response not ok");
   }
 
   @Test
@@ -63,7 +60,7 @@ public class MobileControllerMVCIT extends MVCTestBase {
     assertNull(result.getResolvedException());
 
     String response = result.getResponse().getContentAsString();
-    assertEquals("mobile authentication response not ok", "OK", response);
+    assertEquals("OK", response, "mobile authentication response not ok");
   }
 
   @Test
@@ -78,7 +75,7 @@ public class MobileControllerMVCIT extends MVCTestBase {
 
     String response = result.getResponse().getContentAsString();
     assertNotNull(response);
-    assertTrue("response list not empty", response.length() > 2);
+    assertTrue(response.length() > 2, "response list not empty");
   }
 
   @Test
@@ -93,7 +90,7 @@ public class MobileControllerMVCIT extends MVCTestBase {
 
     String response = result.getResponse().getContentAsString();
     assertNotNull(response);
-    assertTrue("response object not empty", response.length() > 2);
+    assertTrue(response.length() > 2, "response object not empty");
   }
 
   private String dummyNewOfflineRecordJson =
@@ -114,8 +111,8 @@ public class MobileControllerMVCIT extends MVCTestBase {
     assertNull(result.getResolvedException());
 
     String response = result.getResponse().getContentAsString();
-    assertTrue("response object empty", response != null && response.length() > 0);
+    assertTrue(response != null && response.length() > 0, "response object empty");
     assertTrue(
-        "response can't be parsed to positive id: " + response, Long.parseLong(response) > 0);
+        Long.parseLong(response) > 0, "response can't be parsed to positive id: " + response);
   }
 }

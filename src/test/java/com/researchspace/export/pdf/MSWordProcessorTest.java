@@ -1,8 +1,7 @@
 package com.researchspace.export.pdf;
 
 import static com.researchspace.testutils.RSpaceTestUtils.setupVelocityWithTextFieldTemplates;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -18,24 +17,26 @@ import com.researchspace.model.record.TestFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class MSWordProcessorTest {
   MSWordProcessor mswordExporter;
-  @Rule public MockitoRule mockito = MockitoJUnit.rule();
   @Mock DocumentConversionService converter;
   @Mock ImageRetrieverHelper imageRetriever;
   @Mock IRSpaceDoc rspaceDoc;
   RichTextUpdater rtupdater;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     mswordExporter = new MSWordProcessor();
     mswordExporter.setDocConverter(converter);
@@ -44,7 +45,7 @@ public class MSWordProcessorTest {
     rtupdater.setVelocity(setupVelocityWithTextFieldTemplates());
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -53,17 +54,21 @@ public class MSWordProcessorTest {
     assertFalse(mswordExporter.supportsFormat(ExportFormat.PDF));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeExportThrowsIAEIfExportFormatisPdf() throws IOException {
-    File outfile = File.createTempFile("any", ".doc");
-    ExportToFileConfig cfg = getConfig();
-    cfg.setExportFormat("PDF");
-    ExportProcesserInput input = createAnyHTML();
-    mswordExporter.makeExport(outfile, input, rspaceDoc, cfg);
-    verify(imageRetriever, Mockito.never())
-        .getImageBytesFromImgSrc(Mockito.anyString(), Mockito.any(ExportToFileConfig.class));
-    verify(converter, never())
-        .convert(Mockito.any(Convertible.class), Mockito.eq("doc"), Mockito.eq(outfile));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          File outfile = File.createTempFile("any", ".doc");
+          ExportToFileConfig cfg = getConfig();
+          cfg.setExportFormat("PDF");
+          ExportProcesserInput input = createAnyHTML();
+          mswordExporter.makeExport(outfile, input, rspaceDoc, cfg);
+          verify(imageRetriever, Mockito.never())
+              .getImageBytesFromImgSrc(Mockito.anyString(), Mockito.any(ExportToFileConfig.class));
+          verify(converter, never())
+              .convert(Mockito.any(Convertible.class), Mockito.eq("doc"), Mockito.eq(outfile));
+        });
   }
 
   @Test

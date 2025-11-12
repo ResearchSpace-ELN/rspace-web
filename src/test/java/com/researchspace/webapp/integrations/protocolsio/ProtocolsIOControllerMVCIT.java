@@ -1,9 +1,7 @@
 package com.researchspace.webapp.integrations.protocolsio;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -19,9 +17,9 @@ import com.researchspace.testutils.RSpaceTestUtils;
 import com.researchspace.webapp.controller.MVCTestBase;
 import java.io.File;
 import javax.annotation.Nullable;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,14 +33,14 @@ public class ProtocolsIOControllerMVCIT extends MVCTestBase {
 
   private ObjectMapper objectMapper;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     objectMapper = new ObjectMapper();
     objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }

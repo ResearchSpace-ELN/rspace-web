@@ -21,8 +21,8 @@ import com.researchspace.service.impl.RunIfSystemPropertyDefined;
 import com.researchspace.webapp.controller.MVCTestBase;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -39,7 +39,7 @@ public class JoveClientMVCIT extends MVCTestBase {
 
   @Autowired private IPropertyHolder propertyHolder;
 
-  @Before
+  @BeforeEach
   public void startup() {
     testUser = createAndSaveUser(getRandomAlphabeticString("user"), Constants.USER_ROLE);
     initUsers(testUser);

@@ -1,54 +1,62 @@
 package com.researchspace.dao.customliquibaseupdates;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.researchspace.core.util.version.SemanticVersion;
 import liquibase.database.Database;
 import liquibase.database.DatabaseConnection;
 import liquibase.exception.CustomPreconditionErrorException;
 import liquibase.exception.CustomPreconditionFailedException;
 import liquibase.exception.DatabaseException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class MySQLVersionPreconditionTest {
-
-  public @Rule MockitoRule mockito = MockitoJUnit.rule();
 
   @Mock Database db;
   @Mock DatabaseConnection conn;
   MySQLVersionPrecondition precondition;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     precondition = new MySQLVersionPrecondition();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void invalidOperatorCausesError() throws DatabaseException {
-    setUpDBVersion(new SemanticVersion(5, 6, null, null));
-    precondition.setVersion("5.7");
-    precondition.setOperator("notanoperator");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          setUpDBVersion(new SemanticVersion(5, 6, null, null));
+          precondition.setVersion("5.7");
+          precondition.setOperator("notanoperator");
+        });
   }
 
-  @Test(expected = CustomPreconditionFailedException.class)
-  public void tooOldDBFailure()
-      throws CustomPreconditionFailedException,
-          CustomPreconditionErrorException,
-          DatabaseException {
-    // want 5.7 but is 5.6
-    setUpDBVersion(new SemanticVersion(5, 6, null, null));
-    precondition.setVersion("5.7");
-    precondition.setOperator("gte");
-    // fails - should ne > =5.7 but is 5.6
-    precondition.check(db);
+  @Test
+  public void tooOldDBFailure() throws CustomPreconditionErrorException, DatabaseException {
+    assertThrows(
+        CustomPreconditionFailedException.class,
+        () -> {
+          // want 5.7 but is 5.6
+          setUpDBVersion(new SemanticVersion(5, 6, null, null));
+          precondition.setVersion("5.7");
+          precondition.setOperator("gte");
+          // fails - should ne > =5.7 but is 5.6
+          precondition.check(db);
+        });
   }
 
   @Test
@@ -86,28 +94,30 @@ public class MySQLVersionPreconditionTest {
     precondition.check(db);
   }
 
-  @Test(expected = CustomPreconditionFailedException.class)
-  public void precondition_EQ_Fail()
-      throws CustomPreconditionFailedException,
-          CustomPreconditionErrorException,
-          DatabaseException {
-    setUpDBVersion(new SemanticVersion(5, 6, null, null));
-    precondition.setVersion("5");
-    precondition.setOperator("eq");
-    precondition.check(db);
+  @Test
+  public void precondition_EQ_Fail() throws CustomPreconditionErrorException, DatabaseException {
+    assertThrows(
+        CustomPreconditionFailedException.class,
+        () -> {
+          setUpDBVersion(new SemanticVersion(5, 6, null, null));
+          precondition.setVersion("5");
+          precondition.setOperator("eq");
+          precondition.check(db);
+        });
   }
 
-  @Test(expected = CustomPreconditionFailedException.class)
-  public void tooNewDBFailure()
-      throws CustomPreconditionFailedException,
-          CustomPreconditionErrorException,
-          DatabaseException {
-    // want 5.6 but is 5.7
-    setUpDBVersion(new SemanticVersion(5, 7, null, null));
-    precondition.setVersion("5.6");
-    precondition.setOperator("lt");
+  @Test
+  public void tooNewDBFailure() throws CustomPreconditionErrorException, DatabaseException {
+    assertThrows(
+        CustomPreconditionFailedException.class,
+        () -> {
+          // want 5.6 but is 5.7
+          setUpDBVersion(new SemanticVersion(5, 7, null, null));
+          precondition.setVersion("5.6");
+          precondition.setOperator("lt");
 
-    precondition.check(db);
+          precondition.check(db);
+        });
   }
 
   private void setUpDBVersion(SemanticVersion version) throws DatabaseException {

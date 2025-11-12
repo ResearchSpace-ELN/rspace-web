@@ -1,9 +1,7 @@
 package com.researchspace.webapp.controller;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.testutil.CoreTestUtils;
 import com.researchspace.license.InactiveLicenseTestService;
@@ -14,8 +12,8 @@ import com.researchspace.properties.PropertyHolder;
 import com.researchspace.service.UserEnablementUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ExtendedModelMap;
@@ -29,7 +27,7 @@ public class SysAdminControllerSpringTest extends SpringTransactionalTest {
 
   @Autowired protected UserEnablementUtils userEnablementUtils;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
   }

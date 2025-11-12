@@ -1,24 +1,23 @@
 package com.axiope.search;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class SrchConfigTest {
+class SrchConfigTest {
 
   SearchConfig srchCfg;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     srchCfg = new WorkspaceSearchConfig();
   }
 
   @Test
-  public void testGetUserFilterList() {
-    assertNotNull(srchCfg.getUsernameFilter());
+  void testGetUserFilterList() {
+    Assertions.assertNotNull(srchCfg.getUsernameFilter());
     srchCfg.setUsernameFilter(Collections.emptyList());
-    assertNotNull(srchCfg.getUsernameFilter());
+    Assertions.assertNotNull(srchCfg.getUsernameFilter());
   }
 }

@@ -4,7 +4,7 @@ import static com.researchspace.webapp.controller.SignupControllerMVCIT.CONFIRM_
 import static com.researchspace.webapp.controller.SignupControllerMVCIT.PASSWORD_PARAM;
 import static com.researchspace.webapp.controller.SignupControllerMVCIT.VALID_PWD;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -13,9 +13,9 @@ import com.researchspace.properties.IMutablePropertyHolder;
 import com.researchspace.service.impl.ConditionalTestRunner;
 import com.researchspace.service.impl.RunIfSystemPropertyDefined;
 import com.researchspace.testutils.ProdProfileTestConfiguration;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,14 +38,14 @@ public class ProdProfileSignupControllerMVCIT extends AbstractJUnit4SpringContex
 
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
   }
 
   @Test
   @RunIfSystemPropertyDefined(value = "nightly")
-  @Ignore
+  @Disabled
   // TODO This test fails as it use ProdContentInitializerManager, but does not initialise content
   // as the forms created were those from DevContentInitMgr. The problem is mixing different user
   // initialization mechanisms within the same test run.

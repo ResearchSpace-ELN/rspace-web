@@ -1,11 +1,7 @@
 package com.researchspace.dao;
 
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.ISearchResults;
 import com.researchspace.core.util.SortOrder;
@@ -24,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileMetadataDaoTest extends SpringTransactionalTest {
@@ -34,7 +30,7 @@ public class FileMetadataDaoTest extends SpringTransactionalTest {
 
   private User user = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     /* we initialize a random user, so files added to 1st user on the server,
     e.g. default inventory templates, are not polluting subsequent users' stats */
@@ -218,9 +214,9 @@ public class FileMetadataDaoTest extends SpringTransactionalTest {
     assertEquals(1, paths.size());
     File audioFile = paths.get(0);
     assertTrue(
-        "expect audio filename but was " + audioFile.getName(),
-        audioFile.getName().contains("mpthreetest"));
-    assertTrue("expected file to exist", audioFile.exists());
+        audioFile.getName().contains("mpthreetest"),
+        "expect audio filename but was " + audioFile.getName());
+    assertTrue(audioFile.exists(), "expected file to exist");
     assertEquals(198658, audioFile.length());
   }
 }

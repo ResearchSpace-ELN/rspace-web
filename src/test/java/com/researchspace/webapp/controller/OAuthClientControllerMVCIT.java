@@ -1,9 +1,7 @@
 package com.researchspace.webapp.controller;
 
 import static com.researchspace.webapp.controller.MvcTestUtils.parseOAuthTokenResponse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,7 +11,7 @@ import com.researchspace.model.User;
 import com.researchspace.model.frontend.OAuthAppInfo;
 import com.researchspace.service.OAuthAppManager;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 

@@ -4,7 +4,7 @@ import static com.researchspace.model.netfiles.NetFilesTestFactory.createAnyNfsF
 import static com.researchspace.model.record.TestFactory.createAnySD;
 import static com.researchspace.model.record.TestFactory.createAnySDWithText;
 import static com.researchspace.model.record.TestFactory.createAnyUser;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.researchspace.linkedelements.FieldContents;
@@ -36,19 +36,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class HTMLStringGeneratorTest {
 
   private static final String OrcidId = "1234-5678";
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   private @Mock EcatCommentManager commentMgr;
   private @Mock AuditManager auditManager;
   private @Mock NfsManager netFileManager;
@@ -66,7 +68,7 @@ public class HTMLStringGeneratorTest {
           + " table-cell;\">P.2</td></tr><tr> <td colspan=\"\" rowspan=\"\" style=\"display:"
           + " table-cell;\">P.2</td></tr></tbody></table>";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     ExportFormat.valueOf("WORD");
 
@@ -171,8 +173,8 @@ public class HTMLStringGeneratorTest {
     anydoc.setId(1L);
     documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
     assertTrue(
-        documentData.getDocumentAsHtml(),
-        documentData.getDocumentAsHtml().contains("http://demo.researchspace.com/globalId/SD3"));
+        documentData.getDocumentAsHtml().contains("http://demo.researchspace.com/globalId/SD3"),
+        documentData.getDocumentAsHtml());
 
     String externalLink = rtu.generateAnyURLStringForExternalDocLink();
     anydoc = TestFactory.createAnySDWithText(externalLink);
@@ -185,9 +187,9 @@ public class HTMLStringGeneratorTest {
     assertEquals(EXPECTED_FIXED_META_COUNT, htmlDoc.getElementsByTag("meta").size());
 
     assertEquals(
-        documentAsHtml,
         2,
-        StringUtils.countMatches(documentAsHtml, "http://externanalLink.com/someId"));
+        StringUtils.countMatches(documentAsHtml, "http://externanalLink.com/someId"),
+        documentAsHtml);
   }
 
   @Test
@@ -228,10 +230,10 @@ public class HTMLStringGeneratorTest {
 
     ExportProcesserInput input = htmlGenerator.extractHtmlStr(anyDoc, cfg);
     String documentAsHtml = input.getDocumentAsHtml();
-    assertTrue(documentAsHtml, documentAsHtml.contains("test lom"));
-    assertTrue(documentAsHtml, documentAsHtml.contains("SAMPLE"));
-    assertTrue(documentAsHtml, documentAsHtml.contains("SUBSAMPLE"));
-    assertFalse(documentAsHtml, documentAsHtml.contains("CONTAINER"));
+    assertTrue(documentAsHtml.contains("test lom"), documentAsHtml);
+    assertTrue(documentAsHtml.contains("SAMPLE"), documentAsHtml);
+    assertTrue(documentAsHtml.contains("SUBSAMPLE"), documentAsHtml);
+    assertFalse(documentAsHtml.contains("CONTAINER"), documentAsHtml);
   }
 
   @Test
@@ -261,14 +263,14 @@ public class HTMLStringGeneratorTest {
     ExportToFileConfig cfg = makeConfig();
     ExportProcesserInput documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
     assertTrue(
-        "unexpected content: " + documentData.getDocumentAsHtml(),
         documentData
             .getDocumentAsHtml()
             .contains(
                 "iframe: \n"
                     + "  <p><i>&lt;embedded code from <a"
                     + " href=\"https://dummy.source/a?b=c&amp;d=e\">"
-                    + "https://dummy.source/a?b=c&amp;d=e</a>&gt;</i></p>"));
+                    + "https://dummy.source/a?b=c&amp;d=e</a>&gt;</i></p>"),
+        "unexpected content: " + documentData.getDocumentAsHtml());
   }
 
   /** Tests that XSS doesn't work in the document's name & field names on export / preview */
@@ -293,8 +295,8 @@ public class HTMLStringGeneratorTest {
     // html chars in name escaped
     assertFalse(data.contains("special html chars &∅∈∌"));
     assertTrue(
-        "unexpected:" + data,
-        data.contains("special html chars &amp;amp;&amp;empty;&amp;isin;&amp;#8716;"));
+        data.contains("special html chars &amp;amp;&amp;empty;&amp;isin;&amp;#8716;"),
+        "unexpected:" + data);
   }
 
   @Test
@@ -331,14 +333,14 @@ public class HTMLStringGeneratorTest {
     String html = exportProcesserInput.getDocumentAsHtml();
 
     assertTrue(
-        "html doesn't contain selected choices 'a, b'. html is: " + html,
-        html.contains("<p>a, b</p>"));
+        html.contains("<p>a, b</p>"),
+        "html doesn't contain selected choices 'a, b'. html is: " + html);
     assertFalse(
+        html.contains("fieldSelectedChoices="),
         "html incorrectly contains 'fieldSelectedChoices=' which should be stripped. html is: "
-            + html,
-        html.contains("fieldSelectedChoices="));
+            + html);
     assertFalse(
-        "html incorrectly contains 'fieldChoices=' which should be stripped. html is: " + html,
-        html.contains("fieldChoices="));
+        html.contains("fieldChoices="),
+        "html incorrectly contains 'fieldChoices=' which should be stripped. html is: " + html);
   }
 }

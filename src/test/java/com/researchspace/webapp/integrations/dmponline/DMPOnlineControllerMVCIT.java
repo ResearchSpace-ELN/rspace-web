@@ -1,7 +1,7 @@
 package com.researchspace.webapp.integrations.dmponline;
 
 import static com.researchspace.service.IntegrationsHandler.DMPONLINE_APP_NAME;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,8 +11,8 @@ import com.researchspace.model.User;
 import com.researchspace.model.oauth.UserConnection;
 import com.researchspace.service.UserConnectionManager;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
@@ -23,7 +23,7 @@ public class DMPOnlineControllerMVCIT extends API_MVC_TestBase {
   private @Autowired UserConnectionManager userConnectionManager;
   private User user;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     user = createInitAndLoginAnyUser();

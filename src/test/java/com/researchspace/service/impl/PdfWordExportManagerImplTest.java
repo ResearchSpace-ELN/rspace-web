@@ -1,8 +1,6 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.archive.ExportScope;
 import com.researchspace.export.pdf.ExportFormat;
@@ -17,27 +15,28 @@ import com.researchspace.model.record.RecordFactory;
 import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.model.record.TestFactory;
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class PdfWordExportManagerImplTest {
 
   User anyUser, otherUser;
   RecordFactory recordFactory;
   ExportToFileConfig config;
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock IPermissionUtils permissions;
   @InjectMocks PdfWordExportManagerImpl pdfExporter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
 
     anyUser = TestFactory.createAnyUser("any");
@@ -48,7 +47,7 @@ public class PdfWordExportManagerImplTest {
     pdfExporter.setExportUtils(new ExportUtils());
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -118,8 +117,8 @@ public class PdfWordExportManagerImplTest {
   private void assertExportName(String expected) throws IOException {
     ExportOperationDetails details = pdfExporter.createExportOperationDetails(config);
     assertTrue(
-        "name is " + details.getConcatenatedExportFile().getName(),
-        details.getConcatenatedExportFile().getName().matches(expected + "[\\w-]{8,12}\\.pdf"));
+        details.getConcatenatedExportFile().getName().matches(expected + "[\\w-]{8,12}\\.pdf"),
+        "name is " + details.getConcatenatedExportFile().getName());
   }
 
   private void assertIdExtractorReturned(Folder folder) {

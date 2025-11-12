@@ -16,18 +16,19 @@ import com.researchspace.service.SystemPropertyPermissionManager;
 import java.util.concurrent.Callable;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class SampleTemplateAppInitialiserTest {
-
-  public @Rule MockitoRule mockito = MockitoJUnit.rule();
   StringAppenderForTestLogging strgLogger;
   private @Mock SampleTemplateInitializer sampleTemplateCreator;
   private @Mock UserDao userdao;
@@ -46,7 +47,7 @@ public class SampleTemplateAppInitialiserTest {
 
   User user = TestFactory.createAnyUser(Constants.SYSADMIN_UNAME);
 
-  @Before
+  @BeforeEach
   public void setUp() {
     strgLogger = CoreTestUtils.configureStringLogger(AbstractAppInitializor.log);
   }

@@ -1,8 +1,8 @@
 package com.researchspace.service.impl;
 
 import static com.researchspace.core.testutil.CoreTestUtils.assertIllegalArgumentException;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -24,16 +24,18 @@ import com.researchspace.model.views.ServiceOperationResult;
 import com.researchspace.service.CommunityServiceManager;
 import java.util.List;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class FolderManagerTest {
-  public @Rule MockitoRule mockery = MockitoJUnit.rule();
   @Mock IPermissionUtils permissionUtils;
   @Mock CommunityServiceManager communityServiceManager;
   @Mock FolderDao folderDao;
@@ -42,7 +44,7 @@ public class FolderManagerTest {
   User anyUser = TestFactory.createAnyUser("any");
   Folder parent = null, child = null;
 
-  @Before
+  @BeforeEach
   public void before() {
     parent = TestFactory.createAFolder("parent", anyUser);
     parent.setId(1L);

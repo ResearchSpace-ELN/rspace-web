@@ -1,7 +1,6 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
@@ -24,22 +23,23 @@ import com.researchspace.service.UserManager;
 import com.researchspace.testutils.CommunityTestContext;
 import java.util.Collections;
 import java.util.Optional;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 @CommunityTestContext
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class ExternalOAuthControllerTest {
-
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
 
   @Mock RoleManager roleMgr;
   @Mock ExternalAuthTokenVerifier verifier;
@@ -53,12 +53,12 @@ public class ExternalOAuthControllerTest {
   String clientId = "client";
   String token = "token";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     MockitoAnnotations.openMocks(this);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -82,13 +82,17 @@ public class ExternalOAuthControllerTest {
     assertLogin();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testNonexistentEmail() {
-    ExternalProfile profile = createEXternalPRofile();
-    when(verifier.verify(clientId, token)).thenReturn(Optional.of(profile));
-    when(userMgr.getUserByEmail(profile.getEmail())).thenReturn(Collections.emptyList());
-    signupCtrller.externalLogin(token, clientId, new MockHttpServletRequest());
-    assertNoLogin();
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          ExternalProfile profile = createEXternalPRofile();
+          when(verifier.verify(clientId, token)).thenReturn(Optional.of(profile));
+          when(userMgr.getUserByEmail(profile.getEmail())).thenReturn(Collections.emptyList());
+          signupCtrller.externalLogin(token, clientId, new MockHttpServletRequest());
+          assertNoLogin();
+        });
   }
 
   private ExternalProfile createEXternalPRofile() {

@@ -3,10 +3,7 @@ package com.researchspace.webapp.controller;
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static com.researchspace.testutils.TestGroup.LABADMIN_PREFIX;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -47,9 +44,9 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.Permission;
 import org.hamcrest.Matchers;
 import org.hibernate.HibernateException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -79,7 +76,7 @@ public class GroupControllerMVCIT extends MVCTestBase {
   User other;
   Group grp;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     docToShare = null;
@@ -87,7 +84,7 @@ public class GroupControllerMVCIT extends MVCTestBase {
     grp = null;
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     super.tearDown();
   }
@@ -422,14 +419,14 @@ public class GroupControllerMVCIT extends MVCTestBase {
     doInTransaction(
         () -> {
           Group updatedGrp = grpDao.get(setup.group.getId());
-          assertTrue("user should be in group", updatedGrp.getMembers().contains(newUser));
-          assertTrue("user should be in group", updatedGrp.getMembers().contains(newUser2));
+          assertTrue(updatedGrp.getMembers().contains(newUser), "user should be in group");
+          assertTrue(updatedGrp.getMembers().contains(newUser2), "user should be in group");
           Folder grpFolderU1 = folderDao.getLabGroupFolderForUser(newUser);
           assertEquals(
-              "labgroup shared folder should be present", 1, grpFolderU1.getChildrens().size());
+              1, grpFolderU1.getChildrens().size(), "labgroup shared folder should be present");
           Folder grpFolderU2 = folderDao.getLabGroupFolderForUser(newUser2);
           assertEquals(
-              "labgroup shared folder should be present", 1, grpFolderU2.getChildrens().size());
+              1, grpFolderU2.getChildrens().size(), "labgroup shared folder should be present");
         });
   }
 
@@ -780,7 +777,7 @@ public class GroupControllerMVCIT extends MVCTestBase {
 
     grpMgr.addUserToGroup(newPi.getUsername(), testgroup.getGroup().getId(), RoleInGroup.DEFAULT);
     Group updated = grpMgr.setNewPi(testgroup.getGroup().getId(), newPi.getId(), sysadmin);
-    assertEquals("New PI should be the owner", newPi, updated.getOwner());
+    assertEquals(newPi, updated.getOwner(), "New PI should be the owner");
     newPi = userMgr.getUserByUsername(newPi.getUsername(), true);
     Set<ConstraintBasedPermission> piGroupPermissions = assertNewPIHasGRoupPIPerms(newPi, updated);
     assertEquals(newPi, updated.getPiusers().iterator().next());

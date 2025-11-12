@@ -18,17 +18,18 @@ import com.researchspace.model.record.Snippet;
 import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.model.record.TestFactory;
 import com.researchspace.service.impl.InternalLinkManagerImpl;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class InternalLinkManagerTest {
-
-  public @Rule MockitoRule rule = MockitoJUnit.rule();
   @Mock FieldDao fieldDao;
   @Mock BaseRecordManager baseRcdMgr;
   @Mock IPermissionUtils permUtils;

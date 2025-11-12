@@ -1,29 +1,31 @@
 package com.researchspace.webapp.controller;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class GlobalExceptionHandlerTest {
 
   private static final String EXC_MSG =
       "The file was" + " rejected because its size (22345643) exceeded the limit (5000)";
-  @Rule public MockitoRule rule = MockitoJUnit.rule();
   @Mock private IControllerExceptionHandler exceptionHandler;
   MaxUploadSizeExceededException maxSizeException;
 
-  @Before
+  @BeforeEach
   public void setup() {
     maxSizeException = new MaxUploadSizeExceededException(5000, new Exception(EXC_MSG));
   }
@@ -42,6 +44,6 @@ public class GlobalExceptionHandlerTest {
   public void testDisplayMaxSizeExceededExceptionMsg() {
     GlobalExceptionHandler globalHandler = new GlobalExceptionHandler();
     String msg = globalHandler.convertBytesToDisplay(EXC_MSG);
-    assertTrue("Message was not formatted", msg.contains("(21 MB)"));
+    assertTrue(msg.contains("(21 MB)"), "Message was not formatted");
   }
 }

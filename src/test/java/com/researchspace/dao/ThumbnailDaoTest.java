@@ -1,16 +1,13 @@
 package com.researchspace.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.Thumbnail;
 import com.researchspace.model.Thumbnail.SourceType;
 import com.researchspace.model.record.TestFactory;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.io.File;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ThumbnailDaoTest extends SpringTransactionalTest {

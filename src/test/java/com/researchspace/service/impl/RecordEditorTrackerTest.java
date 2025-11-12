@@ -1,9 +1,6 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.EditStatus;
 import com.researchspace.model.User;
@@ -18,9 +15,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
 
 public class RecordEditorTrackerTest {
@@ -38,7 +35,7 @@ public class RecordEditorTrackerTest {
   private boolean failedDueToUserRemoved = false;
   private boolean tooManyViewers = false;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // test fixture = 3 records and 3 users, each record created by a
     // different user.
@@ -65,7 +62,7 @@ public class RecordEditorTrackerTest {
     // u3 is not an active user
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -216,12 +213,16 @@ public class RecordEditorTrackerTest {
     }
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testGetViewersForRecord() {
-    Set<String> viewers = tracker.getViewersForRecord(r1.getId());
-    assertNotNull(viewers); // should not return null
-    assertTrue(viewers.isEmpty());
-    viewers.add("new user"); // fails! cannnot modify this directly
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          Set<String> viewers = tracker.getViewersForRecord(r1.getId());
+          assertNotNull(viewers); // should not return null
+          assertTrue(viewers.isEmpty());
+          viewers.add("new user"); // fails! cannnot modify this directly
+        }); // fails! cannnot modify this directly
   }
 
   @Test

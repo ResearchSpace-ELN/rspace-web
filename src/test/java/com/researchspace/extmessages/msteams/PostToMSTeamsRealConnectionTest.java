@@ -1,6 +1,6 @@
 package com.researchspace.extmessages.msteams;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.researchspace.core.util.TransformerUtils;
 import com.researchspace.extmessages.base.AbstractExternalWebhookMessageSender;
@@ -12,9 +12,9 @@ import com.researchspace.service.impl.RunIfSystemPropertyDefined;
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -60,12 +60,12 @@ public class PostToMSTeamsRealConnectionTest extends SpringTransactionalTest {
 
   BasicMsTeamsPoster poster = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     poster = new BasicMsTeamsPoster();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

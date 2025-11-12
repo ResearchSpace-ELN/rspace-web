@@ -1,6 +1,6 @@
 package com.researchspace.service;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.core.util.ISearchResults;
 import com.researchspace.model.PaginationCriteria;
@@ -13,7 +13,7 @@ import com.researchspace.testutils.SpringTransactionalTest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserProfileManagerTest extends SpringTransactionalTest {

@@ -1,10 +1,6 @@
 package com.researchspace.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.FileProperty;
 import com.researchspace.model.FileStoreRoot;
@@ -21,7 +17,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SignatureDaoTest extends SpringTransactionalTest {
@@ -111,7 +107,7 @@ public class SignatureDaoTest extends SpringTransactionalTest {
     SignatureHash savedHash = (SignatureHash) updated.getHashes().toArray()[0];
     assertNotNull(savedHash.getId());
     assertNotNull(savedHash.getFile().getId());
-    assertNotNull(actualFile.getName(), savedHash.getFile().getFileName());
+    assertNotNull(savedHash.getFile().getFileName(), actualFile.getName());
 
     sig.generateRecordContentHash();
     signatureDao.save(sig);

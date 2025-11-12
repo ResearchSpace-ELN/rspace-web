@@ -1,14 +1,14 @@
 package com.researchspace.webapp.controller;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 
 import com.researchspace.testutils.SpringTransactionalTest;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.ui.Model;
@@ -20,10 +20,10 @@ public class BrowserCacheAdviceInterceptorTest extends SpringTransactionalTest {
   private MockHttpServletResponse response = new MockHttpServletResponse();
   private HttpServletRequest request = new MockHttpServletRequest();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {}
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test

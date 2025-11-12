@@ -1,9 +1,7 @@
 package com.researchspace.service.impl;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -19,28 +17,30 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockHttpSession;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public class PostLoginHandlerImplTest {
 
   private static final String AFTER_INIT_REDIRECT = "afterInit";
   private static final String BEFORE_INIT_REDIRECT = "/beforeInit";
   private static final String ANY_LOGIN_REDIRECT = "xyz";
-  public @Rule MockitoRule mockito = MockitoJUnit.rule();
   @Mock IContentInitializer contentInit;
   @Mock UserContentUpdater ucMock;
   @InjectMocks PostLoginHandlerImpl postLoginHandler;
   MockHttpSession mockSession;
   private User anyUser;
 
-  @Before
+  @BeforeEach
   public void setup() {
     mockSession = new MockHttpSession();
     anyUser = TestFactory.createAnyUser("any");

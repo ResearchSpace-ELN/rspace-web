@@ -8,14 +8,8 @@ import static com.researchspace.model.record.BaseRecord.DEFAULT_VARCHAR_LENGTH;
 import static com.researchspace.testutils.RSpaceTestUtils.login;
 import static com.researchspace.testutils.RSpaceTestUtils.logoutCurrUserAndLoginAs;
 import static com.researchspace.testutils.matchers.TotalSearchResults.totalSearchResults;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.api.v1.model.ApiListOfMaterials;
 import com.researchspace.api.v1.model.ApiMaterialUsage;
@@ -85,10 +79,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.shiro.authz.AuthorizationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectRetrievalFailureException;
 
@@ -114,7 +108,7 @@ public class RecordManagerTest extends SpringTransactionalTest {
   private Folder parent = null;
   private Notebook notebook = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     user = createAndSaveUserIfNotExists(getRandomAlphabeticString("any"));
@@ -132,7 +126,7 @@ public class RecordManagerTest extends SpringTransactionalTest {
     notebook.setId(2L);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     RSpaceTestUtils.logout();
     super.tearDown();
@@ -295,14 +289,14 @@ public class RecordManagerTest extends SpringTransactionalTest {
     assertEquals(snippetContent, retrievedSnippet.getContent());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void creatingNewSnippetWithEmptyNameThrowsIAE() {
-    recordMgr.createSnippet("", "b", user);
+    assertThrows(IllegalArgumentException.class, () -> recordMgr.createSnippet("", "b", user));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void creatingNewSnippetWithNullContentThrowsIAE() {
-    recordMgr.createSnippet("a", null, user);
+    assertThrows(IllegalArgumentException.class, () -> recordMgr.createSnippet("a", null, user));
   }
 
   @Test
@@ -415,8 +409,8 @@ public class RecordManagerTest extends SpringTransactionalTest {
     FieldAttachment firstTargetAttachment = (FieldAttachment) targetLinkedMedia.toArray()[0];
     EcatMediaFile firstTargetMediaFile = firstTargetAttachment.getMediaFile();
     assertTrue(
-        "retrieved linked media: " + firstTargetMediaFile,
-        firstTargetMediaFile instanceof EcatImage);
+        firstTargetMediaFile instanceof EcatImage,
+        "retrieved linked media: " + firstTargetMediaFile);
     assertEquals(image.getId(), ((EcatImage) firstTargetMediaFile).getId());
   }
 
@@ -476,7 +470,7 @@ public class RecordManagerTest extends SpringTransactionalTest {
     RecordCopyResult result = recordMgr.copy(doc.getId(), "PIcopy", pi, null);
     StructuredDocument copy = result.getCopy(doc).asStrucDoc();
     assertEquals(
-        "copied record should end up in the same folder", pi.getRootFolder(), copy.getParent());
+        pi.getRootFolder(), copy.getParent(), "copied record should end up in the same folder");
   }
 
   @Test
@@ -791,11 +785,15 @@ public class RecordManagerTest extends SpringTransactionalTest {
     assertEquals(0, noChildrens.getResults().size());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addStructuredDocumentArgumentCheckingNoNulls() {
-    user.getRootFolder();
-    flushDatabaseState();
-    recordMgr.createNewStructuredDocument(user.getId(), null, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          user.getRootFolder();
+          flushDatabaseState();
+          recordMgr.createNewStructuredDocument(user.getId(), null, null);
+        });
   }
 
   @Test
@@ -1115,9 +1113,9 @@ public class RecordManagerTest extends SpringTransactionalTest {
     assertEquals(new Version(2L), child3.getUserVersion());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void renameThrowsIAEIfInvalidName() {
-    recordMgr.renameRecord(" ", 1L, user);
+    assertThrows(IllegalArgumentException.class, () -> recordMgr.renameRecord(" ", 1L, user));
   }
 
   @Test
@@ -1167,7 +1165,7 @@ public class RecordManagerTest extends SpringTransactionalTest {
     recordMgr.save(doc2, user);
     assertFalse(recordMgr.renameRecord("newnameFailsAsIsSigned", doc2.getId(), user));
     assertEquals(
-        "Doc should not be renamed, but was ", newName, recordMgr.get(doc2.getId()).getName());
+        newName, recordMgr.get(doc2.getId()).getName(), "Doc should not be renamed, but was ");
   }
 
   @Test
@@ -1442,28 +1440,28 @@ public class RecordManagerTest extends SpringTransactionalTest {
     }
     pgCrit.setResultsPerPage(IMAGES_PER_PAGE); // will get 2 pages
     ISearchResults<BaseRecord> results = listGallery(images, null, user);
-    assertEquals("should get paginated list of results", IMAGES_PER_PAGE, results.getHitsPerPage());
+    assertEquals(IMAGES_PER_PAGE, results.getHitsPerPage(), "should get paginated list of results");
 
     // now search by name:
     GalleryFilterCriteria filter = new GalleryFilterCriteria("0_name");
     results = listGallery(images, filter, user);
-    assertEquals("should get single search hit", 1, results.getResults().size());
-    assertEquals("should match with image of same name", images[0], results.getFirstResult());
+    assertEquals(1, results.getResults().size(), "should get single search hit");
+    assertEquals(images[0], results.getFirstResult(), "should match with image of same name");
 
     filter = new GalleryFilterCriteria("0_na");
     results = listGallery(images, filter, user);
-    assertEquals("should get single search hit for partial term", 1, results.getResults().size());
-    assertEquals("should match with image of same name", images[0], results.getFirstResult());
+    assertEquals(1, results.getResults().size(), "should get single search hit for partial term");
+    assertEquals(images[0], results.getFirstResult(), "should match with image of same name");
 
     // search by gallery global Id
     filter = new GalleryFilterCriteria(images[0].getGlobalIdentifier());
     results = listGallery(images, filter, user);
-    assertEquals("should get single search hit for global Id", 1, results.getResults().size());
+    assertEquals(1, results.getResults().size(), "should get single search hit for global Id");
 
     // search by non-gallery global id fails gracefully
     filter = new GalleryFilterCriteria("SD12345");
     results = listGallery(images, filter, user);
-    assertEquals("should get no hits", 0, results.getResults().size());
+    assertEquals(0, results.getResults().size(), "should get no hits");
 
     //		// now add tiff file to gallery and check uploaded OK
     // for unknown reason this works in application but not intest....

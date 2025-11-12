@@ -1,6 +1,6 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @Slf4j
 public class Zipcopytest {

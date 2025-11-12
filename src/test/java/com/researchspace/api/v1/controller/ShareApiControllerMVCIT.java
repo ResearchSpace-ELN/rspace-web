@@ -2,9 +2,7 @@ package com.researchspace.api.v1.controller;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,8 +29,8 @@ import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.model.views.TreeViewItem;
 import com.researchspace.testutils.TestGroup;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -41,7 +39,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 @WebAppConfiguration
 public class ShareApiControllerMVCIT extends API_MVC_TestBase {
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
   }

@@ -1,12 +1,8 @@
 package com.researchspace.webapp.controller;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
@@ -41,9 +37,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.hamcrest.Matchers;
 import org.jsoup.Jsoup;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
@@ -52,7 +48,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-@Ignore(
+@Disabled(
     "Requires chemistry service to run. See"
         + " https://documentation.researchspace.com/article/1jbygguzoa")
 @WebAppConfiguration
@@ -71,7 +67,7 @@ public class RSChemControllerMVCIT extends MVCTestBase {
   @Autowired private FieldParser parser;
   @Autowired private AuditManager auditMgr;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     super.setUp();
     user = createInitAndLoginAnyUser();
@@ -350,8 +346,8 @@ public class RSChemControllerMVCIT extends MVCTestBase {
 
     double SPEEDUP = 1.33; // is around 1.5 on new jenkins, but 1.33 is conservative estimate
     assertTrue(
-        "cache speedup should be min 25%, was: " + cached + "-" + uncached,
-        cached * SPEEDUP < uncached);
+        cached * SPEEDUP < uncached,
+        "cache speedup should be min 25%, was: " + cached + "-" + uncached);
   }
 
   @Test

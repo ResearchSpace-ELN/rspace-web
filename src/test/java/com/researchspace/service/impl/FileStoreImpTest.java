@@ -1,6 +1,7 @@
 package com.researchspace.service.impl;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.researchspace.core.util.TransformerUtils;
 import com.researchspace.model.FileProperty;
@@ -17,9 +18,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FileStoreImpTest {
 
@@ -36,13 +37,13 @@ public class FileStoreImpTest {
   String utf8FileName2 = "w?dok_z_łazika.png";
   User user;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     fs = new InternalFileStoreImpl();
     user = TestFactory.createAnyUser("any");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
   @Test
@@ -60,32 +61,40 @@ public class FileStoreImpTest {
     }
   }
 
-  @Test(expected = FileNotFoundException.class)
+  @Test
   public void testHandlePossibleUTF8ErrorCardinality() throws IOException {
-    FileStoreImpTss tss = new FileStoreImpTss();
-    // simulate inability to find matching file
-    tss.rc = Collections.emptyList();
+    assertThrows(
+        FileNotFoundException.class,
+        () -> {
+          FileStoreImpTss tss = new FileStoreImpTss();
+          // simulate inability to find matching file
+          tss.rc = Collections.emptyList();
 
-    File utf8File = RSpaceTestUtils.getResource(utf8FileName);
-    FileProperty fp = setupFileStoreRoot(utf8File);
-    String corruptedName = utf8File.getName().replace("ł", "?");
-    // mimic messed up stream
-    fp.setRelPath(corruptedName);
-    tss.handlePossibleUTF8Error(fp, fnfe());
+          File utf8File = RSpaceTestUtils.getResource(utf8FileName);
+          FileProperty fp = setupFileStoreRoot(utf8File);
+          String corruptedName = utf8File.getName().replace("ł", "?");
+          // mimic messed up stream
+          fp.setRelPath(corruptedName);
+          tss.handlePossibleUTF8Error(fp, fnfe());
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void handlePossibleUTF8ErrorThrowsISEIfMultuplieMatches() throws IOException {
-    FileStoreImpTss tss = new FileStoreImpTss();
-    // simulate > 1 hit
-    tss.rc = TransformerUtils.toList(new File("any1"), new File("any2"));
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          FileStoreImpTss tss = new FileStoreImpTss();
+          // simulate > 1 hit
+          tss.rc = TransformerUtils.toList(new File("any1"), new File("any2"));
 
-    File utf8File = RSpaceTestUtils.getResource(utf8FileName);
-    FileProperty fp = setupFileStoreRoot(utf8File);
-    String corruptedName = utf8File.getName().replace("ł", "?");
-    // mimic messed up stream
-    fp.setRelPath(corruptedName);
-    tss.handlePossibleUTF8Error(fp, fnfe());
+          File utf8File = RSpaceTestUtils.getResource(utf8FileName);
+          FileProperty fp = setupFileStoreRoot(utf8File);
+          String corruptedName = utf8File.getName().replace("ł", "?");
+          // mimic messed up stream
+          fp.setRelPath(corruptedName);
+          tss.handlePossibleUTF8Error(fp, fnfe());
+        });
   }
 
   private FileNotFoundException fnfe() {

@@ -1,14 +1,11 @@
 package com.researchspace.webapp.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.researchspace.model.User;
 import com.researchspace.model.record.TestFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefautLockoutPolicyTest {
 
@@ -18,7 +15,7 @@ public class DefautLockoutPolicyTest {
   private User u;
   private DefaultLockoutPolicy policy;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     u = TestFactory.createAnyUser("any");
     policy = new DefaultLockoutPolicy();

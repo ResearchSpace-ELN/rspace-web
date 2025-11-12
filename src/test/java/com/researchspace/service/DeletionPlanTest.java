@@ -1,7 +1,8 @@
 package com.researchspace.service;
 
 import static com.researchspace.model.record.TestFactory.createAnyUser;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.researchspace.model.User;
 import com.researchspace.model.record.BaseRecord;
@@ -11,9 +12,9 @@ import com.researchspace.model.record.TestFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DeletionPlanTest {
   DeletionPlan plan = null;
@@ -21,7 +22,7 @@ public class DeletionPlanTest {
   Folder parentFolder, toDelete, child;
   List<BaseRecord> pathElements = new ArrayList<>();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     any = createAnyUser("any");
     parentFolder = TestFactory.createAFolder("parent", any);
@@ -32,12 +33,16 @@ public class DeletionPlanTest {
     pathElements = Arrays.asList(new BaseRecord[] {parentFolder, toDelete, child});
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDeletionPlan() {
-    plan = new DeletionPlan(any, null, parentFolder);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          plan = new DeletionPlan(any, null, parentFolder);
+        });
   }
 
   @Test
