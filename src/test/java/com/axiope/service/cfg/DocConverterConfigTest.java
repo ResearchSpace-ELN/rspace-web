@@ -1,5 +1,10 @@
 package com.axiope.service.cfg;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.researchspace.document.importer.ExternalFileImporter;
 import com.researchspace.document.importer.MSWordImporter;
 import com.researchspace.document.importer.RSpaceDocumentCreator;
@@ -11,8 +16,6 @@ import com.researchspace.service.impl.license.NoCheckLicenseService;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +24,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 /**
  * This test class tests how different deployment property settings affect the connfiguration of
@@ -42,14 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * cfg.embeddedAsposeDocumentConversionService() is called, we'll just get the DummyConverter back.
  * This is fine, we just want to test here the conditions under which it is called.
  */
-@Suite
-@SelectClasses({
-  DocConverterConfigTest.EmbeddedNotUsedTest.class,
-  DocConverterConfigTest.AppTest.class,
-  DocConverterConfigTest.AppConverterNotSetIfNoExecutableFileFound.class,
-  DocConverterConfigTest.NoopAddedIfNoAsposeLicense.class,
-  DocConverterConfigTest.WebappConverterIfURLSet.class
-})
 public class DocConverterConfigTest {
 
   @Configuration
@@ -125,10 +114,10 @@ public class DocConverterConfigTest {
    * We  configure 2 @Configuration classes, so we don't have to wire up the whole application
    * to test the logic in the configuration class.
    */
-  @ContextConfiguration(classes = {DocConverterProdConfigTSS.class, DocConverterBaseConfig.class})
+  @SpringJUnitConfig(classes = {DocConverterProdConfigTSS.class, DocConverterBaseConfig.class})
   @ActiveProfiles(profiles = {"prod", "docconverter"})
   @TestPropertySource(properties = {"aspose.app="})
-  public static class TestBase extends AbstractJUnit4SpringContextTests {
+  public static class TestBase {
     @Autowired DocConverterProdConfig cfg;
 
     List<DocumentConversionService> getConverterList() {
@@ -208,7 +197,7 @@ public class DocConverterConfigTest {
 
   // here we simulate the aspose jar not being executable
   @TestPropertySource(properties = {"aspose.app=somepathToApp.jar"})
-  @ContextConfiguration(
+  @SpringJUnitConfig(
       inheritLocations = false,
       classes = {
         DocConverterProdConfigTSSNonExecutableAsposePathTSS.class,

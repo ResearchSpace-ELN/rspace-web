@@ -277,6 +277,23 @@
               </execution>
           </executions>
       </plugin>
+        <plugin>
+            <groupId>org.openrewrite.maven</groupId>
+            <artifactId>rewrite-maven-plugin</artifactId>
+            <version>6.22.1</version>
+            <configuration>
+                <activeRecipes>
+                    <recipe>org.openrewrite.java.testing.junit5.JUnit4to5Migration</recipe>
+                </activeRecipes>
+            </configuration>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openrewrite.recipe</groupId>
+                    <artifactId>rewrite-spring</artifactId>
+                    <version>6.17.0</version>
+                </dependency>
+        </dependencies>
+        </plugin>
     </plugins>
 
     <resources>
@@ -353,6 +370,12 @@
         <version>${hamcrest.version}</version>
         <scope>test</scope>
     </dependency>
+  <dependency>
+   <groupId>org.hamcrest</groupId>
+   <artifactId>hamcrest-junit</artifactId>
+   <version>2.0.0.0</version>
+   <scope>test</scope>
+  </dependency>
     <dependency>
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-netty</artifactId>
@@ -669,6 +692,12 @@
         <version>2.0.3</version>
         <scope>test</scope>
     </dependency>
+  <dependency>
+   <groupId>org.hamcrest</groupId>
+   <artifactId>hamcrest</artifactId>
+   <version>2.2</version>
+   <scope>test</scope>
+  </dependency>
     <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
@@ -2014,10 +2043,6 @@
         <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-    </dependency>
-    <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-migrationsupport</artifactId>
     </dependency>
@@ -2028,7 +2053,7 @@
     <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
-        <version>3.7.7</version>
+        <version>4.11.0</version>
         <scope>test</scope>
     </dependency>
     <dependency>
