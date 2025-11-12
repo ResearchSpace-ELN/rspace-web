@@ -86,15 +86,16 @@ public class RaIDServiceClientAdapterImpl
   public RaIDServicePoint getServicePoint(
       String username, String serverAlias, Integer servicePointId) throws HttpServerErrorException {
     // TODO: RSDEV-849
-    RaIDServicePoint result = new RaIDServicePoint(); // TODO: current dummy one - TBD on RSDEV-849
+    RaIDServicePoint result =
+        new RaIDServicePoint(); // TODO[nik]: current dummy one - TBD on RSDEV-849
     return null;
   }
 
   @Override
   public Set<RaID> getRaIDList(String username, String serverAlias)
-      throws HttpServerErrorException {
-    // TODO: RSDEV-849
-    return null;
+      throws HttpServerErrorException, URISyntaxException, JsonProcessingException {
+    return raidClient.getRaIDList(
+        getApiBaseUrl(serverAlias), getExistingAccessToken(username, serverAlias));
   }
 
   @Override

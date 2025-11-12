@@ -56,9 +56,9 @@ public class ProjectGroupController extends BaseController {
       @RequestBody CreateCloudGroup createCloudGroup,
       BindingResult errors,
       HttpServletRequest request) {
-
+    // TODO[nik]: amends this to add Raid for the user
     User creator = userManager.getAuthenticatedUserInSession();
-    createCloudGroup.setSessionUser(creator);
+    createCloudGroup.setSessionUser(creator); // the PI
     cloudGroupValidator.validate(createCloudGroup, errors);
     List<Group> groups = groupManager.listGroupsForOwner(creator);
     Map<String, String> response = new HashMap<>();

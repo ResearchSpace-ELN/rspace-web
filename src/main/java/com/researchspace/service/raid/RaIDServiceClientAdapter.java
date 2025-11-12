@@ -17,7 +17,8 @@ public interface RaIDServiceClientAdapter extends MultiInstanceClient<RaIDServer
   RaIDServicePoint getServicePoint(String username, String serverAlias, Integer servicePointId)
       throws HttpServerErrorException;
 
-  Set<RaID> getRaIDList(String username, String serverAlias) throws HttpServerErrorException;
+  Set<RaID> getRaIDList(String username, String serverAlias)
+      throws HttpServerErrorException, URISyntaxException, JsonProcessingException;
 
   RaID getRaID(String username, String serverAlias, String raidPrefix, String raidSuffix)
       throws HttpServerErrorException;

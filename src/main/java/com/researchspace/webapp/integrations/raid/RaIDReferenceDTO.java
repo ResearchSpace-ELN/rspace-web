@@ -12,7 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class RaIDReference implements Serializable {
+public class RaIDReferenceDTO implements Serializable {
 
   private String raidServerAlias;
   private String raidIdentifier;
