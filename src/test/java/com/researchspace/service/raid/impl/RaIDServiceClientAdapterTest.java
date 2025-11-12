@@ -12,6 +12,7 @@ import com.researchspace.model.User;
 import com.researchspace.model.oauth.UserConnection;
 import com.researchspace.properties.IPropertyHolder;
 import com.researchspace.raid.client.RaIDClient;
+import com.researchspace.raid.model.RaIDServicePoint;
 import com.researchspace.service.UserConnectionManager;
 import com.researchspace.testutils.SpringTransactionalTest;
 import com.researchspace.webapp.integrations.helper.BaseOAuth2Controller.AccessToken;
@@ -24,7 +25,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.web.client.HttpServerErrorException;
 
 @TestPropertySource(
     properties = {
@@ -39,9 +42,13 @@ public class RaIDServiceClientAdapterTest extends SpringTransactionalTest {
   private static final String CLIENT_SECRET = "secretfgubdfigu";
   private static final String AUTH_CODE = "authCodelohisgobg";
   private static final String CLIENT_ID = "rspace";
+  private static final int SERVICE_POINT_ID = 12345678;
   private static final String AUTH_BASE_URL =
       "https://demo.raid.org/realms/raid/protocol/openid-connect";
+  private static final String API_BASE_URL = "https://demo.raid.au";
   private static final String SERVER_ALIAS = "DEMO";
+  private static final String OLD_ACCESS_TOKEN = "ACCESS_TOKEN";
+  private static final String NEW_ACCESS_TOKEN = "NEW_ACCESS_TOKEN";
 
   @Autowired private IPropertyHolder properties;
   @Autowired private UserConnectionManager userConnectionManager;
@@ -150,12 +157,21 @@ public class RaIDServiceClientAdapterTest extends SpringTransactionalTest {
 
   @Test
   public void testRaidConnectIsAlive() throws Exception {
+    // GIVEN connection is not existing so it is not alive
+    // THEN
     assertFalse(raidServiceClientAdapter.isRaidConnectionAlive(user.getUsername(), SERVER_ALIAS));
 
-    // GIVEN
+    // GIVEN the connection exists but it is expired
     when(mockedRaidClient.getAccessToken(
             AUTH_BASE_URL, CLIENT_ID, CLIENT_SECRET, AUTH_CODE, getExpectedCallbackUrl()))
         .thenReturn(jsonAccessToken);
+    when(mockedRaidClient.getServicePoint(API_BASE_URL, OLD_ACCESS_TOKEN, SERVICE_POINT_ID))
+        .thenThrow(new HttpServerErrorException(HttpStatus.UNAUTHORIZED, "Unauthorized access"));
+    raidServiceClientAdapter.performCreateAccessToken(user.getUsername(), SERVER_ALIAS, AUTH_CODE);
+    // THEN still is not alive
+    assertFalse(raidServiceClientAdapter.isRaidConnectionAlive(user.getUsername(), SERVER_ALIAS));
+
+    // GIVEN the refresh token
     when(mockedRaidClient.getRefreshToken(
             AUTH_BASE_URL,
             CLIENT_ID,
@@ -163,9 +179,10 @@ public class RaIDServiceClientAdapterTest extends SpringTransactionalTest {
             expectedAccessToken.getRefreshToken(),
             getExpectedCallbackUrl()))
         .thenReturn(jsonRefreshToken);
-    raidServiceClientAdapter.performCreateAccessToken(user.getUsername(), SERVER_ALIAS, AUTH_CODE);
-
-    // WHEN / THEN
+    when(mockedRaidClient.getServicePoint(API_BASE_URL, NEW_ACCESS_TOKEN, SERVICE_POINT_ID))
+        .thenReturn(new RaIDServicePoint());
+    raidServiceClientAdapter.performRefreshToken(user.getUsername(), SERVER_ALIAS);
+    // THEN the connection is alive
     assertTrue(raidServiceClientAdapter.isRaidConnectionAlive(user.getUsername(), SERVER_ALIAS));
   }
 
