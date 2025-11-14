@@ -17,12 +17,15 @@ import com.researchspace.service.raid.RaIDServiceClientAdapter;
 import com.researchspace.webapp.integrations.MultiInstanceBaseClient;
 import com.researchspace.webapp.integrations.MultiInstanceClient;
 import com.researchspace.webapp.integrations.helper.BaseOAuth2Controller.AccessToken;
+import com.researchspace.webapp.integrations.raid.RaIDReferenceDTO;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -76,7 +79,7 @@ public class RaIDServiceClientAdapterImpl
   }
 
   @Override
-  public Set<RaIDServicePoint> getServicePointList(String username, String serverAlias)
+  public List<RaIDServicePoint> getServicePointList(String username, String serverAlias)
       throws HttpServerErrorException {
     // TODO: RSDEV-849
     return null;
@@ -92,10 +95,14 @@ public class RaIDServiceClientAdapterImpl
   }
 
   @Override
-  public Set<RaID> getRaIDList(String username, String serverAlias)
+  public Set<RaIDReferenceDTO> getRaIDList(String username, String serverAlias)
       throws HttpServerErrorException, URISyntaxException, JsonProcessingException {
-    return raidClient.getRaIDList(
-        getApiBaseUrl(serverAlias), getExistingAccessToken(username, serverAlias));
+    List<RaID> verboseRaidList =
+        raidClient.getRaIDList(
+            getApiBaseUrl(serverAlias), getExistingAccessToken(username, serverAlias));
+    return verboseRaidList.stream()
+        .map(r -> new RaIDReferenceDTO(serverAlias, r.getIdentifier().getId()))
+        .collect(Collectors.toSet());
   }
 
   @Override
