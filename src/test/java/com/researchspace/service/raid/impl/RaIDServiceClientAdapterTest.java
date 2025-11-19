@@ -14,6 +14,7 @@ import com.researchspace.properties.IPropertyHolder;
 import com.researchspace.raid.client.RaIDClient;
 import com.researchspace.raid.model.RaIDServicePoint;
 import com.researchspace.service.UserConnectionManager;
+import com.researchspace.service.raid.RaIDServiceClientAdapter;
 import com.researchspace.testutils.SpringTransactionalTest;
 import com.researchspace.webapp.integrations.helper.BaseOAuth2Controller.AccessToken;
 import java.nio.charset.Charset;
@@ -52,7 +53,7 @@ public class RaIDServiceClientAdapterTest extends SpringTransactionalTest {
 
   @Autowired private IPropertyHolder properties;
   @Autowired private UserConnectionManager userConnectionManager;
-  @Autowired private RaIDServiceClientAdapterImpl raidServiceClientAdapter;
+  @Autowired private RaIDServiceClientAdapter raidServiceClientAdapter;
   @Mock private RaIDClient mockedRaidClient;
 
   private User user;

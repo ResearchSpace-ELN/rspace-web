@@ -1,6 +1,7 @@
 package com.researchspace.service.raid;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.researchspace.raid.client.RaIDClient;
 import com.researchspace.raid.model.RaIDServicePoint;
 import com.researchspace.webapp.integrations.MultiInstanceClient;
 import com.researchspace.webapp.integrations.helper.BaseOAuth2Controller.AccessToken;
@@ -38,4 +39,7 @@ public interface RaIDServiceClientAdapter extends MultiInstanceClient<RaIDServer
   boolean isRaidConnectionAlive(String username, String serverAlias);
 
   void clearConnectionAliveCache();
+
+  /* test purposes */
+  void setRaidClient(RaIDClient raidClient);
 }
