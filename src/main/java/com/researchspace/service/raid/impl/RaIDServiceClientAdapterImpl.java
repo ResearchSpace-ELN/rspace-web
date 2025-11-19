@@ -1,6 +1,6 @@
 package com.researchspace.service.raid.impl;
 
-import static com.researchspace.CacheNames.RAID_CONNECTION;
+import static com.researchspace.CacheNames.CACHE_RAID_CONNECTION;
 import static com.researchspace.service.IntegrationsHandler.RAID_APP_NAME;
 import static javax.management.timer.Timer.ONE_HOUR;
 
@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -67,7 +66,7 @@ public class RaIDServiceClientAdapterImpl
 
   private @Autowired UserConnectionManager userConnectionManager;
 
-  @Setter(value = AccessLevel.PROTECTED) // for test purposes
+  @Setter // for test purposes
   private @Autowired RaIDClient raidClient;
 
   private @Autowired IPropertyHolder properties;
@@ -133,7 +132,7 @@ public class RaIDServiceClientAdapterImpl
   }
 
   @Override
-  @CacheEvict(value = RAID_CONNECTION, key = "#username + #serverAlias")
+  @CacheEvict(value = CACHE_RAID_CONNECTION, key = "#username + #serverAlias")
   public AccessToken performCreateAccessToken(
       String username, String serverAlias, String authorizationCode)
       throws JsonProcessingException, URISyntaxException {
@@ -151,7 +150,7 @@ public class RaIDServiceClientAdapterImpl
   }
 
   @Override
-  @CacheEvict(value = RAID_CONNECTION, key = "#username + #serverAlias")
+  @CacheEvict(value = CACHE_RAID_CONNECTION, key = "#username + #serverAlias")
   public AccessToken performRefreshToken(String username, String serverAlias)
       throws HttpServerErrorException, URISyntaxException, JsonProcessingException {
 
@@ -169,7 +168,7 @@ public class RaIDServiceClientAdapterImpl
   }
 
   @Override
-  @Cacheable(value = RAID_CONNECTION, key = "#username + #serverAlias")
+  @Cacheable(value = CACHE_RAID_CONNECTION, key = "#username + #serverAlias")
   public boolean isRaidConnectionAlive(String username, String serverAlias) {
     Optional<UserConnection> optUserConnection =
         getExistingRaidUserConnection(username, serverAlias);
@@ -192,9 +191,9 @@ public class RaIDServiceClientAdapterImpl
 
   @Override
   @Scheduled(fixedRate = ONE_HOUR)
-  @CacheEvict(value = {RAID_CONNECTION})
+  @CacheEvict(value = {CACHE_RAID_CONNECTION})
   public void clearConnectionAliveCache() {
-    log.info("Cache '{}' cleared after ONE HOUR", RAID_CONNECTION);
+    log.info("Cache '{}' cleared after ONE HOUR", CACHE_RAID_CONNECTION);
   }
 
   private String getExistingAccessTokenOrRefreshIfExpired(String username, String serverAlias)
