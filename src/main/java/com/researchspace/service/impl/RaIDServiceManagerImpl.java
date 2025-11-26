@@ -21,6 +21,11 @@ public class RaIDServiceManagerImpl implements RaIDServiceManager {
   @Autowired private GroupManager groupManager;
 
   @Override
+  public UserRaid getUserRaid(Long userRaidId){
+    return raidDao.get(userRaidId);
+  }
+
+  @Override
   public Set<RaIDReferenceDTO> getRaidAssociatedByUserAndAlias(User user, String serverAlias) {
     List<UserRaid> userRaidList = raidDao.getAssociatedRaidByUserAndAlias(user, serverAlias);
     return userRaidList.stream()

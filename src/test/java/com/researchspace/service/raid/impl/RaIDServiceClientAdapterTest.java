@@ -79,6 +79,26 @@ public class RaIDServiceClientAdapterTest extends SpringTransactionalTest {
   }
 
   @Test
+  public void testGetServicePointList() {
+    // TODO[nik]: implement this
+  }
+
+  @Test
+  public void testGetServicePoint() {
+    // TODO[nik]: implement this
+  }
+
+  @Test
+  public void testGetRaidList() {
+    // TODO[nik]: implement this
+  }
+
+  @Test
+  public void testGetRaid() {
+    // TODO[nik]: implement this
+  }
+
+  @Test
   public void testPerformRedirectConnect() throws Exception {
     when(mockedRaidClient.getRedirectUriToConnect(
             AUTH_BASE_URL, CLIENT_ID, getExpectedCallbackUrl(), SERVER_ALIAS))

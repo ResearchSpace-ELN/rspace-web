@@ -62,10 +62,6 @@ public class ProjectGroupController extends BaseController {
       @RequestBody CreateCloudGroup createCloudGroup,
       BindingResult errors,
       HttpServletRequest request) {
-    // TODO[nik]: amends this to add Raid for the user
-    // validation check if raid exists and it is available to bind
-    // create UserRaid object and assign to projectGroup
-    // save project group
     User creator = userManager.getAuthenticatedUserInSession();
     createCloudGroup.setSessionUser(creator); // the PI
     cloudGroupValidator.validate(createCloudGroup, errors);
