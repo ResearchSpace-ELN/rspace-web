@@ -21,7 +21,7 @@ public class RaIDServiceManagerImpl implements RaIDServiceManager {
   @Autowired private GroupManager groupManager;
 
   @Override
-  public UserRaid getUserRaid(Long userRaidId){
+  public UserRaid getUserRaid(Long userRaidId) {
     return raidDao.get(userRaidId);
   }
 

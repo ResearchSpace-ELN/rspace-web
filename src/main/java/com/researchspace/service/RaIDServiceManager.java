@@ -15,5 +15,4 @@ public interface RaIDServiceManager {
   void bindRaidToGroupAndSave(User user, RaidGroupAssociation raidToGroupAssociation);
 
   void unbindRaidFromGroupAndSave(User user, Long projectGroupId);
-
 }
