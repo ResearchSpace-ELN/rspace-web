@@ -31,9 +31,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @WebAppConfiguration
 public class ProjectGroupControllerMVCIT extends MVCTestBase {
 
-  @Autowired
-  private RaIDServiceManager raIDServiceManager;
-
+  @Autowired private RaIDServiceManager raIDServiceManager;
 
   private User pi;
   private ObjectMapper objectMapper = new ObjectMapper();
@@ -49,20 +47,21 @@ public class ProjectGroupControllerMVCIT extends MVCTestBase {
     projectGroupCreationObj = new CreateCloudGroup();
     projectGroupCreationObj.setGroupName("ProjectGroupWithRaid");
     projectGroupCreationObj.setSessionUser(pi);
-    projectGroupCreationObj.setRaid(
-        new RaIDReferenceDTO("raidServerAlias_X", "raidIdentifier_Y"));
+    projectGroupCreationObj.setRaid(new RaIDReferenceDTO("raidServerAlias_X", "raidIdentifier_Y"));
     projectGroupCreationObj.setPiEmail(pi.getEmail());
   }
 
   @Test
   public void createProjectGroupWithRaID() throws Exception {
 
-    MvcResult result = mockMvc.perform(
-            post("/projectGroup/createProjectGroup")
-                .content(JacksonUtil.toJson(projectGroupCreationObj))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn();
+    MvcResult result =
+        mockMvc
+            .perform(
+                post("/projectGroup/createProjectGroup")
+                    .content(JacksonUtil.toJson(projectGroupCreationObj))
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
 
     Long newProjectGroupId = extractProjectGroupId(result);
 
@@ -81,17 +80,18 @@ public class ProjectGroupControllerMVCIT extends MVCTestBase {
     assertEquals("raidIdentifier_Y", raidSaved.getRaidIdentifier());
     assertEquals(newProjectGroupId, raidSaved.getGroupAssociated().getId());
     assertEquals(pi.getId(), raidSaved.getOwner().getId());
-
   }
 
   @Test
   public void removeProjectGroupWhileHavingRaIDAssociated() throws Exception {
-    MvcResult result = mockMvc.perform(
-            post("/projectGroup/createProjectGroup")
-                .content(JacksonUtil.toJson(projectGroupCreationObj))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn();
+    MvcResult result =
+        mockMvc
+            .perform(
+                post("/projectGroup/createProjectGroup")
+                    .content(JacksonUtil.toJson(projectGroupCreationObj))
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
 
     Long newProjectGroupId = extractProjectGroupId(result);
     Group newProjectGroup = grpMgr.getGroup(newProjectGroupId);
@@ -100,16 +100,15 @@ public class ProjectGroupControllerMVCIT extends MVCTestBase {
     UserRaid raidSaved = raIDServiceManager.getUserRaid(raidId);
     assertNotNull(raidSaved);
 
-    mockMvc.perform(
-            post("/projectGroup/deleteGroup/" + newProjectGroupId))
+    mockMvc
+        .perform(post("/projectGroup/deleteGroup/" + newProjectGroupId))
         .andExpect(status().is3xxRedirection())
         .andReturn();
 
-    assertExceptionThrown(() -> grpMgr.getGroup(newProjectGroupId),
-        ObjectRetrievalFailureException.class);
-    assertExceptionThrown(() -> raIDServiceManager.getUserRaid(raidId),
-        ObjectRetrievalFailureException.class);
-
+    assertExceptionThrown(
+        () -> grpMgr.getGroup(newProjectGroupId), ObjectRetrievalFailureException.class);
+    assertExceptionThrown(
+        () -> raIDServiceManager.getUserRaid(raidId), ObjectRetrievalFailureException.class);
   }
 
   @NotNull
