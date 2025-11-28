@@ -10,7 +10,7 @@ public interface RaIDServiceManager {
 
   UserRaid getUserRaid(Long userRaidId);
 
-  Set<RaIDReferenceDTO> getRaidAssociatedByUserAndAlias(User user, String serverAlias);
+  Set<RaIDReferenceDTO> getAssociatedRaidsByUserAndAlias(User user, String serverAlias);
 
   void bindRaidToGroupAndSave(User user, RaidGroupAssociation raidToGroupAssociation);
 

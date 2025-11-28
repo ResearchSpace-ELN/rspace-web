@@ -73,7 +73,7 @@ public class RaIDController extends BaseOAuth2Controller {
             // remove from the external list the RaID that have already been associated
             // by this user
             Set<RaIDReferenceDTO> userRaidAlreadyAssociated =
-                raidServiceManager.getRaidAssociatedByUserAndAlias(
+                raidServiceManager.getAssociatedRaidsByUserAndAlias(
                     userManager.getUserByUsername(principal.getName()), currentServerAlias);
             externalRaIDList.removeAll(userRaidAlreadyAssociated);
 

@@ -26,7 +26,7 @@ public class RaIDServiceManagerImpl implements RaIDServiceManager {
   }
 
   @Override
-  public Set<RaIDReferenceDTO> getRaidAssociatedByUserAndAlias(User user, String serverAlias) {
+  public Set<RaIDReferenceDTO> getAssociatedRaidsByUserAndAlias(User user, String serverAlias) {
     List<UserRaid> userRaidList = raidDao.getAssociatedRaidByUserAndAlias(user, serverAlias);
     return userRaidList.stream()
         .map(r -> new RaIDReferenceDTO(r.getId(), r.getRaidServerAlias(), r.getRaidIdentifier()))
