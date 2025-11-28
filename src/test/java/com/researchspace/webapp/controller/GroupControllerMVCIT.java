@@ -136,7 +136,7 @@ public class GroupControllerMVCIT extends MVCTestBase {
   public void removeProjectGroupServiceTest() throws Exception {
 
     // create and save a user
-    User pi1 = createAndSaveUser("pi1", Constants.PI_ROLE);
+    User pi1 = createAndSaveUser("pi1_" + getRandomName(10), Constants.PI_ROLE);
     initUser(pi1);
     Group g1 = createProjectGroupForUsers(pi1, pi1.getUsername(), "", pi1);
 

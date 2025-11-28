@@ -1,5 +1,6 @@
 package com.researchspace.webapp.controller;
 
+import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -31,7 +32,8 @@ import org.springframework.test.web.servlet.MvcResult;
 @WebAppConfiguration
 public class ProjectGroupControllerMVCIT extends MVCTestBase {
 
-  @Autowired private RaIDServiceManager raIDServiceManager;
+  @Autowired
+  private RaIDServiceManager raIDServiceManager;
 
   private User pi;
   private ObjectMapper objectMapper = new ObjectMapper();
@@ -40,7 +42,7 @@ public class ProjectGroupControllerMVCIT extends MVCTestBase {
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    this.pi = createAndSaveUser("pi", Constants.PI_ROLE);
+    this.pi = createAndSaveUser("pi_" + getRandomName(10), Constants.PI_ROLE);
     initUser(this.pi);
     logoutAndLoginAs(pi);
 
@@ -80,6 +82,9 @@ public class ProjectGroupControllerMVCIT extends MVCTestBase {
     assertEquals("raidIdentifier_Y", raidSaved.getRaidIdentifier());
     assertEquals(newProjectGroupId, raidSaved.getGroupAssociated().getId());
     assertEquals(pi.getId(), raidSaved.getOwner().getId());
+
+    // teardown
+    grpMgr.removeGroup(newProjectGroupId, piUser);
   }
 
   @Test
