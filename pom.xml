@@ -1724,7 +1724,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.github.rspace-os</groupId>
+      <groupId>com.github.ResearchSpace-ELN</groupId>
       <artifactId>rspace-core-model</artifactId>
       <version>${rspace-core-model.version}</version>
       <exclusions>
@@ -1751,7 +1751,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.github.rspace-os</groupId>
+      <groupId>com.github.ResearchSpace-ELN</groupId>
       <artifactId>rspace-core-model</artifactId>
       <version>${rspace-core-model.version}</version>
       <scope>test</scope>
