@@ -483,9 +483,13 @@
   </div>
 </div>
 
-<div id="groupActivity" data-groupid="${group.id}"></div>
+<div id="raid-connections" data-group-id="${group.id}" />
 
-<br><br>
+<axt:once key="LOADED_raidConnections">
+  <%@ include file="/ui/dist/templates/raidConnections-scripts.jsp" %>
+</axt:once>
+
+<div id="groupActivity" data-groupid="${group.id}"></div>
 
 <div id="setNewPiDialog" style="display:none;">
     Select new PI:
