@@ -1,11 +1,11 @@
 //@flow
+/** biome-ignore-all lint/performance/noAccumulatingSpread: Deprecated */
+/** biome-ignore-all lint/suspicious/noExplicitAny: Deprecated */
 
 /*
  * These functions should ideally not be used as they are difficult or impossible to properly type
  * and so any code that utilises them does not have as strong type guarantees.
  */
-
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment */
 
 // be careful when using as it erases Flow types
 export const pick =

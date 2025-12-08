@@ -24,7 +24,7 @@ import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import EmailValidator from "email-validator";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "@/common/axios";
 import * as ArrayUtils from "../util/ArrayUtils";
 import type { Person } from "./repositories/common";
@@ -186,7 +186,7 @@ export default function ExportRepoUser({
     const [open, setOpen] = useState(false);
     const [people, setPeople] = useState(initialPeople);
 
-    const getCurrentUser = () => {
+    const getCurrentUser = useCallback(() => {
         void axios.get<{ fullName: string; email: string }>("/directory/ajax/subject").then((response) => {
             const user = response.data;
             const currentUserRoles = [
@@ -196,7 +196,7 @@ export default function ExportRepoUser({
             setPeople(currentUserRoles);
             updatePeople(currentUserRoles);
         });
-    };
+    }, [updatePeople]);
 
     useEffect(() => {
         if (initialPeople.length === 0) getCurrentUser();

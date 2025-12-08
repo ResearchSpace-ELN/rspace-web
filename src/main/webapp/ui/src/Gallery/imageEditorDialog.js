@@ -1,22 +1,22 @@
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
-import React, { useEffect, useRef } from "react";
+import ImageEditor from "@toast-ui/react-image-editor";
+import React, { useCallback, useEffect, useRef } from "react";
+import { createRoot } from "react-dom/client";
 import { makeStyles } from "tss-react/mui";
 import axios from "@/common/axios";
+import whiteTheme from "../common/theme.js";
+import FileFormatPrompt from "../components/FileFormatPrompt";
 import LoadingCircular from "../components/LoadingCircular";
 import materialTheme from "../theme";
 import "tui-image-editor/dist/tui-image-editor.css";
 import "./custom.css";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ImageEditor from "@toast-ui/react-image-editor";
-import { createRoot } from "react-dom/client";
-import whiteTheme from "../common/theme.js";
-import FileFormatPrompt from "../components/FileFormatPrompt";
 
 const useStyles = makeStyles()(() => ({
     dialogFiller: {
@@ -75,28 +75,7 @@ export default function ImageEditorDialog(_props) {
     const editor = useRef(null);
     const closeButton = useRef(null);
 
-    useEffect(() => {
-        document.addEventListener("open-image-editor", (e) => {
-            setRecordId(e.detail.recordid);
-            setOpen(true);
-
-            getImage(`/image/getImageForEdit/${e.detail.recordid}/${Date.now()}`, (dataUrl) => {
-                setBase64(dataUrl);
-            });
-        });
-    }, [getImage]);
-
-    const closeDialog = () => {
-        setPromptOpen(false);
-        setOpen(false);
-        setSubmitted(false);
-        setRecordId(null);
-        setBase64(null);
-        setError(false);
-        setDirty(false);
-    };
-
-    const getImage = (url, callback) => {
+    const getImage = useCallback((url, callback) => {
         const xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = (_e) => {
@@ -125,6 +104,27 @@ export default function ImageEditorDialog(_props) {
         xhr.open("GET", url);
         xhr.responseType = "blob";
         xhr.send();
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("open-image-editor", (e) => {
+            setRecordId(e.detail.recordid);
+            setOpen(true);
+
+            getImage(`/image/getImageForEdit/${e.detail.recordid}/${Date.now()}`, (dataUrl) => {
+                setBase64(dataUrl);
+            });
+        });
+    }, [getImage]);
+
+    const closeDialog = () => {
+        setPromptOpen(false);
+        setOpen(false);
+        setSubmitted(false);
+        setRecordId(null);
+        setBase64(null);
+        setError(false);
+        setDirty(false);
     };
 
     const handleSubmit = () => {

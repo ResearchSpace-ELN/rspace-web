@@ -82,7 +82,7 @@ const arbDocumentSelection = (args: { max?: number } = {}) =>
 function renderExportDialog({ allowFileStores }: { allowFileStores?: boolean } = {}): {
     setProps: (props: { selection: ExportSelection; open: boolean }) => void;
 } {
-    let setProps;
+    let setProps!: (props: { selection: ExportSelection; open: boolean }) => void;
     const Wrapper = () => {
         const [open, setOpen] = useState(false);
         const [selection, setSelection] = useState<ExportSelection>({
@@ -102,7 +102,6 @@ function renderExportDialog({ allowFileStores }: { allowFileStores?: boolean } =
         );
     };
     render(<Wrapper />);
-    if (!setProps) throw new Error("setProps is not initialised");
     return { setProps };
 }
 

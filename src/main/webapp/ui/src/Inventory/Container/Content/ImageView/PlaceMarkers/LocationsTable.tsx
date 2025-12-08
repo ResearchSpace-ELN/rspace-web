@@ -125,7 +125,7 @@ function LocationsTable({
                 </TableHead>
                 <TableBody ref={tableBody}>
                     {locations.map((location, index) => (
-                        <LocationTableRow location={location} number={index + 1} key={index} />
+                        <LocationTableRow location={location} number={index + 1} key={location.id} />
                     ))}
                 </TableBody>
             </Table>

@@ -54,7 +54,7 @@ function Dragger({ container, parentRef }: DraggerArgs): React.ReactNode {
         Math.abs(container.selectionStart.y - container.selectionEnd.y) > DRAGGER_SIZE / 2 &&
         Math.abs(container.selectionStart.x - container.selectionEnd.x) > 0;
 
-    if (!parentRef.current) return <></>;
+    if (!parentRef.current) return null;
     const parent = parentRef.current;
 
     /*

@@ -138,7 +138,7 @@ const FieldTypeMenuItem = forwardRef<HTMLLIElement, FieldTypeMenuItemArgs>(
                                 <Grid item className={classes.optionsScrollPanel}>
                                     <Grid container direction="row" spacing={1}>
                                         {options.map((o, i) => (
-                                            <Grid item key={i}>
+                                            <Grid item key={`${o}-${i}`}>
                                                 <Chip label={o} variant="outlined" />
                                             </Grid>
                                         ))}
@@ -159,6 +159,7 @@ const FieldTypeMenuItem = forwardRef<HTMLLIElement, FieldTypeMenuItemArgs>(
                     ) : (
                         <div className={classes.outOfMenuWrapper}>
                             <Paper className={classes.outOfMenuPaper}>{menuItem}</Paper>
+                            {/** biome-ignore lint/a11y/useSemanticElements: Replace with button later */}
                             <div
                                 className={classes.backdrop}
                                 onClick={() => setOpen(false)}

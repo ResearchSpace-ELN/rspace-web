@@ -9,7 +9,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import StyledEngineProvider from "@mui/styled-engine/StyledEngineProvider";
 import { action, observable, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "@/common/axios";
 import Confirm from "../components/ConfirmProvider";
 import LoadingFade from "../components/LoadingFade";
@@ -104,34 +104,9 @@ function ExportDialog({ open, onClose, exportSelection, allowFileStores }: Expor
     const [firstPane, setFirstPane] = useState(makePane("FormatChoice", "Export"));
     const [activePane, setActivePane] = useState(firstPane);
 
-    const createWizardPanes = () => {
-        const newListOfPanes = makePane("FormatChoice", "Export");
-        appendPane(newListOfPanes, makePane("FormatSpecificOptions", "Export"));
-
-        if (state.exportConfig.repository) appendPane(newListOfPanes, makePane("ExportRepo", "Setup Repository"));
-
-        if (state.exportConfig.fileStores)
-            appendPane(newListOfPanes, makePane("ExportFileStore", "Filestore Links Export Configuration"));
-
-        setFirstPane(newListOfPanes);
-        setActivePane(newListOfPanes);
-    };
-
-    useEffect(() => {
-        createWizardPanes();
-    }, [createWizardPanes]);
-
-    useEffect(() => {
-        setInitialDocPDF(exportSelection);
-        runInAction(() => {
-            state.open = open;
-            state.exportSelection = exportSelection;
-        });
-    }, [open, exportSelection, setInitialDocPDF, state]);
-
-    const setInitialDocPDF = (exportSelection: ExportSelection) => {
+    const setInitialDocPDF = useCallback((exportSelection: ExportSelection) => {
         // Add initial export name data to the loaded dialog (it is used in PDF and WORD exports)
-        let initialExportName;
+        let initialExportName: string;
 
         if (exportSelection.type === "selection" && exportSelection.exportNames.length > 0) {
             initialExportName = exportSelection.exportNames[0].trimStart();
@@ -145,7 +120,32 @@ function ExportDialog({ open, onClose, exportSelection, allowFileStores }: Expor
 
         pdfConfig.exportName = initialExportName;
         docConfig.exportName = initialExportName;
-    };
+    }, []);
+
+    const createWizardPanes = useCallback(() => {
+        const newListOfPanes = makePane("FormatChoice", "Export");
+        appendPane(newListOfPanes, makePane("FormatSpecificOptions", "Export"));
+
+        if (state.exportConfig.repository) appendPane(newListOfPanes, makePane("ExportRepo", "Setup Repository"));
+
+        if (state.exportConfig.fileStores)
+            appendPane(newListOfPanes, makePane("ExportFileStore", "Filestore Links Export Configuration"));
+
+        setFirstPane(newListOfPanes);
+        setActivePane(newListOfPanes);
+    }, [state.exportConfig.repository, state.exportConfig.fileStores]);
+
+    useEffect(() => {
+        createWizardPanes();
+    }, [createWizardPanes]);
+
+    useEffect(() => {
+        setInitialDocPDF(exportSelection);
+        runInAction(() => {
+            state.open = open;
+            state.exportSelection = exportSelection;
+        });
+    }, [open, exportSelection, setInitialDocPDF, state]);
 
     useEffect(() => {
         axios

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Deprecated */
 import type { Theme, ThemeOptions } from "@mui/material";
 import type { ComponentType } from "react";
 import type { CSSObject } from "tss-react";
@@ -36,11 +37,9 @@ export function mergeThemes(
     if (typeof themeA === "undefined") return themeB as ThemeOptions;
     if (typeof themeB === "undefined") return themeA as ThemeOptions;
     if (typeof themeA === "object" && typeof themeB === "object") {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const merged: { [key: string]: any } = {};
         const keys = [...Object.keys(themeA), ...Object.keys(themeB)];
         for (const k of keys) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
             merged[k] = mergeThemes((themeA as any)[k], (themeB as any)[k]);
         }
         return merged as ThemeOptions;

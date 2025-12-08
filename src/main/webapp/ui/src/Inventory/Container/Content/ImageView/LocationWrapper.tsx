@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { makeStyles } from "tss-react/mui";
 import type { Location } from "../../../../stores/definitions/Container";
 import * as DragAndDrop from "../DragAndDrop";
@@ -47,9 +47,15 @@ function LocationWrapper({ children, parentRect, location }: LocationWrapperArgs
     const { classes } = useStyles();
     const cellRef = React.useRef<HTMLDivElement | null>(null);
 
-    const positionX = () => Math.round((location.coordX / 1000) * parentRect.width) - locationMarkerOffset.x;
+    const positionX = useCallback(
+        () => Math.round((location.coordX / 1000) * parentRect.width) - locationMarkerOffset.x,
+        [location.coordX, parentRect.width],
+    );
 
-    const positionY = () => Math.round((location.coordY / 1000) * parentRect.height) - locationMarkerOffset.y;
+    const positionY = useCallback(
+        () => Math.round((location.coordY / 1000) * parentRect.height) - locationMarkerOffset.y,
+        [location.coordY, parentRect.height],
+    );
 
     useEffect(() => {
         if (Object.hasOwn(parentRect, "width")) {

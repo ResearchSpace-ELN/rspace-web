@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import { observable, runInAction } from "mobx";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "@/common/axios";
 import { useConfirm } from "../components/ConfirmProvider";
 import LoadingFade from "../components/LoadingFade";
@@ -184,7 +184,7 @@ export default function ExportFileStore({
         validator.setValidFunc,
     ]);
 
-    const fileStoreCheck = async () => {
+    const fileStoreCheck = useCallback(async () => {
         const url = "/nfsExport/ajax/createQuickExportPlan";
         setLoadingQuickPlan(true);
 
@@ -213,7 +213,7 @@ export default function ExportFileStore({
         } finally {
             setLoadingQuickPlan(false);
         }
-    };
+    }, [exportConfig, exportSelection, nfsConfig, validationData]);
 
     const calculateFullScanSummary = (plan: FullExportPlan) => {
         console.log("full scan result", plan);

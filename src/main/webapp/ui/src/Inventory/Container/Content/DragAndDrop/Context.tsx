@@ -46,7 +46,9 @@ export function Context({ children, container, supportKeyboard, supportMultiple 
          * required to move by a whole column/row.
          */
         coordinateGetter: (e: KeyboardEvent, { currentCoordinates }) => {
-            const { width, height } = (e.target as HTMLElement).closest("td")?.getBoundingClientRect();
+            const rect = (e.target as HTMLElement).closest("td")?.getBoundingClientRect();
+            const width = rect?.width ?? 0;
+            const height = rect?.height ?? 0;
             switch (e.code) {
                 case "ArrowRight":
                     return {

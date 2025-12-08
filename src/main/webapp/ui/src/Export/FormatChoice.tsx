@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import { observer } from "mobx-react-lite";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "@/common/axios";
 import { OptionExplanation, OptionHeading } from "../components/Inputs/RadioField";
 import { useDeploymentProperty } from "../hooks/api/useDeploymentProperty";
@@ -61,7 +61,7 @@ function FormatChoice({
     const [wordAvailabilityMessage, setWordAvailabilityMessage] = useState("");
     const asposeEnabled = useDeploymentProperty("aspose.enabled");
 
-    const repoCheck = () => {
+    const repoCheck = useCallback(() => {
         const url = "/repository/ajax/repo/uiConfig";
 
         axios
@@ -118,9 +118,9 @@ function FormatChoice({
                     ),
                 );
             });
-    };
+    }, [exportConfigUpdate]);
 
-    const pdfCheck = () => {
+    const pdfCheck = useCallback(() => {
         let disabled = false;
         let allMedia = false;
         let isSystem = false;
@@ -140,9 +140,9 @@ function FormatChoice({
         }
 
         setPdfAvailable(!disabled);
-    };
+    }, [exportSelection]);
 
-    const wordCheck = () => {
+    const wordCheck = useCallback(() => {
         let disabledBecauseMultiple = false;
         let disabledBecauseFolder = false;
         let disabledBecauseNotebook = false;
@@ -171,7 +171,7 @@ function FormatChoice({
         if (disabledBecauseFolder) setWordAvailabilityMessage(WORD_ERRORS[1]);
         if (disabledBecauseNotebook) setWordAvailabilityMessage(WORD_ERRORS[2]);
         if (disabledBecauseAllMedia) setWordAvailabilityMessage(WORD_ERRORS[3]);
-    };
+    }, [exportSelection]);
 
     useEffect(() => {
         repoCheck();

@@ -1,7 +1,7 @@
 import { runInAction } from "mobx";
 import { observer, useLocalObservable } from "mobx-react-lite";
 import type React from "react";
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import AnalyticsContext from "../stores/contexts/Analytics";
 import useStores from "../stores/use-stores";
 
@@ -42,14 +42,16 @@ function Analytics({ children }: AnalyticsArgs): React.ReactNode {
         trackEvent: () => {},
     }));
 
-    const trackInventoryEvent =
+    const trackInventoryEvent = useCallback(
         (trackEvent: (event: string, properties?: Record<string, unknown>) => void) =>
-        (event: string, properties?: Record<string, unknown>) => {
-            trackEvent(event, {
-                ...(properties ?? {}),
-                source: "inventory",
-            });
-        };
+            (event: string, properties?: Record<string, unknown>) => {
+                trackEvent(event, {
+                    ...(properties ?? {}),
+                    source: "inventory",
+                });
+            },
+        [],
+    );
 
     useEffect(() => {
         runInAction(() => {
@@ -64,11 +66,12 @@ function Analytics({ children }: AnalyticsArgs): React.ReactNode {
         });
     }, [
         analyticsContext.trackEvent,
-        trackInventoryEvent /*
+        /*
          * We also attach a reference to this new trackEvent function to the
          * trackingStore so that the older Inventory code which does not use the
          * AnalyticsContext can still trigger events.
-         */,
+         */
+        trackInventoryEvent,
         trackingStore,
         value,
     ]);
