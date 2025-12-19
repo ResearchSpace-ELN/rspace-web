@@ -22,10 +22,7 @@ System administrators need the ability to enable or disable the integration at t
 
 1. Define the constant for your integration in `IntegrationsHandler.java` (e.g., `NEW_INTEGRATION_APP_NAME`).
 2. Create a changeset (see [this changeset](/src/main/resources/sqlUpdates/changeLog-rsdev-855.xml) for an example):
-   1. Insert a `PropertyDescriptor` with:
-      - `name` = `<integration>.available`
-      - `type` = `STRING`
-      - `defaultValue` = `ALLOWED` or `DENIED`
+   1. Insert a `PropertyDescriptor` with `name` = `<integration>.available` and `defaultValue` = `DENIED`
    2. Insert a `SystemProperty` that references the above descriptor.
    3. Insert a `SystemPropertyValue` row for the initial value (usually `DENIED`).
 
@@ -33,14 +30,14 @@ System administrators need the ability to enable or disable the integration at t
 
 Once an integration is available at the system level (sysadmin toggle is on), individual users can enable or disable it and (optionally) configure it.
 
-[Example](/src/main/resources/sqlUpdates/changeLog-rsdev-855.xml)
+[Example](/src/main/resources/sqlUpdates/changeLog-rsdev-850.xml)
 
-1. Create a changeset to insert a row into the `App` table:
+1. Create a changeset following the example to insert a row into the `App` table:
    - `label` = human-readable name
    - `name` = `app.<integrationName>`
-   - `defaultEnabled` = BOOLEAN (`true`/`false`) defining initial user-level state
+   - `defaultEnabled` = `false` defining initial user-level state
 2. Determine if your integration requires per-user configuration options:
-   a. If the App only needs enable/disable:
+   a. If the App only needs to be enabled/disabled:
       No extra per-user options are required. The App row plus classification in code is enough (see classification below). 
    b. If the App requires per-user configuration options:
       Define one or more `PropertyDescriptor` rows for your option keys and link them to your App via `AppConfigElementDescriptor` rows. Example: [adding an API key](/src/main/resources/sqlUpdates/changeLog-rsdev-369.xml). 
