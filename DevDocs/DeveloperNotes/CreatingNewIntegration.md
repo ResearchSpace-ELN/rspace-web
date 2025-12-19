@@ -45,9 +45,8 @@ Once an integration is available at the system level (sysadmin toggle is on), in
    b. If the App requires per-user configuration options:
       Define one or more `PropertyDescriptor` rows for your option keys and link them to your App via `AppConfigElementDescriptor` rows. Example: [adding an API key](/src/main/resources/sqlUpdates/changeLog-rsdev-369.xml). 
 3. Code changes:
-   - Add your integration to `IntegrationsHandlerImpl.isAppConfigIntegration()` if it belongs to the main App-based list or requires multi-instance/complex configuration.
-   - Otherwise, if it has only a single option set per user (it may still have options like API keys or domain values), add it to `isSingleOptionSetAppConfigIntegration()`.
-   - Note: `isSingleOptionSetAppConfigIntegration()` does not mean "no options". For example, `PYRAT` requires an API key and is still classified as single-option-set; `EGNYTE` has a domain setting handled via `saveAppConfigWithSingleOptionSet()`.
+   - Add your integration to `IntegrationsHandlerImpl.isAppConfigIntegration()` if it has more than one option set per user.
+   - Otherwise, if it has only a single option set per user, add it to `isSingleOptionSetAppConfigIntegration()`.
 
 ### 3) Deployment properties (where applicable)
 
