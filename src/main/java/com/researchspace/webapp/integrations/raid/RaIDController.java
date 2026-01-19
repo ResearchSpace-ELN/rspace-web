@@ -159,7 +159,7 @@ public class RaIDController extends BaseOAuth2Controller {
       ErrorList el = inputValidator.populateErrorList(errors, new ErrorList());
       return new AjaxReturnObject<>(null, el);
     }
-    return new AjaxReturnObject<>(result.orElse(null), null);
+    return new AjaxReturnObject<>(result.orElse(new RaidGroupAssociation()), null);
   }
 
   /***
