@@ -67,7 +67,6 @@ import com.researchspace.model.record.Record;
 import com.researchspace.model.record.RecordToFolder;
 import com.researchspace.model.record.Snippet;
 import com.researchspace.model.record.StructuredDocument;
-import com.researchspace.model.record.TestFactory;
 import com.researchspace.model.views.FolderRecordPair;
 import com.researchspace.model.views.RSpaceDocView;
 import com.researchspace.model.views.RecordCopyResult;
@@ -77,6 +76,7 @@ import com.researchspace.service.impl.ContentInitializerForDevRunManager;
 import com.researchspace.session.UserSessionTracker;
 import com.researchspace.testutils.RSpaceTestUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
+import com.researchspace.testutils.TestFactory;
 import com.researchspace.testutils.TestGroup;
 import java.io.IOException;
 import java.time.Instant;
@@ -300,8 +300,8 @@ public class RecordManagerTest extends SpringTransactionalTest {
     recordMgr.createSnippet("", "b", user);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void creatingNewSnippetWithNullContentThrowsIAE() {
+  @Test(expected = NullPointerException.class)
+  public void creatingNewSnippetWithNullContentThrowsNPE() {
     recordMgr.createSnippet("a", null, user);
   }
 
@@ -791,7 +791,7 @@ public class RecordManagerTest extends SpringTransactionalTest {
     assertEquals(0, noChildrens.getResults().size());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void addStructuredDocumentArgumentCheckingNoNulls() {
     user.getRootFolder();
     flushDatabaseState();

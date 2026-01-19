@@ -1,6 +1,7 @@
 package com.researchspace.webapp.integrations.raid;
 
 import static com.researchspace.core.testutil.CoreTestUtils.getRandomName;
+import static com.researchspace.service.IntegrationsHandler.RAID_APP_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -18,9 +19,12 @@ import com.researchspace.model.Group;
 import com.researchspace.model.User;
 import com.researchspace.model.dtos.CreateCloudGroup;
 import com.researchspace.model.dtos.RaidGroupAssociation;
+import com.researchspace.model.oauth.UserConnection;
 import com.researchspace.model.raid.UserRaid;
+import com.researchspace.model.record.Folder;
 import com.researchspace.raid.model.RaID;
 import com.researchspace.service.RaIDServiceManager;
+import com.researchspace.service.UserConnectionManager;
 import com.researchspace.service.raid.RaIDServerConfigurationDTO;
 import com.researchspace.service.raid.RaIDServiceClientAdapter;
 import com.researchspace.webapp.controller.MVCTestBase;
@@ -30,6 +34,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
@@ -44,7 +49,6 @@ import org.springframework.http.MediaType;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.servlet.view.RedirectView;
 
 @WebAppConfiguration
 public class RaIDControllerMCVIT extends MVCTestBase {
@@ -65,6 +69,7 @@ public class RaIDControllerMCVIT extends MVCTestBase {
   @Autowired private RaIDController raidController;
 
   @Mock private RaIDServiceClientAdapter mockedRaidClientAdapter;
+  @Mock private UserConnectionManager mockedUserConnectionManager;
 
   @Autowired private RaIDServiceManager raidServiceManager;
 
@@ -81,10 +86,11 @@ public class RaIDControllerMCVIT extends MVCTestBase {
   public void setUp() throws Exception {
     super.setUp();
     MockitoAnnotations.openMocks(this);
-    this.piUser = createAndSaveUser("pi_" + getRandomName(10), Constants.PI_ROLE);
+    this.piUser = createAndSaveUser("pi" + getRandomName(10), Constants.PI_ROLE);
     initUser(this.piUser);
     logoutAndLoginAs(piUser);
     raidController.setRaidServiceClientAdapter(mockedRaidClientAdapter);
+    raidController.setUserConnection(mockedUserConnectionManager);
 
     projectGroupCreationWithRaid = new CreateCloudGroup();
     projectGroupCreationWithRaid.setGroupName("ProjectGroupWithRaid");
@@ -158,6 +164,14 @@ public class RaIDControllerMCVIT extends MVCTestBase {
     when(mockedRaidClientAdapter.getRaIDList(piUser.getUsername(), SERVER_ALIAS_2))
         .thenReturn(configuredRaidList2);
 
+    // though only SERVER_ALIAS_1 has been connected to the account
+    when(mockedUserConnectionManager.findByUserNameProviderName(
+            piUser.getUsername(), RAID_APP_NAME, SERVER_ALIAS_1))
+        .thenReturn(Optional.of(new UserConnection()));
+    when(mockedUserConnectionManager.findByUserNameProviderName(
+            piUser.getUsername(), RAID_APP_NAME, SERVER_ALIAS_2))
+        .thenReturn(Optional.empty());
+
     // WHEN
     result =
         mockMvc
@@ -169,7 +183,6 @@ public class RaIDControllerMCVIT extends MVCTestBase {
     // THEN
     Set<RaIDReferenceDTO> expectedResult = new HashSet<>();
     expectedResult.addAll(configuredRaidList1);
-    expectedResult.addAll(configuredRaidList2);
     expectedResult.remove(alreadyAssociatedRaidForServerAlias1);
 
     assertEquals(expectedResult, actualResult);
@@ -177,19 +190,7 @@ public class RaIDControllerMCVIT extends MVCTestBase {
 
   @Test
   public void testGetAssociateRaid() throws Exception {
-    // TODO[nik]: WIP
     // GIVEN a RaID already associated to a project group
-    alreadyAssociatedRaidForServerAlias1 =
-        new RaIDReferenceDTO(
-            SERVER_ALIAS_1,
-            mapper
-                .readValue(
-                    IOUtils.resourceToString(
-                        "/TestResources/raid/json/raid-test-1.json", Charset.defaultCharset()),
-                    RaID.class)
-                .getIdentifier()
-                .getId());
-
     MvcResult result =
         mockMvc
             .perform(
@@ -213,6 +214,55 @@ public class RaIDControllerMCVIT extends MVCTestBase {
     assertNotNull(actualResult);
     assertEquals(newProjectGroupId, actualResult.getProjectGroupId());
     assertEquals(RAID_ASSOCIATED_1, actualResult.getRaid());
+  }
+
+  @Test
+  public void testGetRaidByFolderId() throws Exception {
+    // GIVEN a RaID already associated to a project group
+    MvcResult result =
+        mockMvc
+            .perform(
+                post("/projectGroup/createProjectGroup")
+                    .content(JacksonUtil.toJson(projectGroupCreationWithRaid))
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
+    newProjectGroupId = extractProjectGroupId(result);
+
+    Group newGroup = grpMgr.getGroup(newProjectGroupId);
+    Folder projectGroupFolder = folderMgr.getFolder(newGroup.getCommunalGroupFolderId(), piUser);
+    Folder workspaceRootFolder = piUser.getRootFolder();
+
+    // WHEN get the associated raid to the project group folder ID
+    result =
+        mockMvc
+            .perform(
+                get("/apps/raid/byFolder/" + projectGroupFolder.getId())
+                    .principal(piUser::getUsername))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
+    RaidGroupAssociation actualResult = extractRaid(result);
+
+    // THEN a RaID is returned
+    assertNotNull(actualResult);
+    assertEquals(newProjectGroupId, actualResult.getProjectGroupId());
+    assertEquals(RAID_ASSOCIATED_1, actualResult.getRaid());
+
+    // WHEN get the associated raid to the workspace root folder ID
+    result =
+        mockMvc
+            .perform(
+                get("/apps/raid/byFolder/" + workspaceRootFolder.getId())
+                    .principal(piUser::getUsername))
+            .andExpect(status().is2xxSuccessful())
+            .andReturn();
+
+    // THEN no RaID is returned
+    assertTrue(
+        result
+            .getResponse()
+            .getContentAsString()
+            .contains("Not able to get RaID associated to the project group with folder ID"));
   }
 
   @Test
@@ -240,13 +290,10 @@ public class RaIDControllerMCVIT extends MVCTestBase {
                 post("/apps/raid/associate", newProjectGroupId)
                     .content(JacksonUtil.toJson(raidToGroupAssociation))
                     .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().is3xxRedirection())
+            .andExpect(status().is2xxSuccessful())
             .andReturn();
 
     // THEN
-    assertEquals(
-        "/groups/view/" + newProjectGroupId,
-        ((RedirectView) result.getModelAndView().getView()).getUrl());
     expectedProjectGroup = grpMgr.getGroup(newProjectGroupId);
     assertNotNull(expectedProjectGroup.getRaid());
 
@@ -278,13 +325,10 @@ public class RaIDControllerMCVIT extends MVCTestBase {
     result =
         mockMvc
             .perform(post("/apps/raid/disassociate/{projectGroupId}", newProjectGroupId))
-            .andExpect(status().is3xxRedirection())
+            .andExpect(status().is2xxSuccessful())
             .andReturn();
 
     // THEN
-    assertEquals(
-        "/groups/view/" + newProjectGroupId,
-        ((RedirectView) result.getModelAndView().getView()).getUrl());
     expectedProjectGroup.setRaid(null);
     assertEquals(expectedProjectGroup, grpMgr.getGroup(newProjectGroupId));
     assertExceptionThrown(

@@ -2,7 +2,7 @@ package com.researchspace.model.dtos;
 
 import static com.researchspace.model.Group.GROUP_UNIQUE_NAME_SUFFIX_LENGTH;
 import static com.researchspace.model.Organisation.MAX_INDEXABLE_UTF_LENGTH;
-import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -10,8 +10,8 @@ import com.researchspace.dao.GroupDao;
 import com.researchspace.model.Group;
 import com.researchspace.model.GroupType;
 import com.researchspace.model.User;
-import com.researchspace.model.record.TestFactory;
 import com.researchspace.testutils.SpringTransactionalTest;
+import com.researchspace.testutils.TestFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

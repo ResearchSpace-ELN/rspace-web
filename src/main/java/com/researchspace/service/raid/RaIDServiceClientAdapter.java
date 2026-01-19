@@ -38,8 +38,6 @@ public interface RaIDServiceClientAdapter extends MultiInstanceClient<RaIDServer
 
   boolean isRaidConnectionAlive(String username, String serverAlias);
 
-  void clearConnectionAliveCache();
-
   /* test purposes */
   void setRaidClient(RaIDClient raidClient);
 }
