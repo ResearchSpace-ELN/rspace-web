@@ -127,7 +127,7 @@ public class RaIDController extends BaseOAuth2Controller {
    *
    * @param projectGroupId
    * @param raidServerAlias
-   * @return the raid DTO if there is an association, otherwise null
+   * @return the raid DTO if there is an association, otherwise empty object
    */
   @GetMapping("/{raidServerAlias}/projects/{projectGroupId}")
   @ResponseBody
@@ -139,15 +139,9 @@ public class RaIDController extends BaseOAuth2Controller {
     Optional<RaidGroupAssociation> result = Optional.empty();
     BindingResult errors = new BeanPropertyBindingResult(null, "raidGroupAssociation");
     try {
-      Set<RaidGroupAssociation> userRaidAlreadyAssociated =
-          raidServiceManager.getAssociatedRaidsByUserAndAlias(
-              userManager.getUserByUsername(principal.getName()), raidServerAlias);
-      if (!userRaidAlreadyAssociated.isEmpty()) {
-        result =
-            userRaidAlreadyAssociated.stream()
-                .filter(raid -> raid.getProjectGroupId().equals(projectGroupId))
-                .findAny();
-      }
+      result =
+          raidServiceManager.getAssociatedRaidByUserAliasAndProjectId(
+              userManager.getUserByUsername(principal.getName()), raidServerAlias, projectGroupId);
     } catch (Exception e) {
       log.error("Not able to get RaID list for the user \"{}\":", principal.getName(), e);
       errors.reject(
@@ -167,7 +161,7 @@ public class RaIDController extends BaseOAuth2Controller {
    *
    * @param sharedFolderId the folder ID of the ProjectGroup shared folder
    * @param principal logged user
-   * @return the RaID associated or NULL
+   * @return the RaID associated or empty
    */
   @GetMapping("/byFolder/{sharedFolderId}")
   @ResponseBody
@@ -204,7 +198,7 @@ public class RaIDController extends BaseOAuth2Controller {
     if (errors.hasErrors()) {
       el = inputValidator.populateErrorList(errors, new ErrorList());
     }
-    return new AjaxReturnObject<>(result.orElse(null), el);
+    return new AjaxReturnObject<>(result.orElse(new RaidGroupAssociation()), el);
   }
 
   @PostMapping("/associate")
@@ -255,16 +249,20 @@ public class RaIDController extends BaseOAuth2Controller {
   }
 
   // TODO[nik]:  remove the GET once the UI is complete RSDEV-852 and RSDEV-853
-  @GetMapping("/associate/{projectGroupId}/{raidServerAlias}")
+  @GetMapping("/associate/{projectGroupId}/{raidServerAlias}/{raidTitle}")
   @ResponseStatus(HttpStatus.CREATED)
   public void associateRaidToGroup_GET(
       @PathVariable Long projectGroupId,
       @PathVariable String raidServerAlias,
+      @PathVariable String raidTitle,
       @RequestParam(name = "raidIdentifier") String raidIdentifier)
       throws BindException {
+
     RaidGroupAssociation input =
         new RaidGroupAssociation(
-            projectGroupId, new RaIDReferenceDTO(raidServerAlias, raidIdentifier));
+            projectGroupId,
+            groupManager.getGroup(projectGroupId).getDisplayName(),
+            new RaIDReferenceDTO(raidServerAlias, raidTitle, raidIdentifier));
     associateRaidToGroup(input);
   }
 
@@ -309,6 +307,9 @@ public class RaIDController extends BaseOAuth2Controller {
     Validate.isTrue(
         StringUtils.isNotBlank(raidGroupAssociation.getRaid().getRaidIdentifier()),
         "raidIdentifier is missing");
+    Validate.isTrue(
+        StringUtils.isNotBlank(raidGroupAssociation.getRaid().getRaidTitle()),
+        "raidTitle is missing");
     Validate.isTrue(
         StringUtils.isNotBlank(raidGroupAssociation.getRaid().getRaidServerAlias()),
         "raidServerAlias is missing");
