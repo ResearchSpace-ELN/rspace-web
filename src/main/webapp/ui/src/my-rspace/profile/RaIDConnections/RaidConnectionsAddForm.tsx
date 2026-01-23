@@ -1,83 +1,157 @@
 import { useForm } from "@tanstack/react-form";
 import * as v from "valibot";
-import { TextField } from "@/modules/common/forms/mui";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, TextField as MuiTextField } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import {
+  raidQueryKeys,
+  useGetAvailableRaIDIdentifiersAjaxQuery,
+} from "@/modules/raid/queries";
+import { useAddRaidIdentifierMutation } from "@/modules/raid/mutations";
+import { useQueryClient } from "@tanstack/react-query";
 
-// Valibot schema for the RaID identifier field
-const RaidIdentifierSchema = v.pipe(
-  v.string(),
-  v.nonEmpty("RaID identifier is required"),
-  v.minLength(3, "RaID identifier must be at least 3 characters")
-);
+// Schema for a RaID option
+const RaidOptionSchema = v.object({
+  label: v.string(),
+  raidServerAlias: v.string(),
+  raidIdentifier: v.pipe(
+    v.string(),
+    v.nonEmpty("RaID identifier is required"),
+    v.minLength(3, "RaID identifier must be at least 3 characters")
+  ),
+  raidTitle: v.string(),
+});
 
-// Full form schema
 const RaidConnectionsFormSchema = v.object({
-  raidIdentifier: RaidIdentifierSchema,
+  raidOption: v.pipe(
+    v.nullable(RaidOptionSchema),
+    v.check((val) => val !== null, "RaID identifier is required")
+  ),
 });
 
 type RaidConnectionsAddFormValues = v.InferOutput<typeof RaidConnectionsFormSchema>;
+type RaidOption = v.InferOutput<typeof RaidOptionSchema>;
 
 interface RaidConnectionsAddFormProps {
-  handleSubmit: (value: RaidConnectionsAddFormValues) => Promise<void> | void;
+  groupId: string;
+  handleCloseForm: () => void;
 }
 
-const RaidConnectionsAddForm = ({ handleSubmit }: RaidConnectionsAddFormProps) => {
+const RaidConnectionsAddForm = ({ groupId, handleCloseForm }: RaidConnectionsAddFormProps) => {
+  const {
+    data,
+  } = useGetAvailableRaIDIdentifiersAjaxQuery();
+  const queryClient = useQueryClient();
+  const mutation = useAddRaidIdentifierMutation({ groupId });
+
   const form = useForm({
     defaultValues: {
-      raidIdentifier: "",
-    } satisfies RaidConnectionsAddFormValues,
+      raidOption: null,
+    } as RaidConnectionsAddFormValues,
+    validators: {
+      onChange: RaidConnectionsFormSchema,
+    },
     onSubmit: async ({ value }) => {
-      // Validate with Valibot schema before submitting
-      const result = v.safeParse(RaidConnectionsFormSchema, value);
-      if (!result.success) {
-        throw new Error("Validation failed");
+      if (!value.raidOption) {
+        throw new Error("RaID option is required");
       }
-      await handleSubmit(result.output);
+
+      await mutation.mutateAsync({
+        raidServerAlias: value.raidOption.raidServerAlias,
+        raidIdentifier: value.raidOption.raidIdentifier,
+        raidTitle: value.raidOption.raidTitle,
+      });
+
+      handleCloseForm();
+      await queryClient.invalidateQueries({
+        queryKey: raidQueryKeys.availableRaidIdentifiers(),
+      });
     },
   });
 
+  if (!data.success) {
+    return <>Error loading RaID identifier options: {data.errorMsg}</>;
+  }
+
+  const options = data.data.map((option) => ({
+    label: `${option.raidTitle} (${option.raidIdentifier})`,
+    raidServerAlias: option.raidServerAlias,
+    raidIdentifier: option.raidIdentifier,
+    raidTitle: option.raidTitle,
+  }));
+
   return (
     <form
+      style={{ display: "contents" }}
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         void form.handleSubmit();
       }}
     >
-      <Stack spacing={2} direction="row">
-        <form.Field
-          name="raidIdentifier"
-          validators={{
-            onChange: ({ value }) => {
-              const result = v.safeParse(RaidIdentifierSchema, value);
-              if (!result.success) {
-                return result.issues[0]?.message ?? "Invalid value";
-              }
-              return undefined;
-            },
-          }}
-        >
+      <Stack spacing={2} direction="row" sx={{ width: "100%" }}>
+        <form.Field name="raidOption">
           {(field) => (
-            <TextField
-              field={field}
-              label="RaID Identifier"
-              placeholder="Enter RaID identifier"
-              required
+            <Autocomplete<RaidOption>
+              size="small"
+              sx={{ flexGrow: "1" }}
+              options={options}
+              value={field.state.value}
+              onChange={(_, newValue) => {
+                field.handleChange(newValue);
+              }}
+              isOptionEqualToValue={(option, value) =>
+                option.raidIdentifier === value.raidIdentifier &&
+                option.raidServerAlias === value.raidServerAlias &&
+                option.raidTitle === value.raidTitle
+              }
+              noOptionsText="No valid available RaID found, or the RaID has been used by another project group."
+              renderInput={(params) => (
+                <MuiTextField
+                  {...params}
+                  label="RaID Identifier"
+                  required
+                  error={field.state.meta.errors.length > 0 || mutation.isError}
+                  helperText={
+                    field.state.meta.errors.map(String).join(", ") ||
+                    mutation.error?.message
+                  }
+                />
+              )}
             />
           )}
         </form.Field>
 
         <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
+          selector={(state) => [
+            state.canSubmit,
+            state.isPristine,
+            state.isSubmitting,
+          ]}
         >
-          {([canSubmit, isSubmitting]) => (
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={!canSubmit}
-            >
-              {isSubmitting ? "Adding..." : "Add"}
-            </Button>
+          {([canSubmit, isPristine, isSubmitting]) => (
+            <>
+              <Button
+                type="submit"
+                variant="outlined"
+                color="primary"
+                size="small"
+                disabled={!canSubmit || isPristine}
+              >
+                {isSubmitting ? "Adding..." : "Add"}
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                disabled={isSubmitting}
+                onClick={() => {
+                  form.reset();
+                  handleCloseForm();
+                }}
+              >
+                Cancel
+              </Button>
+            </>
           )}
         </form.Subscribe>
       </Stack>

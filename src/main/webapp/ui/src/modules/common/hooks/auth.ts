@@ -1,6 +1,14 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 
+const queryKeys = {
+  all: ["rspace.common.auth"] as const,
+  oauthToken: () => [...queryKeys.all, "oauthToken"] as const,
+  whoami: () => [...queryKeys.all, "whoami"] as const,
+}
+
+const API_BASE_URL = "/api/v1";
+
 const ID_TOKEN_KEY = "id_token";
 const JWT_TOKEN_PATTERN = /^.+\..+\..+$/;
 const TOKEN_EXPIRY_BUFFER_SECONDS = 300; // 5 minutes
@@ -98,7 +106,7 @@ async function fetchToken(): Promise<string> {
  */
 export function useOauthTokenQuery() {
   return useSuspenseQuery({
-    queryKey: ["rspace.common.auth.oauthToken"],
+    queryKey: queryKeys.oauthToken(),
     queryFn: async () => {
       // First, check if we have a valid token in session storage
       const savedToken = getStoredToken();
@@ -130,3 +138,40 @@ export function useOauthTokenQuery() {
   });
 }
 
+async function getWhoami(token?: string) {
+  const response = await fetch(`${API_BASE_URL}/userDetails/whoami`, {
+    method: "GET",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  const data: unknown = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch whoami info: ${response.statusText}`,
+    );
+  }
+
+  return data;
+}
+
+export function useWhoamiQuery(token?: string) {
+  return useSuspenseQuery({
+    queryKey: queryKeys.whoami(),
+    queryFn: async () => {
+      return getWhoami(token);
+    },
+    // Keep the token in cache indefinitely while the app is open
+    gcTime: Infinity,
+    // Refetch in the background when the token is stale
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    // Retry on failure
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+}

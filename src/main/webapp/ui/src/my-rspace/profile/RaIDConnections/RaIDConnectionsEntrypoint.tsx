@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import materialTheme from "@/theme";
 import RaIDConnections from "@/my-rspace/profile/RaIDConnections/RaIDConnections";
@@ -9,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 declare global {
   interface Window {
     ___RaIDConnectionsInitialised: boolean;
+    __TANSTACK_QUERY_CLIENT__: import("@tanstack/query-core").QueryClient;
   }
 }
 
@@ -31,13 +31,13 @@ if (!window.___RaIDConnectionsInitialised) {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={materialTheme}>
         <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<>Loading...</>}>
-            <RaIDConnections groupId={groupId} />
-          </Suspense>
+          <RaIDConnections groupId={groupId} />
         </QueryClientProvider>
       </ThemeProvider>
     </StyledEngineProvider>,
   );
 
   window.___RaIDConnectionsInitialised = true;
+  // This code is for all users
+  window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 }
