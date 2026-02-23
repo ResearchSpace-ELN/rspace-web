@@ -32547,14 +32547,8 @@
     };
     var getMaxTabviewHeight = function (dialog, tabview, tablist) {
       var documentElement$1 = documentElement(dialog).dom;
-      var rootElm = ancestor(dialog, '.tox-dialog-wrap').getOr(dialog);
-      var isFixed = get$c(rootElm, 'position') === 'fixed';
-      var maxHeight;
-      if (isFixed) {
-        maxHeight = Math.max(documentElement$1.clientHeight, window.innerHeight);
-      } else {
-        maxHeight = Math.max(documentElement$1.offsetHeight, documentElement$1.scrollHeight);
-      }
+      // RSpace Edit: cap dialog content against the viewport height.
+      var maxHeight = Math.max(documentElement$1.clientHeight, window.innerHeight);
       var tabviewHeight = get$b(tabview);
       var isTabListBeside = tabview.dom.offsetLeft >= tablist.dom.offsetLeft + get$a(tablist);
       var currentTabHeight = isTabListBeside ? Math.max(get$b(tablist), tabviewHeight) : tabviewHeight;
@@ -33746,7 +33740,8 @@
       }, function (height) {
         return {
           'height': height + 'px',
-          'max-height': height + 'px'
+          // RSpace Edit: keep dialog header/footer visible on smaller screens.
+          'max-height': '100vh'
         };
       })), internalDialog.width.fold(function () {
         return {};

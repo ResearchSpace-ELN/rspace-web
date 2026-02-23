@@ -287,7 +287,8 @@ var tinymcesetup = {
 			});
 			return '<span style="color: #1465b7"> + ' + item.fullname + ' </span>&nbsp;';
 		}
-	}
+	},
+	codesample_global_prismjs: true,
 };
 
 tinymce.PluginManager.add('commandpalette', function (editor) {
