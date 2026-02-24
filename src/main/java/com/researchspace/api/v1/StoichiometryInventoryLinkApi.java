@@ -1,9 +1,9 @@
 package com.researchspace.api.v1;
 
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkQuantityUpdateRequest;
-import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.model.User;
 import java.util.List;
 import org.springframework.http.HttpStatus;

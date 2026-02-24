@@ -13,9 +13,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.researchspace.api.v1.model.ApiQuantityInfo;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
-import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.dao.StoichiometryInventoryLinkDao;
 import com.researchspace.model.User;
 import com.researchspace.model.core.GlobalIdentifier;
@@ -318,7 +318,7 @@ public class StoichiometryInventoryLinkManagerImplTest {
   }
 
   private StoichiometryInventoryLink createMoleculeAndLink(
-          Long linkId, Long subSampleId, StoichiometryMolecule mol) {
+      Long linkId, Long subSampleId, StoichiometryMolecule mol) {
     SubSample sub = new SubSample();
     sub.setId(subSampleId);
     StoichiometryInventoryLink link = new StoichiometryInventoryLink();

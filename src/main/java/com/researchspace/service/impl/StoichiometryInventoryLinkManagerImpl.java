@@ -1,9 +1,9 @@
 package com.researchspace.service.impl;
 
 import com.researchspace.api.v1.model.ApiQuantityInfo;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
-import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.dao.StoichiometryInventoryLinkDao;
 import com.researchspace.model.User;
 import com.researchspace.model.core.GlobalIdentifier;
@@ -102,11 +102,9 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
         processStockDeduction(user, link, link.getQuantity(), link.getInventoryRecord());
         link.setStockDeducted(true);
         linkDao.save(link);
-        result.addResult(
-            new StockDeductionResult.IndividualResult(id, true, null));
+        result.addResult(new StockDeductionResult.IndividualResult(id, true, null));
       } catch (NotFoundException | IllegalArgumentException e) {
-        result.addResult(
-            new StockDeductionResult.IndividualResult(id, false, e.getMessage()));
+        result.addResult(new StockDeductionResult.IndividualResult(id, false, e.getMessage()));
       } catch (Exception e) {
         log.error("Unexpected error deducting stock for link {}", id, e);
         result.addResult(
