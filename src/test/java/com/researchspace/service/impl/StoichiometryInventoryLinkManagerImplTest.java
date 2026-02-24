@@ -319,12 +319,12 @@ public class StoichiometryInventoryLinkManagerImplTest {
 
   private StoichiometryInventoryLink createMoleculeAndLink(
           Long linkId, Long subSampleId, StoichiometryMolecule mol) {
-    SubSample ss = new SubSample();
-    ss.setId(subSampleId);
+    SubSample sub = new SubSample();
+    sub.setId(subSampleId);
     StoichiometryInventoryLink link = new StoichiometryInventoryLink();
     link.setId(linkId);
     link.setStoichiometryMolecule(mol);
-    link.setSubSample(ss);
+    link.setSubSample(sub);
     link.setQuantity(new QuantityInfo(new BigDecimal("10"), RSUnitDef.MILLI_GRAM.getId()));
     return link;
   }
