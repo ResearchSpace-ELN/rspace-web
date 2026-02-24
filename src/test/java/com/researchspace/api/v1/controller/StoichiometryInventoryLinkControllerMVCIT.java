@@ -327,7 +327,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
         mockMvc
             .perform(
                 createBuilderForPost(
-                        API_VERSION.ONE, apiKey, "/stoichiometry/link/reduce/stock", user)
+                        API_VERSION.ONE, apiKey, "/stoichiometry/link/stock-deductions", user)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsBytes(List.of(link.getId()))))
             .andExpect(status().isOk())
@@ -335,8 +335,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
 
     StoichiometryLinkStockReductionResult reductionResult =
         getFromJsonResponseBody(result, StoichiometryLinkStockReductionResult.class);
-    assertEquals(1, reductionResult.getSuccessCount());
-    assertEquals(0, reductionResult.getErrorCount());
+    assertEquals(1, reductionResult.getResults().size());
     assertTrue(reductionResult.getResults().get(0).isSuccess());
     assertEquals(link.getId(), reductionResult.getResults().get(0).getLinkId());
 
@@ -349,7 +348,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
             .andReturn();
     StoichiometryInventoryLinkDTO retrieved =
         getFromJsonResponseBody(getResult, StoichiometryInventoryLinkDTO.class);
-    assertTrue(retrieved.isStockReduced());
+    assertTrue(retrieved.isStockDeducted());
   }
 
   @Test
@@ -362,7 +361,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
         mockMvc
             .perform(
                 createBuilderForPost(
-                        API_VERSION.ONE, apiKey, "/stoichiometry/link/reduce/stock", user)
+                        API_VERSION.ONE, apiKey, "/stoichiometry/link/stock-deductions", user)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsBytes(List.of(link.getId(), 999999L))))
             .andExpect(status().isOk())
@@ -370,8 +369,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
 
     StoichiometryLinkStockReductionResult reductionResult =
         getFromJsonResponseBody(result, StoichiometryLinkStockReductionResult.class);
-    assertEquals(1, reductionResult.getSuccessCount());
-    assertEquals(1, reductionResult.getErrorCount());
+    assertEquals(2, reductionResult.getResults().size());
     assertTrue(
         reductionResult.getResults().stream()
             .anyMatch(r -> r.getLinkId().equals(link.getId()) && r.isSuccess()));

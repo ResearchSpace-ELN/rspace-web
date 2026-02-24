@@ -282,8 +282,9 @@ public class StoichiometryInventoryLinkManagerImplTest {
 
     StoichiometryLinkStockReductionResult result = manager.reduceStock(List.of(321L), user);
 
-    assertEquals(1, result.getSuccessCount());
-    assertTrue(original.isStockReduced());
+    assertEquals(1, result.getResults().size());
+    assertTrue(result.getResults().get(0).isSuccess());
+    assertTrue(original.isStockDeducted());
     verify(linkDao).save(original);
   }
 
@@ -308,8 +309,8 @@ public class StoichiometryInventoryLinkManagerImplTest {
 
     StoichiometryLinkStockReductionResult result = manager.reduceStock(List.of(321L), user);
 
-    assertEquals(1, result.getErrorCount());
-    assertEquals(0, result.getSuccessCount());
+    assertEquals(1, result.getResults().size());
+    assertTrue(!result.getResults().get(0).isSuccess());
     assertEquals(
         "Insufficient stock to perform this action. Attempting to use 20 mg of stock amount 5 mg"
             + " for SS300",

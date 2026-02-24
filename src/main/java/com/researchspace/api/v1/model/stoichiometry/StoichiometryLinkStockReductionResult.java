@@ -22,15 +22,8 @@ public class StoichiometryLinkStockReductionResult {
   }
 
   private List<IndividualResult> results = new ArrayList<>();
-  private int successCount;
-  private int errorCount;
 
   public void addResult(IndividualResult result) {
     this.results.add(result);
-    if (result.isSuccess()) {
-      successCount++;
-    } else {
-      errorCount++;
-    }
   }
 }

@@ -101,7 +101,7 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
         invPermissionUtils.assertUserCanEditInventoryRecord(link.getInventoryRecord(), user);
 
         processStockReduction(user, link, link.getQuantity(), link.getInventoryRecord());
-        link.setStockReduced(true);
+        link.setStockDeducted(true);
         linkDao.save(link);
         result.addResult(
             new StoichiometryLinkStockReductionResult.IndividualResult(id, true, null));

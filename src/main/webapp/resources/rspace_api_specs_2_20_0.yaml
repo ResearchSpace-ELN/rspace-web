@@ -3147,18 +3147,18 @@ paths:
               message:
                 type: string
                 example: "Error updating link"
-  /stoichiometry/link/reduce/stock:
+  /stoichiometry/link/stock-deductions:
     post:
-      summary: Batch reduce stock for a list of stoichiometry-inventory links
+      summary: Batch deduct stock for a list of stoichiometry-inventory links
       tags:
         - Chemistry
       description: |
-        Attempts to reduce stock for each stoichiometry-inventory link ID provided. This is a batch operation that can partially succeed.
-        For each link, if it points to a SubSample and has not been fully reduced, the specified quantity is deducted from the SubSample stock.
+        Attempts to deduct stock for each stoichiometry-inventory link ID provided. This is a batch operation that can partially succeed.
+        For each link, if it points to a SubSample and has not been fully deducted, the specified quantity is subtracted from the SubSample stock.
       parameters:
         - in: body
           name: linkIds
-          description: List of stoichiometry-inventory link IDs to reduce stock for.
+          description: List of stoichiometry-inventory link IDs to deduct stock for.
           required: true
           schema:
             type: array
@@ -3232,7 +3232,7 @@ paths:
       tags:
         - Chemistry
       description: |
-        Deletes the link. If stock was deducted earlier (when `reducesStock=true`), deleting the link does not
+        Deletes the link. If stock was deducted earlier (when `stockDeducted=true`), deleting the link does not
         replenish stock.
       parameters:
         - name: id
@@ -3615,10 +3615,10 @@ definitions:
         example: 567
       quantity:
         $ref: '#/definitions/QuantityInfo'
-      stockReduced:
+      stockDeducted:
         type: boolean
         description: |-
-          If true, stock has been previously reduced for this link.
+          If true, stock has been previously deducted for this link.
         default: false
         example: false
     example:
@@ -3628,7 +3628,7 @@ definitions:
       quantity:
         numericValue: 10.5
         unitId: 6
-      stockReduced: false
+      stockDeducted: false
   StoichiometryInventoryLinkRequest:
     description: >-
       Request to create a link between a stoichiometry molecule and an Inventory item.
@@ -3687,12 +3687,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/StoichiometryLinkStockReductionIndividualResult'
-      successCount:
-        type: integer
-        example: 1
-      errorCount:
-        type: integer
-        example: 1
     example:
       results:
         - linkId: 1234
@@ -3703,8 +3697,6 @@ definitions:
             httpCode: 422
             internalCode: 42202
             message: "Insufficient stock for SubSample SS457"
-      successCount: 1
-      errorCount: 1
   StoichiometryLinkStockReductionIndividualResult:
     description: Individual result for a single link ID in a batch reduction
     properties:

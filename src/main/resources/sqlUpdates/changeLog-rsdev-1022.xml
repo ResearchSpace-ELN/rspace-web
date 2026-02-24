@@ -5,15 +5,15 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
   <changeSet id="rsdev-1022" author="fraser">
-    <comment>Add stock_reduced column to StoichiometryInventoryLink table</comment>
+    <comment>Add stock_deducted column to StoichiometryInventoryLink table</comment>
     <addColumn tableName="StoichiometryInventoryLink">
-      <column type="BOOLEAN" name="stock_reduced" defaultValueBoolean="false">
+      <column type="BOOLEAN" name="stock_deducted" defaultValueBoolean="false">
         <constraints nullable="false"/>
       </column>
     </addColumn>
 
     <addColumn tableName="StoichiometryInventoryLink_AUD">
-      <column type="BOOLEAN" name="stock_reduced">
+      <column type="BOOLEAN" name="stock_deducted">
       </column>
     </addColumn>
   </changeSet>

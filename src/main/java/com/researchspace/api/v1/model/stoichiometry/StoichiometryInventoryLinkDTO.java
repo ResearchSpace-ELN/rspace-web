@@ -14,8 +14,8 @@ public class StoichiometryInventoryLinkDTO {
   private Long stoichiometryMoleculeId;
   private ApiQuantityInfo quantity;
 
-  @JsonProperty("stockReduced")
-  private boolean stockReduced;
+  @JsonProperty("stockDeducted")
+  private boolean stockDeducted;
 
   public StoichiometryInventoryLinkDTO(StoichiometryInventoryLink entity) {
     this.id = entity.getId();
@@ -25,6 +25,6 @@ public class StoichiometryInventoryLinkDTO {
         entity.getQuantity().getNumericValue() == null
             ? null
             : new ApiQuantityInfo(entity.getQuantity());
-    this.stockReduced = entity.isStockReduced();
+    this.stockDeducted = entity.isStockDeducted();
   }
 }
