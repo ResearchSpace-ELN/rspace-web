@@ -316,4 +316,68 @@ public class StoichiometryInventoryLinkManagerImplTest {
             + " for SS300",
         result.getResults().get(0).getErrorMessage());
   }
+
+  @Test
+  public void deductStockWithExceptionErrorMessagesTest() {
+    // NotFoundException should return exception message in result
+    StoichiometryMolecule mol1 = mock(StoichiometryMolecule.class);
+    SubSample ss1 = new SubSample();
+    ss1.setId(1001L);
+    StoichiometryInventoryLink link1 = new StoichiometryInventoryLink();
+    link1.setId(101L);
+    link1.setStoichiometryMolecule(mol1);
+    link1.setSubSample(ss1);
+    link1.setQuantity(new QuantityInfo(new BigDecimal("10"), RSUnitDef.MILLI_GRAM.getId()));
+    when(linkDao.getSafeNull(101L)).thenReturn(java.util.Optional.of(link1));
+    when(moleculeManager.getDocContainingMolecule(mol1)).thenReturn(owningRecord);
+    when(elnPerms.isPermitted(owningRecord, PermissionType.WRITE, user)).thenReturn(true);
+    doThrow(new NotFoundException("Molecule 1 Not Found"))
+        .when(invPerms)
+        .assertUserCanEditInventoryRecord(ss1, user);
+
+    // IllegalArgumentException should return exception message in result
+    StoichiometryMolecule mol2 = mock(StoichiometryMolecule.class);
+    SubSample ss2 = new SubSample();
+    ss2.setId(1002L);
+    StoichiometryInventoryLink link2 = new StoichiometryInventoryLink();
+    link2.setId(102L);
+    link2.setStoichiometryMolecule(mol2);
+    link2.setSubSample(ss2);
+    link2.setQuantity(new QuantityInfo(new BigDecimal("10"), RSUnitDef.MILLI_GRAM.getId()));
+    when(linkDao.getSafeNull(102L)).thenReturn(java.util.Optional.of(link2));
+    when(moleculeManager.getDocContainingMolecule(mol2)).thenReturn(owningRecord);
+    doThrow(new IllegalArgumentException("Molecule 2 Insufficient Stock"))
+        .when(invPerms)
+        .assertUserCanEditInventoryRecord(ss2, user);
+
+    // Other exceptions should return generic error message in result
+    StoichiometryMolecule mol3 = mock(StoichiometryMolecule.class);
+    SubSample ss3 = new SubSample();
+    ss3.setId(1003L);
+    StoichiometryInventoryLink link3 = new StoichiometryInventoryLink();
+    link3.setId(103L);
+    link3.setStoichiometryMolecule(mol3);
+    link3.setSubSample(ss3);
+    link3.setQuantity(new QuantityInfo(new BigDecimal("10"), RSUnitDef.MILLI_GRAM.getId()));
+    when(linkDao.getSafeNull(103L)).thenReturn(java.util.Optional.of(link3));
+    when(moleculeManager.getDocContainingMolecule(mol3)).thenReturn(owningRecord);
+    doThrow(new RuntimeException("Unexpected DB error"))
+        .when(invPerms)
+        .assertUserCanEditInventoryRecord(ss3, user);
+
+    StockDeductionResult result = manager.deductStock(List.of(101L, 102L, 103L), user);
+
+    assertEquals(3, result.getResults().size());
+
+    assertEquals(Long.valueOf(101L), result.getResults().get(0).getLinkId());
+    assertEquals("Molecule 1 Not Found", result.getResults().get(0).getErrorMessage());
+
+    assertEquals(Long.valueOf(102L), result.getResults().get(1).getLinkId());
+    assertEquals("Molecule 2 Insufficient Stock", result.getResults().get(1).getErrorMessage());
+
+    assertEquals(Long.valueOf(103L), result.getResults().get(2).getLinkId());
+    assertEquals(
+        "An internal error occurred while deducting stock",
+        result.getResults().get(2).getErrorMessage());
+  }
 }

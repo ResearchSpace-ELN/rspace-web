@@ -104,18 +104,14 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
         linkDao.save(link);
         result.addResult(
             new StockDeductionResult.IndividualResult(id, true, null));
-      } catch (NotFoundException e) {
+      } catch (NotFoundException | IllegalArgumentException e) {
         result.addResult(
-            new StockDeductionResult.IndividualResult(
-                id,
-                false,
-                e.getMessage()));
+            new StockDeductionResult.IndividualResult(id, false, e.getMessage()));
       } catch (Exception e) {
+        log.error("Unexpected error deducting stock for link {}", id, e);
         result.addResult(
             new StockDeductionResult.IndividualResult(
-                id,
-                false,
-                e.getMessage()));
+                id, false, "An internal error occurred while deducting stock"));
       }
     }
     return result;
