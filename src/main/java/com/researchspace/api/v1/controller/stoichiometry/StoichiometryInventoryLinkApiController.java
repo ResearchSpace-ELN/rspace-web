@@ -34,7 +34,8 @@ public class StoichiometryInventoryLinkApiController extends BaseApiController
 
   public StoichiometryInventoryLinkDTO updateQuantity(
       StoichiometryLinkQuantityUpdateRequest request, User user) {
-    return linkService.updateQuantity(request.getStoichiometryLinkId(), request.getNewQuantity(), user);
+    return linkService.updateQuantity(
+        request.getStoichiometryLinkId(), request.getNewQuantity(), user);
   }
 
   public void delete(long id, User user) {

@@ -1,0 +1,21 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="rsdev-1022" author="fraser">
+    <comment>Add stock_reduced column to StoichiometryInventoryLink table</comment>
+    <addColumn tableName="StoichiometryInventoryLink">
+      <column type="BOOLEAN" name="stock_reduced" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+    <addColumn tableName="StoichiometryInventoryLink_AUD">
+      <column type="BOOLEAN" name="stock_reduced">
+      </column>
+    </addColumn>
+  </changeSet>
+
+</databaseChangeLog>

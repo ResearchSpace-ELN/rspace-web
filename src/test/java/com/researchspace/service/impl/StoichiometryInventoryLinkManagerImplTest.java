@@ -2,6 +2,7 @@ package com.researchspace.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -259,6 +260,31 @@ public class StoichiometryInventoryLinkManagerImplTest {
   public void getByIdMissingEntityThrowsNotFound() {
     when(linkDao.getSafeNull(999L)).thenReturn(java.util.Optional.empty());
     assertThrows(NotFoundException.class, () -> manager.getById(999L, user));
+  }
+
+  @Test
+  public void reduceStockSuccess() {
+    StoichiometryInventoryLink original = new StoichiometryInventoryLink();
+    original.setId(321L);
+    original.setStoichiometryMolecule(molecule);
+    original.setSubSample(invSubSample);
+    original.setQuantity(new QuantityInfo(new BigDecimal("10"), RSUnitDef.MILLI_GRAM.getId()));
+
+    invSubSample.setQuantity(
+        new QuantityInfo(BigDecimal.valueOf(100), RSUnitDef.MILLI_GRAM.getId()));
+
+    when(linkDao.getSafeNull(321L)).thenReturn(java.util.Optional.of(original));
+    when(moleculeManager.getDocContainingMolecule(molecule)).thenReturn(owningRecord);
+    when(elnPerms.isPermitted(owningRecord, PermissionType.WRITE, user)).thenReturn(true);
+    doNothing()
+        .when(invPerms)
+        .assertUserCanEditInventoryRecord(original.getInventoryRecord(), user);
+
+    StoichiometryLinkStockReductionResult result = manager.reduceStock(List.of(321L), user);
+
+    assertEquals(1, result.getSuccessCount());
+    assertTrue(original.isStockReduced());
+    verify(linkDao).save(original);
   }
 
   @Test

@@ -321,8 +321,6 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
   public void reduceStockSuccess() throws Exception {
     StoichiometryMolecule molecule = createSingleMoleculeStoichiometry(user, "stoich reduce");
     ApiSampleWithFullSubSamples sample = createBasicSampleForUser(user);
-    // Assuming createBasicSampleForUser creates a sample with some initial quantity.
-    // If it's a SubSample, stock reduction will work.
     StoichiometryInventoryLinkDTO link = createLink(user, apiKey, molecule, sample, 1.0);
 
     MvcResult result =
@@ -341,6 +339,17 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
     assertEquals(0, reductionResult.getErrorCount());
     assertTrue(reductionResult.getResults().get(0).isSuccess());
     assertEquals(link.getId(), reductionResult.getResults().get(0).getLinkId());
+
+    MvcResult getResult =
+        mockMvc
+            .perform(
+                createBuilderForGet(
+                    API_VERSION.ONE, apiKey, "/stoichiometry/link/{id}", user, link.getId()))
+            .andExpect(status().isOk())
+            .andReturn();
+    StoichiometryInventoryLinkDTO retrieved =
+        getFromJsonResponseBody(getResult, StoichiometryInventoryLinkDTO.class);
+    assertTrue(retrieved.isStockReduced());
   }
 
   @Test
@@ -363,7 +372,11 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
         getFromJsonResponseBody(result, StoichiometryLinkStockReductionResult.class);
     assertEquals(1, reductionResult.getSuccessCount());
     assertEquals(1, reductionResult.getErrorCount());
-    assertTrue(reductionResult.getResults().stream().anyMatch(r -> r.getLinkId().equals(link.getId()) && r.isSuccess()));
-    assertTrue(reductionResult.getResults().stream().anyMatch(r -> r.getLinkId().equals(999999L) && !r.isSuccess()));
+    assertTrue(
+        reductionResult.getResults().stream()
+            .anyMatch(r -> r.getLinkId().equals(link.getId()) && r.isSuccess()));
+    assertTrue(
+        reductionResult.getResults().stream()
+            .anyMatch(r -> r.getLinkId().equals(999999L) && !r.isSuccess()));
   }
 }
