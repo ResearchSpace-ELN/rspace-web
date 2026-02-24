@@ -3169,7 +3169,7 @@ paths:
         '200':
           description: Batch operation result
           schema:
-            $ref: '#/definitions/StoichiometryLinkStockReductionResult'
+            $ref: '#/definitions/StockDeductionResult'
         '401':
           description: Authentication error
           schema:
@@ -3680,13 +3680,13 @@ definitions:
       newQuantity:
         numericValue: 15.0
         unitId: 6
-  StoichiometryLinkStockReductionResult:
+  StockDeductionResult:
     description: Result of a batch stock deduction operation
     properties:
       results:
         type: array
         items:
-          $ref: '#/definitions/StoichiometryLinkStockDeductionIndividualResult'
+          $ref: '#/definitions/StockDeductionIndividualResult'
     example:
       results:
         - linkId: 1234
@@ -3694,7 +3694,7 @@ definitions:
         - linkId: 1235
           success: false
           errorMessage: "Insufficient stock for SubSample SS457"
-  StoichiometryLinkStockDeductionIndividualResult:
+  StockDeductionIndividualResult:
     description: Individual result for a single link ID in a batch deduction
     properties:
       linkId:
