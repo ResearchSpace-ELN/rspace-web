@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 import com.researchspace.api.v1.model.ApiQuantityInfo;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
-import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.dao.StoichiometryInventoryLinkDao;
 import com.researchspace.model.User;
 import com.researchspace.model.core.GlobalIdentifier;
@@ -263,7 +263,7 @@ public class StoichiometryInventoryLinkManagerImplTest {
   }
 
   @Test
-  public void reduceStockSuccess() {
+  public void deductStockSuccess() {
     StoichiometryInventoryLink original = new StoichiometryInventoryLink();
     original.setId(321L);
     original.setStoichiometryMolecule(molecule);
@@ -280,7 +280,7 @@ public class StoichiometryInventoryLinkManagerImplTest {
         .when(invPerms)
         .assertUserCanEditInventoryRecord(original.getInventoryRecord(), user);
 
-    StoichiometryLinkStockReductionResult result = manager.reduceStock(List.of(321L), user);
+    StockDeductionResult result = manager.deductStock(List.of(321L), user);
 
     assertEquals(1, result.getResults().size());
     assertTrue(result.getResults().get(0).isSuccess());
@@ -289,7 +289,7 @@ public class StoichiometryInventoryLinkManagerImplTest {
   }
 
   @Test
-  public void reduceStockWithInsufficientStockReturnsErrorResult() {
+  public void deductStockWithInsufficientStockReturnsErrorResult() {
     StoichiometryInventoryLink original = new StoichiometryInventoryLink();
     original.setId(321L);
     original.setStoichiometryMolecule(molecule);
@@ -307,13 +307,13 @@ public class StoichiometryInventoryLinkManagerImplTest {
         .when(invPerms)
         .assertUserCanEditInventoryRecord(original.getInventoryRecord(), user);
 
-    StoichiometryLinkStockReductionResult result = manager.reduceStock(List.of(321L), user);
+    StockDeductionResult result = manager.deductStock(List.of(321L), user);
 
     assertEquals(1, result.getResults().size());
     assertTrue(!result.getResults().get(0).isSuccess());
     assertEquals(
         "Insufficient stock to perform this action. Attempting to use 20 mg of stock amount 5 mg"
             + " for SS300",
-        result.getResults().get(0).getError().getMessage());
+        result.getResults().get(0).getErrorMessage());
   }
 }

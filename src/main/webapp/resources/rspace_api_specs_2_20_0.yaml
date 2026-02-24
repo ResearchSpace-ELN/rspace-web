@@ -3681,24 +3681,21 @@ definitions:
         numericValue: 15.0
         unitId: 6
   StoichiometryLinkStockReductionResult:
-    description: Result of a batch stock reduction operation
+    description: Result of a batch stock deduction operation
     properties:
       results:
         type: array
         items:
-          $ref: '#/definitions/StoichiometryLinkStockReductionIndividualResult'
+          $ref: '#/definitions/StoichiometryLinkStockDeductionIndividualResult'
     example:
       results:
         - linkId: 1234
           success: true
         - linkId: 1235
           success: false
-          error:
-            httpCode: 422
-            internalCode: 42202
-            message: "Insufficient stock for SubSample SS457"
-  StoichiometryLinkStockReductionIndividualResult:
-    description: Individual result for a single link ID in a batch reduction
+          errorMessage: "Insufficient stock for SubSample SS457"
+  StoichiometryLinkStockDeductionIndividualResult:
+    description: Individual result for a single link ID in a batch deduction
     properties:
       linkId:
         type: integer
@@ -3707,8 +3704,9 @@ definitions:
       success:
         type: boolean
         example: true
-      error:
-        $ref: '#/definitions/ApiError'
+      errorMessage:
+        type: string
+        example: "Insufficient stock for SubSample SS457"
     example:
       linkId: 1234
       success: true

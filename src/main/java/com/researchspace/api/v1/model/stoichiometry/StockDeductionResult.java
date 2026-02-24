@@ -1,6 +1,5 @@
 package com.researchspace.api.v1.model.stoichiometry;
 
-import com.researchspace.apiutils.ApiError;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoichiometryLinkStockReductionResult {
+public class StockDeductionResult {
 
   @Data
   @NoArgsConstructor
@@ -18,7 +17,7 @@ public class StoichiometryLinkStockReductionResult {
   public static class IndividualResult {
     private Long linkId;
     private boolean success;
-    private ApiError error;
+    private String errorMessage;
   }
 
   private List<IndividualResult> results = new ArrayList<>();

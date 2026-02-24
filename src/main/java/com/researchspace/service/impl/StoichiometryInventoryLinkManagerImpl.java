@@ -3,8 +3,7 @@ package com.researchspace.service.impl;
 import com.researchspace.api.v1.model.ApiQuantityInfo;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
-import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
-import com.researchspace.apiutils.ApiError;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.dao.StoichiometryInventoryLinkDao;
 import com.researchspace.model.User;
 import com.researchspace.model.core.GlobalIdentifier;
@@ -92,53 +91,37 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
   }
 
   @Override
-  public StoichiometryLinkStockReductionResult reduceStock(List<Long> linkIds, User user) {
-    StoichiometryLinkStockReductionResult result = new StoichiometryLinkStockReductionResult();
+  public StockDeductionResult deductStock(List<Long> linkIds, User user) {
+    StockDeductionResult result = new StockDeductionResult();
     for (Long id : linkIds) {
       try {
         StoichiometryInventoryLink link = getLinkOrThrowNotFound(id);
         verifyStoichiometryPermissions(link.getStoichiometryMolecule(), PermissionType.WRITE, user);
         invPermissionUtils.assertUserCanEditInventoryRecord(link.getInventoryRecord(), user);
 
-        processStockReduction(user, link, link.getQuantity(), link.getInventoryRecord());
+        processStockDeduction(user, link, link.getQuantity(), link.getInventoryRecord());
         link.setStockDeducted(true);
         linkDao.save(link);
         result.addResult(
-            new StoichiometryLinkStockReductionResult.IndividualResult(id, true, null));
+            new StockDeductionResult.IndividualResult(id, true, null));
       } catch (NotFoundException e) {
         result.addResult(
-            new StoichiometryLinkStockReductionResult.IndividualResult(
+            new StockDeductionResult.IndividualResult(
                 id,
                 false,
-                new ApiError(
-                    org.springframework.http.HttpStatus.NOT_FOUND,
-                    org.springframework.http.HttpStatus.NOT_FOUND.value(),
-                    0,
-                    e.getMessage(),
-                    null,
-                    null,
-                    null,
-                    null)));
+                e.getMessage()));
       } catch (Exception e) {
         result.addResult(
-            new StoichiometryLinkStockReductionResult.IndividualResult(
+            new StockDeductionResult.IndividualResult(
                 id,
                 false,
-                new ApiError(
-                    org.springframework.http.HttpStatus.BAD_REQUEST,
-                    org.springframework.http.HttpStatus.BAD_REQUEST.value(),
-                    0,
-                    e.getMessage(),
-                    null,
-                    null,
-                    null,
-                    null)));
+                e.getMessage()));
       }
     }
     return result;
   }
 
-  private void processStockReduction(
+  private void processStockDeduction(
       User user,
       StoichiometryInventoryLink link,
       QuantityInfo quantityInfo,

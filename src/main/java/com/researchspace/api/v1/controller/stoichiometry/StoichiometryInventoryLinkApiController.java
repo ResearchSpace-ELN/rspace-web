@@ -6,7 +6,7 @@ import com.researchspace.api.v1.controller.BaseApiController;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkQuantityUpdateRequest;
-import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.model.User;
 import com.researchspace.service.StoichiometryInventoryLinkManager;
 import java.util.List;
@@ -43,7 +43,7 @@ public class StoichiometryInventoryLinkApiController extends BaseApiController
   }
 
   @Override
-  public StoichiometryLinkStockReductionResult reduceStock(List<Long> linkIds, User user) {
-    return linkService.reduceStock(linkIds, user);
+  public StockDeductionResult deductStock(List<Long> linkIds, User user) {
+    return linkService.deductStock(linkIds, user);
   }
 }

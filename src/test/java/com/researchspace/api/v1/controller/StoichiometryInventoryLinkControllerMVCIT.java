@@ -10,7 +10,7 @@ import com.researchspace.api.v1.model.ApiSampleWithFullSubSamples;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkQuantityUpdateRequest;
-import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.model.ChemElementsFormat;
 import com.researchspace.model.RSChemElement;
 import com.researchspace.model.User;
@@ -318,8 +318,8 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
   }
 
   @Test
-  public void reduceStockSuccess() throws Exception {
-    StoichiometryMolecule molecule = createSingleMoleculeStoichiometry(user, "stoich reduce");
+  public void deductStockSuccess() throws Exception {
+    StoichiometryMolecule molecule = createSingleMoleculeStoichiometry(user, "stoich deduct");
     ApiSampleWithFullSubSamples sample = createBasicSampleForUser(user);
     StoichiometryInventoryLinkDTO link = createLink(user, apiKey, molecule, sample, 1.0);
 
@@ -333,8 +333,8 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
             .andExpect(status().isOk())
             .andReturn();
 
-    StoichiometryLinkStockReductionResult reductionResult =
-        getFromJsonResponseBody(result, StoichiometryLinkStockReductionResult.class);
+    StockDeductionResult reductionResult =
+        getFromJsonResponseBody(result, StockDeductionResult.class);
     assertEquals(1, reductionResult.getResults().size());
     assertTrue(reductionResult.getResults().get(0).isSuccess());
     assertEquals(link.getId(), reductionResult.getResults().get(0).getLinkId());
@@ -352,7 +352,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
   }
 
   @Test
-  public void reduceStockPartialSuccess() throws Exception {
+  public void deductStockPartialSuccess() throws Exception {
     StoichiometryMolecule molecule = createSingleMoleculeStoichiometry(user, "stoich partial");
     ApiSampleWithFullSubSamples sample = createBasicSampleForUser(user);
     StoichiometryInventoryLinkDTO link = createLink(user, apiKey, molecule, sample, 1.0);
@@ -367,8 +367,8 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
             .andExpect(status().isOk())
             .andReturn();
 
-    StoichiometryLinkStockReductionResult reductionResult =
-        getFromJsonResponseBody(result, StoichiometryLinkStockReductionResult.class);
+    StockDeductionResult reductionResult =
+        getFromJsonResponseBody(result, StockDeductionResult.class);
     assertEquals(2, reductionResult.getResults().size());
     assertTrue(
         reductionResult.getResults().stream()

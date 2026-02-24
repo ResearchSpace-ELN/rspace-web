@@ -3,7 +3,7 @@ package com.researchspace.service;
 import com.researchspace.api.v1.model.ApiQuantityInfo;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
-import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.model.User;
 import java.util.List;
 
@@ -17,5 +17,5 @@ public interface StoichiometryInventoryLinkManager {
 
   void deleteLink(long linkId, User user);
 
-  StoichiometryLinkStockReductionResult reduceStock(List<Long> linkIds, User user);
+  StockDeductionResult deductStock(List<Long> linkIds, User user);
 }

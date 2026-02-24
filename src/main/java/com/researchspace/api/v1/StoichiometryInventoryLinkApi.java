@@ -3,7 +3,7 @@ package com.researchspace.api.v1;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkQuantityUpdateRequest;
-import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
+import com.researchspace.api.v1.model.stoichiometry.StockDeductionResult;
 import com.researchspace.model.User;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -39,6 +39,6 @@ public interface StoichiometryInventoryLinkApi {
   void delete(@PathVariable("id") long id, @RequestAttribute(name = "user") User user);
 
   @PostMapping("/stock-deductions")
-  StoichiometryLinkStockReductionResult reduceStock(
+  StockDeductionResult deductStock(
       @RequestBody List<Long> linkIds, @RequestAttribute(name = "user") User user);
 }
