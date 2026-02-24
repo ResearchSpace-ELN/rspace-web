@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import com.researchspace.api.v1.model.ApiQuantityInfo;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
+import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
 import com.researchspace.dao.StoichiometryInventoryLinkDao;
 import com.researchspace.model.User;
 import com.researchspace.model.core.GlobalIdentifier;
@@ -31,6 +32,7 @@ import com.researchspace.service.StoichiometryMoleculeManager;
 import com.researchspace.service.inventory.InventoryPermissionUtils;
 import com.researchspace.service.inventory.SubSampleApiManager;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.ws.rs.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +79,6 @@ public class StoichiometryInventoryLinkManagerImplTest {
     req.setInventoryItemGlobalId("SA200");
     req.setQuantity(BigDecimal.valueOf(2.5));
     req.setUnitId(RSUnitDef.MILLI_LITRE.getId());
-    req.setReducesStock(false);
 
     when(moleculeManager.getById(10L)).thenReturn(molecule);
     when(moleculeManager.getDocContainingMolecule(molecule)).thenReturn(owningRecord);
@@ -172,10 +173,7 @@ public class StoichiometryInventoryLinkManagerImplTest {
 
     StoichiometryInventoryLinkDTO updated =
         manager.updateQuantity(
-            123L,
-            new ApiQuantityInfo(BigDecimal.valueOf(5), RSUnitDef.MILLI_LITRE.getId()),
-            false,
-            user);
+            123L, new ApiQuantityInfo(BigDecimal.valueOf(5), RSUnitDef.MILLI_LITRE.getId()), user);
     assertEquals(Long.valueOf(123L), updated.getId());
     assertEquals(BigDecimal.valueOf(5), updated.getQuantity().getNumericValue());
   }
@@ -234,7 +232,6 @@ public class StoichiometryInventoryLinkManagerImplTest {
     req.setInventoryItemGlobalId("SS300");
     req.setQuantity(BigDecimal.valueOf(2));
     req.setUnitId(RSUnitDef.GRAM.getId());
-    req.setReducesStock(false);
 
     when(moleculeManager.getById(10L)).thenReturn(molecule);
     when(moleculeManager.getDocContainingMolecule(molecule)).thenReturn(owningRecord);
@@ -265,13 +262,13 @@ public class StoichiometryInventoryLinkManagerImplTest {
   }
 
   @Test
-  public void updateQuantityWithInsufficientStockThrowsException() {
+  public void reduceStockWithInsufficientStockReturnsErrorResult() {
     StoichiometryInventoryLink original = new StoichiometryInventoryLink();
     original.setId(321L);
     original.setStoichiometryMolecule(molecule);
     original.setSubSample(invSubSample);
     // current link uses 10 mg
-    original.setQuantity(new QuantityInfo(BigDecimal.TEN, RSUnitDef.MILLI_GRAM.getId()));
+    original.setQuantity(new QuantityInfo(new BigDecimal("20"), RSUnitDef.MILLI_GRAM.getId()));
 
     // SubSample has only 5 mg stock
     invSubSample.setQuantity(new QuantityInfo(BigDecimal.valueOf(5), RSUnitDef.MILLI_GRAM.getId()));
@@ -283,19 +280,13 @@ public class StoichiometryInventoryLinkManagerImplTest {
         .when(invPerms)
         .assertUserCanEditInventoryRecord(original.getInventoryRecord(), user);
 
-    // Try to increase link usage to 20 mg
-    IllegalArgumentException exception =
-        assertThrows(
-            IllegalArgumentException.class,
-            () ->
-                manager.updateQuantity(
-                    321L,
-                    new ApiQuantityInfo(new BigDecimal("20"), RSUnitDef.MILLI_GRAM.getId()),
-                    true,
-                    user));
+    StoichiometryLinkStockReductionResult result = manager.reduceStock(List.of(321L), user);
+
+    assertEquals(1, result.getErrorCount());
+    assertEquals(0, result.getSuccessCount());
     assertEquals(
         "Insufficient stock to perform this action. Attempting to use 20 mg of stock amount 5 mg"
             + " for SS300",
-        exception.getMessage());
+        result.getResults().get(0).getError().getMessage());
   }
 }

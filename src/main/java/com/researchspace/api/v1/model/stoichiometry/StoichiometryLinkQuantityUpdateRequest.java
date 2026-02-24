@@ -9,12 +9,4 @@ import lombok.Getter;
 public class StoichiometryLinkQuantityUpdateRequest {
   private Long stoichiometryLinkId;
   private ApiQuantityInfo newQuantity;
-
-  // to avoid lombok naming the getter isReducesStock
-  @Getter(AccessLevel.NONE)
-  private boolean reducesStock;
-
-  public boolean reducesStock() {
-    return reducesStock;
-  }
 }

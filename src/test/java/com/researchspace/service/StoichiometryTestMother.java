@@ -47,7 +47,6 @@ public class StoichiometryTestMother {
     req.setInventoryItemGlobalId(sampleGlobalId);
     req.setQuantity(BigDecimal.valueOf(2.5));
     req.setUnitId(RSUnitDef.MILLI_LITRE.getId());
-    req.setReducesStock(false);
     return req;
   }
 

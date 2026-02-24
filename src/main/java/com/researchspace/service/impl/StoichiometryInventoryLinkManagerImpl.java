@@ -3,6 +3,8 @@ package com.researchspace.service.impl;
 import com.researchspace.api.v1.model.ApiQuantityInfo;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
+import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
+import com.researchspace.apiutils.ApiError;
 import com.researchspace.dao.StoichiometryInventoryLinkDao;
 import com.researchspace.model.User;
 import com.researchspace.model.core.GlobalIdentifier;
@@ -85,12 +87,53 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
     QuantityInfo quantityInfo = makeQuantity(req);
     link.setQuantity(quantityInfo);
     link = linkDao.save(link);
-
-    if (req.reducesStock()) {
-      processStockReduction(user, link, quantityInfo, inventoryRecord);
-    }
     generateNewStoichiometryRevision(stoichiometryMolecule);
     return new StoichiometryInventoryLinkDTO(link);
+  }
+
+  @Override
+  public StoichiometryLinkStockReductionResult reduceStock(List<Long> linkIds, User user) {
+    StoichiometryLinkStockReductionResult result = new StoichiometryLinkStockReductionResult();
+    for (Long id : linkIds) {
+      try {
+        StoichiometryInventoryLink link = getLinkOrThrowNotFound(id);
+        verifyStoichiometryPermissions(link.getStoichiometryMolecule(), PermissionType.WRITE, user);
+        invPermissionUtils.assertUserCanEditInventoryRecord(link.getInventoryRecord(), user);
+
+        processStockReduction(user, link, link.getQuantity(), link.getInventoryRecord());
+        result.addResult(
+            new StoichiometryLinkStockReductionResult.IndividualResult(id, true, null));
+      } catch (NotFoundException e) {
+        result.addResult(
+            new StoichiometryLinkStockReductionResult.IndividualResult(
+                id,
+                false,
+                new ApiError(
+                    org.springframework.http.HttpStatus.NOT_FOUND,
+                    org.springframework.http.HttpStatus.NOT_FOUND.value(),
+                    0,
+                    e.getMessage(),
+                    null,
+                    null,
+                    null,
+                    null)));
+      } catch (Exception e) {
+        result.addResult(
+            new StoichiometryLinkStockReductionResult.IndividualResult(
+                id,
+                false,
+                new ApiError(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    org.springframework.http.HttpStatus.BAD_REQUEST.value(),
+                    0,
+                    e.getMessage(),
+                    null,
+                    null,
+                    null,
+                    null)));
+      }
+    }
+    return result;
   }
 
   private void processStockReduction(
@@ -144,7 +187,7 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
 
   @Override
   public StoichiometryInventoryLinkDTO updateQuantity(
-      long linkId, ApiQuantityInfo newQuantity, boolean reducesStock, User user) {
+      long linkId, ApiQuantityInfo newQuantity, User user) {
     if (newQuantity == null
         || newQuantity.getNumericValue() == null
         || newQuantity.getUnitId() == null) {
@@ -154,11 +197,6 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
     StoichiometryInventoryLink entity = getLinkOrThrowNotFound(linkId);
     verifyStoichiometryPermissions(entity.getStoichiometryMolecule(), PermissionType.WRITE, user);
     invPermissionUtils.assertUserCanEditInventoryRecord(entity.getInventoryRecord(), user);
-
-    if (reducesStock) {
-      processStockReduction(
-          user, entity, newQuantity.toQuantityInfo(), entity.getInventoryRecord());
-    }
 
     entity.setQuantity(newQuantity.toQuantityInfo());
     entity = linkDao.save(entity);

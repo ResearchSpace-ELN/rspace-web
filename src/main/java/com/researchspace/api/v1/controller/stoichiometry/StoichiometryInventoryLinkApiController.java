@@ -6,8 +6,10 @@ import com.researchspace.api.v1.controller.BaseApiController;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkDTO;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryInventoryLinkRequest;
 import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkQuantityUpdateRequest;
+import com.researchspace.api.v1.model.stoichiometry.StoichiometryLinkStockReductionResult;
 import com.researchspace.model.User;
 import com.researchspace.service.StoichiometryInventoryLinkManager;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ApiController
@@ -32,11 +34,15 @@ public class StoichiometryInventoryLinkApiController extends BaseApiController
 
   public StoichiometryInventoryLinkDTO updateQuantity(
       StoichiometryLinkQuantityUpdateRequest request, User user) {
-    return linkService.updateQuantity(
-        request.getStoichiometryLinkId(), request.getNewQuantity(), request.reducesStock(), user);
+    return linkService.updateQuantity(request.getStoichiometryLinkId(), request.getNewQuantity(), user);
   }
 
   public void delete(long id, User user) {
     linkService.deleteLink(id, user);
+  }
+
+  @Override
+  public StoichiometryLinkStockReductionResult reduceStock(List<Long> linkIds, User user) {
+    return linkService.reduceStock(linkIds, user);
   }
 }

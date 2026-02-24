@@ -17,12 +17,4 @@ public class StoichiometryInventoryLinkRequest {
   private Long stoichiometryMoleculeId;
   private BigDecimal quantity;
   private Integer unitId;
-
-  // to avoid lombok naming this method isReducesStock
-  @Getter(AccessLevel.NONE)
-  private boolean reducesStock;
-
-  public boolean reducesStock() {
-    return reducesStock;
-  }
 }

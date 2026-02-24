@@ -57,7 +57,6 @@ public class StoichiometryInventoryLinkManagerTest extends SpringTransactionalTe
     req.setInventoryItemGlobalId(sample.getGlobalId());
     req.setQuantity(BigDecimal.valueOf(1.5));
     req.setUnitId(RSUnitDef.MILLI_LITRE.getId());
-    req.setReducesStock(false);
 
     // Create
     StoichiometryInventoryLinkDTO createdLink = linkManager.createLink(req, user);
@@ -79,8 +78,7 @@ public class StoichiometryInventoryLinkManagerTest extends SpringTransactionalTe
     update.setNewQuantity(
         new ApiQuantityInfo(BigDecimal.valueOf(5), RSUnitDef.MILLI_LITRE.getId()));
     StoichiometryInventoryLinkDTO updated =
-        linkManager.updateQuantity(
-            update.getStoichiometryLinkId(), update.getNewQuantity(), false, user);
+        linkManager.updateQuantity(update.getStoichiometryLinkId(), update.getNewQuantity(), user);
     assertEquals(BigDecimal.valueOf(5), updated.getQuantity().getNumericValue());
     assertEquals(RSUnitDef.MILLI_LITRE.getId(), updated.getQuantity().getUnitId());
 
@@ -112,10 +110,11 @@ public class StoichiometryInventoryLinkManagerTest extends SpringTransactionalTe
     req.setInventoryItemGlobalId(subInfo.getGlobalId());
     req.setQuantity(BigDecimal.TEN);
     req.setUnitId(RSUnitDef.MILLI_GRAM.getId());
-    req.setReducesStock(true);
 
     StoichiometryInventoryLinkDTO createdLink = linkManager.createLink(req, user);
     assertNotNull(createdLink.getId());
+
+    linkManager.reduceStock(List.of(createdLink.getId()), user);
 
     ApiSubSample after = subSampleApiMgr.getApiSubSampleById(subInfo.getId(), user);
     // 5 g - 10 mg = 4.99 g
@@ -144,16 +143,17 @@ public class StoichiometryInventoryLinkManagerTest extends SpringTransactionalTe
     req.setInventoryItemGlobalId(subInfo.getGlobalId());
     req.setQuantity(BigDecimal.TEN);
     req.setUnitId(RSUnitDef.MILLI_GRAM.getId());
-    req.setReducesStock(true);
     StoichiometryInventoryLinkDTO link = linkManager.createLink(req, user);
 
     StoichiometryLinkQuantityUpdateRequest upd = new StoichiometryLinkQuantityUpdateRequest();
     upd.setStoichiometryLinkId(link.getId());
     upd.setNewQuantity(new ApiQuantityInfo(BigDecimal.valueOf(20), RSUnitDef.MILLI_GRAM.getId()));
-    linkManager.updateQuantity(upd.getStoichiometryLinkId(), upd.getNewQuantity(), true, user);
+    linkManager.updateQuantity(upd.getStoichiometryLinkId(), upd.getNewQuantity(), user);
+
+    linkManager.reduceStock(List.of(link.getId()), user);
 
     ApiSubSample after = subSampleApiMgr.getApiSubSampleById(subInfo.getId(), user);
-    assertEquals("4.97 g", after.getQuantity().toQuantityInfo().toPlainString());
+    assertEquals("4.98 g", after.getQuantity().toQuantityInfo().toPlainString());
   }
 
   private ElementalAnalysisDTO createSimpleAnalysis() {
