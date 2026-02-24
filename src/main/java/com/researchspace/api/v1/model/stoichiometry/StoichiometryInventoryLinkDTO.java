@@ -1,6 +1,5 @@
 package com.researchspace.api.v1.model.stoichiometry;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.researchspace.api.v1.model.ApiQuantityInfo;
 import com.researchspace.model.stoichiometry.StoichiometryInventoryLink;
 import lombok.Data;
@@ -14,7 +13,6 @@ public class StoichiometryInventoryLinkDTO {
   private Long stoichiometryMoleculeId;
   private ApiQuantityInfo quantity;
 
-  @JsonProperty("stockDeducted")
   private boolean stockDeducted;
 
   public StoichiometryInventoryLinkDTO(StoichiometryInventoryLink entity) {
