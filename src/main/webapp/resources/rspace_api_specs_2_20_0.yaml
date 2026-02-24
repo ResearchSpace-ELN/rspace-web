@@ -3062,9 +3062,7 @@ paths:
       tags:
         - Chemistry
       description: |
-        Creates a link between a stoichiometry molecule and an Inventory item. If `reducesStock=true` and the
-        inventory item is a SubSample, the specified quantity is deducted from the SubSample stock. If the
-        `reducesStock` field is omitted it defaults to `false`.
+        Creates a link between a stoichiometry molecule and an Inventory item.
       parameters:
         - in: body
           name: body
@@ -3076,14 +3074,6 @@ paths:
           description: Created link
           schema:
             $ref: '#/definitions/StoichiometryInventoryLinkDTO'
-        '400':
-          description: Insufficient stock to perform the requested operation (when linking to a SubSample with `reducesStock=true`).
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Insufficient stock to perform this action. Attempting to use 20 mg of stock amount 5 mg for SS300"
         '401':
           description: Authentication error or insufficient permissions
           schema:
@@ -3121,10 +3111,7 @@ paths:
       tags:
         - Chemistry
       description: |
-        Updates the quantity used on a stoichiometry–inventory link. If the link has `reducesStock=true` and
-        targets a SubSample, the new quantity is deducted from stock again (cumulative behavior). For example,
-        with 100 ml in stock: creating a link for 50 ml and later updating it to 25 ml results in 25 ml remaining
-        (100 − 50 − 25). Attempts to use more than is in stock result in a 400 response.
+        Updates the quantity used on a stoichiometry–inventory link.
       parameters:
         - in: body
           name: body
@@ -3136,14 +3123,6 @@ paths:
           description: Updated link
           schema:
             $ref: '#/definitions/StoichiometryInventoryLinkDTO'
-        '400':
-          description: Insufficient stock to perform the requested operation.
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Insufficient stock to perform this action. Attempting to use 20 mg of stock amount 5 mg for SS300"
         '401':
           description: Authentication error or insufficient permissions
           schema:
@@ -3168,6 +3147,45 @@ paths:
               message:
                 type: string
                 example: "Error updating link"
+  /stoichiometry/link/reduce/stock:
+    post:
+      summary: Batch reduce stock for a list of stoichiometry-inventory links
+      tags:
+        - Chemistry
+      description: |
+        Attempts to reduce stock for each stoichiometry-inventory link ID provided. This is a batch operation that can partially succeed.
+        For each link, if it points to a SubSample and has not been fully reduced, the specified quantity is deducted from the SubSample stock.
+      parameters:
+        - in: body
+          name: linkIds
+          description: List of stoichiometry-inventory link IDs to reduce stock for.
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+      responses:
+        '200':
+          description: Batch operation result
+          schema:
+            $ref: '#/definitions/StoichiometryLinkStockReductionResult'
+        '401':
+          description: Authentication error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthorized"
+        '500':
+          description: Unexpected server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "An unexpected error occurred"
 
   /stoichiometry/link/{id}:
     get:
@@ -3571,31 +3589,46 @@ definitions:
         type: number
         format: double
         description: Numeric value of the quantity
+        example: 10.5
       unitId:
         type: integer
         format: int32
         description: Unit identifier from RSUnitDef. Options can be retrieved from /units endpoint.
+        example: 6
+    example:
+      numericValue: 10.5
+      unitId: 6
   StoichiometryInventoryLinkDTO:
     description: Link between a stoichiometry molecule and an Inventory item
     properties:
       id:
         type: integer
         format: int64
+        example: 1234
       inventoryItemGlobalId:
         type: string
         description: Global identifier of the inventory item (e.g. SA123, SS456, IC789)
+        example: 'SS456'
       stoichiometryMoleculeId:
         type: integer
         format: int64
+        example: 567
       quantity:
         $ref: '#/definitions/QuantityInfo'
-      reducesStock:
+      stockReduced:
         type: boolean
         description: |-
-          If true and the linked item is a SubSample, the specified quantity will be deducted from its stock.
-          Updates are cumulative: setting a new quantity deducts that amount again from current stock.
-          Deleting a link does not replenish any previously deducted stock.
+          If true, stock has been previously reduced for this link.
         default: false
+        example: false
+    example:
+      id: 1234
+      inventoryItemGlobalId: 'SS456'
+      stoichiometryMoleculeId: 567
+      quantity:
+        numericValue: 10.5
+        unitId: 6
+      stockReduced: false
   StoichiometryInventoryLinkRequest:
     description: >-
       Request to create a link between a stoichiometry molecule and an Inventory item.
@@ -3610,23 +3643,26 @@ definitions:
         type: string
         description: >-
           Global identifier of the target inventory item (allowed prefixes: IC for Containers, SA for Samples, SS for Subsamples; e.g. IC789, SA123, SS456). Sample Templates are not allowed.
+        example: 'SS456'
       stoichiometryMoleculeId:
         type: integer
         format: int64
+        example: 567
       quantity:
         type: number
         format: double
         description: Numeric value of the quantity used
+        example: 10.5
       unitId:
         type: integer
         format: int32
         description: Unit identifier. Options can be retrieved from /units endpoint.
-      reducesStock:
-        type: boolean
-        description: |-
-          If true and the linked item is a SubSample, the specified quantity will be deducted from its stock.
-          Optional; defaults to false when omitted.
-        default: false
+        example: 6
+    example:
+      inventoryItemGlobalId: 'SS456'
+      stoichiometryMoleculeId: 567
+      quantity: 10.5
+      unitId: 6
   StoichiometryLinkQuantityUpdateRequest:
     description: Request to update quantity used for a stoichiometry-inventory link
     required:
@@ -3636,14 +3672,87 @@ definitions:
       stoichiometryLinkId:
         type: integer
         format: int64
+        example: 1234
       newQuantity:
         $ref: '#/definitions/QuantityInfo'
-      reducesStock:
+    example:
+      stoichiometryLinkId: 1234
+      newQuantity:
+        numericValue: 15.0
+        unitId: 6
+  StoichiometryLinkStockReductionResult:
+    description: Result of a batch stock reduction operation
+    properties:
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/StoichiometryLinkStockReductionIndividualResult'
+      successCount:
+        type: integer
+        example: 1
+      errorCount:
+        type: integer
+        example: 1
+    example:
+      results:
+        - linkId: 1234
+          success: true
+        - linkId: 1235
+          success: false
+          error:
+            httpCode: 422
+            internalCode: 42202
+            message: "Insufficient stock for SubSample SS457"
+      successCount: 1
+      errorCount: 1
+  StoichiometryLinkStockReductionIndividualResult:
+    description: Individual result for a single link ID in a batch reduction
+    properties:
+      linkId:
+        type: integer
+        format: int64
+        example: 1234
+      success:
         type: boolean
-        description: |-
-          If true and the linked item is a SubSample, the specified quantity will be deducted from its stock.
-          Optional; defaults to false when omitted.
-        default: false
+        example: true
+      error:
+        $ref: '#/definitions/ApiError'
+    example:
+      linkId: 1234
+      success: true
+  ApiError:
+    description: Error details returned by the API
+    properties:
+      status:
+        type: string
+        description: HTTP status name
+        example: UNPROCESSABLE_ENTITY
+      httpCode:
+        type: integer
+        description: HTTP status code
+        example: 422
+      internalCode:
+        type: integer
+        description: RSpace internal error code
+        example: 42201
+      message:
+        type: string
+        description: Main error message
+        example: "Insufficient stock for SubSample"
+      messageCode:
+        type: string
+        description: Error message code for translation
+        example: "error.inventory.insufficient.stock"
+      errors:
+        type: array
+        items:
+          type: string
+    example:
+      status: UNPROCESSABLE_ENTITY
+      httpCode: 422
+      internalCode: 42201
+      message: "Insufficient stock for SubSample"
+      messageCode: "error.inventory.insufficient.stock"
   ChemicalImportSearchResult:
     description: Chemical search result from external sources
     properties:
@@ -4840,101 +4949,169 @@ definitions:
       id:
         type: integer
         format: int64
+        example: 567
       rsChemElementId:
         type: integer
         format: int64
+        example: 890
       inventoryLink:
         $ref: '#/definitions/StoichiometryInventoryLinkDTO'
       role:
         type: string
         enum: [REACTANT, PRODUCT, AGENT]
+        example: REACTANT
       formula:
         type: string
+        example: 'C2H4O2'
       name:
         type: string
-        example: 'Acetate'
+        example: 'Acetic Acid'
       smiles:
         type: string
         example: 'CC(=O)O'
       molecularWeight:
         type: number
-        example: 44.068
+        example: 60.05
       coefficient:
         type: number
         example: 1.0
       mass:
         type: number
-        example: 44.068
+        example: 6.005
       actualAmount:
         type: number
-        example: 1.0
+        example: 0.1
       actualYield:
         type: number
+        example: 95.0
       limitingReagent:
         type: boolean
+        example: true
       notes:
         type: string
-        example: 'some notes'
+        example: 'Pure glacial acetic acid'
+    example:
+      id: 567
+      rsChemElementId: 890
+      role: REACTANT
+      formula: 'C2H4O2'
+      name: 'Acetic Acid'
+      smiles: 'CC(=O)O'
+      molecularWeight: 60.05
+      coefficient: 1.0
+      mass: 6.005
+      actualAmount: 0.1
+      actualYield: 95.0
+      limitingReagent: true
+      notes: 'Pure glacial acetic acid'
   StoichiometryDTO:
     description: Stoichiometry data for a reaction or record
     properties:
       id:
         type: integer
         format: int64
+        example: 234
       revision:
         type: integer
         format: int64
+        example: 1
       parentReactionId:
         type: integer
         format: int64
         description: The ID of the chemical reaction this stoichiometry belongs to. This will be null if the stoichiometry is tied directly to a record.
+        example: 456
       recordId:
         type: integer
         format: int64
         description: The ID of the record this stoichiometry belongs to.
+        example: 789
       molecules:
         type: array
         items:
           $ref: '#/definitions/StoichiometryMoleculeDTO'
+    example:
+      id: 234
+      revision: 1
+      parentReactionId: 456
+      recordId: 789
+      molecules:
+        - id: 567
+          role: REACTANT
+          name: 'Acetic Acid'
+          smiles: 'CC(=O)O'
+          molecularWeight: 60.05
+          coefficient: 1.0
+        - id: 568
+          role: PRODUCT
+          name: 'Ethyl Acetate'
+          smiles: 'CC(=O)OCC'
+          molecularWeight: 88.11
+          coefficient: 1.0
   StoichiometryMoleculeUpdateDTO:
     description: Update payload for a molecule within stoichiometry
     properties:
       id:
         type: integer
         format: int64
+        example: 567
       coefficient:
         type: number
+        example: 2.0
       smiles:
         type: string
+        example: 'CC(=O)O'
       name:
         type: string
+        example: 'Acetic Acid'
       formula:
         type: string
+        example: 'C2H4O2'
       molecularWeight:
         type: number
+        example: 60.05
       role:
         type: string
         enum: [ REACTANT, PRODUCT, AGENT ]
+        example: REACTANT
       mass:
         type: number
+        example: 12.01
       actualAmount:
         type: number
+        example: 0.2
       actualYield:
         type: number
+        example: 98.0
       limitingReagent:
         type: boolean
+        example: true
       notes:
         type: string
+        example: 'Updated amount'
+    example:
+      id: 567
+      coefficient: 2.0
+      smiles: 'CC(=O)O'
+      name: 'Acetic Acid'
+      role: REACTANT
   StoichiometryUpdateDTO:
     description: Update payload for stoichiometry
     properties:
       id:
         type: integer
         format: int64
+        example: 234
       molecules:
         type: array
         items:
           $ref: '#/definitions/StoichiometryMoleculeUpdateDTO'
+    example:
+      id: 234
+      molecules:
+        - id: 567
+          coefficient: 2.0
+        - id: 568
+          coefficient: 2.0
 
   MoveRequest:
     description: Request to move a document or notebook to a target folder
