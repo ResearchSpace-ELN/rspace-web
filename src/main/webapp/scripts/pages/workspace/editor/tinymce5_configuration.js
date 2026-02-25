@@ -88,7 +88,7 @@ var tinymcesetup = {
 	lineheight_formats: '9px 10px 12px 14px 16px 20px 24px 30px 40px 64px',
 	gecko_spellcheck: true,
 	relative_urls: false,
-	content_css: ["/styles/simplicity/typoEdit.css", "/scripts/tinymce/tinymce516/plugins/codesample/css/prism.css"],
+	content_css: ["/styles/simplicity/typoEdit.css", "/scripts/tinymce/tinymce5109/plugins/codesample/css/prism.css"],
 	image_advtab: true,
 	smart_paste: false,
 	branding: false,
