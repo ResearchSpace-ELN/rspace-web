@@ -38,7 +38,7 @@ public interface StoichiometryInventoryLinkApi {
   @DeleteMapping("/{id}")
   void delete(@PathVariable("id") long id, @RequestAttribute(name = "user") User user);
 
-  @PostMapping("/stock-deductions")
+  @PostMapping("/deductStock")
   StockDeductionResult deductStock(
       @RequestBody List<Long> linkIds, @RequestAttribute(name = "user") User user);
 }

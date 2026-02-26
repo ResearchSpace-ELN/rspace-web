@@ -327,7 +327,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
         mockMvc
             .perform(
                 createBuilderForPost(
-                        API_VERSION.ONE, apiKey, "/stoichiometry/link/stock-deductions", user)
+                        API_VERSION.ONE, apiKey, "/stoichiometry/link/deductStock", user)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsBytes(List.of(link.getId()))))
             .andExpect(status().isOk())
@@ -361,7 +361,7 @@ public class StoichiometryInventoryLinkControllerMVCIT extends API_MVC_TestBase 
         mockMvc
             .perform(
                 createBuilderForPost(
-                        API_VERSION.ONE, apiKey, "/stoichiometry/link/stock-deductions", user)
+                        API_VERSION.ONE, apiKey, "/stoichiometry/link/deductStock", user)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsBytes(List.of(link.getId(), 999999L))))
             .andExpect(status().isOk())

@@ -3147,7 +3147,7 @@ paths:
               message:
                 type: string
                 example: "Error updating link"
-  /stoichiometry/link/stock-deductions:
+  /stoichiometry/link/deductStock:
     post:
       summary: Batch deduct stock for a list of stoichiometry-inventory links
       tags:
