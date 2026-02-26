@@ -96,12 +96,16 @@ public class StoichiometryInventoryLinkManagerImpl implements StoichiometryInven
     for (Long id : linkIds) {
       try {
         StoichiometryInventoryLink link = getLinkOrThrowNotFound(id);
-        verifyStoichiometryPermissions(link.getStoichiometryMolecule(), PermissionType.WRITE, user);
+        StoichiometryMolecule stoichiometryMolecule = link.getStoichiometryMolecule();
+        verifyStoichiometryPermissions(stoichiometryMolecule, PermissionType.WRITE, user);
         invPermissionUtils.assertUserCanEditInventoryRecord(link.getInventoryRecord(), user);
 
         processStockDeduction(user, link, link.getQuantity(), link.getInventoryRecord());
-        link.setStockDeducted(true);
-        linkDao.save(link);
+        if(!link.isStockDeducted()){
+          link.setStockDeducted(true);
+          linkDao.save(link);
+          generateNewStoichiometryRevision(stoichiometryMolecule);
+        }
         result.addResult(new StockDeductionResult.IndividualResult(id, true, null));
       } catch (NotFoundException | IllegalArgumentException e) {
         result.addResult(new StockDeductionResult.IndividualResult(id, false, e.getMessage()));
