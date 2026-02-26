@@ -3710,39 +3710,6 @@ definitions:
     example:
       linkId: 1234
       success: true
-  ApiError:
-    description: Error details returned by the API
-    properties:
-      status:
-        type: string
-        description: HTTP status name
-        example: UNPROCESSABLE_ENTITY
-      httpCode:
-        type: integer
-        description: HTTP status code
-        example: 422
-      internalCode:
-        type: integer
-        description: RSpace internal error code
-        example: 42201
-      message:
-        type: string
-        description: Main error message
-        example: "Insufficient stock for SubSample"
-      messageCode:
-        type: string
-        description: Error message code for translation
-        example: "error.inventory.insufficient.stock"
-      errors:
-        type: array
-        items:
-          type: string
-    example:
-      status: UNPROCESSABLE_ENTITY
-      httpCode: 422
-      internalCode: 42201
-      message: "Insufficient stock for SubSample"
-      messageCode: "error.inventory.insufficient.stock"
   ChemicalImportSearchResult:
     description: Chemical search result from external sources
     properties:
