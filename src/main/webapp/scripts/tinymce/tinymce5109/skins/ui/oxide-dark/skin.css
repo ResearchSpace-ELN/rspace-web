@@ -21,38 +21,39 @@
   vertical-align: initial;
   white-space: normal;
 }
-.tox *:not(svg):not(rect) {
-  box-sizing: inherit;
-  color: inherit;
-  cursor: inherit;
-  direction: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  font-style: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  -webkit-tap-highlight-color: inherit;
-  text-align: inherit;
-  text-decoration: inherit;
-  text-shadow: inherit;
-  text-transform: inherit;
-  vertical-align: inherit;
-  white-space: inherit;
-}
-.tox *:not(svg):not(rect) {
-  /* stylelint-disable-line no-duplicate-selectors */
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  float: none;
-  height: auto;
-  margin: 0;
-  max-width: none;
-  outline: 0;
-  padding: 0;
-  position: static;
-  width: auto;
-}
+/* RSpace Edit: These seem to conflict with MUI Table styling, so are disabled. */
+/*.tox *:not(svg):not(rect) {*/
+/*  box-sizing: inherit;*/
+/*  color: inherit;*/
+/*  cursor: inherit;*/
+/*  direction: inherit;*/
+/*  font-family: inherit;*/
+/*  font-size: inherit;*/
+/*  font-style: inherit;*/
+/*  font-weight: inherit;*/
+/*  line-height: inherit;*/
+/*  -webkit-tap-highlight-color: inherit;*/
+/*  text-align: inherit;*/
+/*  text-decoration: inherit;*/
+/*  text-shadow: inherit;*/
+/*  text-transform: inherit;*/
+/*  vertical-align: inherit;*/
+/*  white-space: inherit;*/
+/*}*/
+/*.tox *:not(svg):not(rect) {*/
+/*  !* stylelint-disable-line no-duplicate-selectors *!*/
+/*  background: transparent;*/
+/*  border: 0;*/
+/*  box-shadow: none;*/
+/*  float: none;*/
+/*  height: auto;*/
+/*  margin: 0;*/
+/*  max-width: none;*/
+/*  outline: 0;*/
+/*  padding: 0;*/
+/*  position: static;*/
+/*  width: auto;*/
+/*}*/
 .tox:not([dir=rtl]) {
   direction: ltr;
   text-align: left;
