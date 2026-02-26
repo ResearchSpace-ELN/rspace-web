@@ -3618,7 +3618,7 @@ definitions:
       stockDeducted:
         type: boolean
         description: |-
-          If true, stock has been previously deducted for this link.
+          If true, stock has been previously deducted one or many times for this link.
         default: false
         example: false
     example:
