@@ -1596,7 +1596,7 @@
     <dependency>
       <groupId>com.github.rspace-os</groupId>
       <artifactId>rspace-zenodo-adapter</artifactId>
-      <version>0.3.4</version>
+      <version>RSDEV-952-adapter-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>com.github.rspace-os</groupId>
