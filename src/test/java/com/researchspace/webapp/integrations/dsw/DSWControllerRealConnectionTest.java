@@ -1,8 +1,8 @@
 package com.researchspace.webapp.integrations.dsw;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -185,14 +185,58 @@ public class DSWControllerRealConnectionTest extends SpringTransactionalTest {
   }
 
   @Test
-  public void testConfigsConfigFound() {
-    UserAppConfig uacfg = new UserAppConfig(u, null, true);
+  @RunIfSystemPropertyDefined("nightly")
+  public void testImportPlanIncorrectUuid() {
     try {
-      AppConfigElementSet cfg = dswController.getConfigForServer(u, "Actual DSW URL");
-      assertNotNull(cfg);
-      assertFalse(cfg.getConfigElements().isEmpty());
+      String invalidUuid = "Not-a-valid-uuid";
+      AjaxReturnObject<JsonNode> project =
+          dswController.importPlan(DSW_SERVER_ALIAS, invalidUuid);
+
+      assertNotNull(project);
+      assertNull(project.getData());
+      assertEquals(project.getError().getErrorMessages().size(), 1);
+      assertTrue(project.getError().getErrorMessages().get(0).contains(invalidUuid));
+
     } catch (Exception e) {
       fail(e.getMessage());
     }
   }
+
+  @Test
+  @RunIfSystemPropertyDefined("nightly")
+  public void testImportPlanNullFileWhenSaving() {
+    try {
+      when(mediaManager.saveNewDMP(anyString(), any(), any(), any()))
+          .thenReturn(null);
+
+      AjaxReturnObject plansResponse = dswController.listDSWPlans(DSW_SERVER_ALIAS);
+      assertNotNull(plansResponse);
+      DSWProject[] projects =
+          mapper.readValue(((JsonNode) plansResponse.getData()).toString(), DSWProject[].class);
+      assertTrue(projects.length > 0);
+
+      DSWProject projectForRetrieval =
+          Arrays.stream(projects)
+              .filter(p -> p.getName().equals(TEST_PROJECT_NAME))
+              .collect(Collectors.toList())
+              .get(0);
+
+      assertNotNull(projectForRetrieval);
+      assertNotNull(projectForRetrieval.getUuid());
+      assertEquals(TEST_PROJECT_DESCRIPTION, projectForRetrieval.getDescription());
+
+      AjaxReturnObject<JsonNode> project =
+          dswController.importPlan(DSW_SERVER_ALIAS, projectForRetrieval.getUuid());
+
+      assertNotNull(project);
+      assertNull(project.getData());
+      assertEquals(project.getError().getErrorMessages().size(), 1);
+      assertTrue(project.getError().getErrorMessages().get(0).contains(projectForRetrieval.getUuid()));
+
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+  }
+
+
 }
