@@ -1,6 +1,7 @@
 package com.researchspace.webapp.integrations.dsw;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -178,6 +179,18 @@ public class DSWControllerRealConnectionTest extends SpringTransactionalTest {
       assertEquals(TEST_PROJECT_NAME, project.getData().get("name").asText());
       assertEquals(projectForRetrieval.getUuid(), project.getData().get("uuid").asText());
 
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+  }
+
+  @Test
+  public void testConfigsConfigFound() {
+    UserAppConfig uacfg = new UserAppConfig(u, null, true);
+    try {
+      AppConfigElementSet cfg = dswController.getConfigForServer(u, "Actual DSW URL");
+      assertNotNull(cfg);
+      assertFalse(cfg.getConfigElements().isEmpty());
     } catch (Exception e) {
       fail(e.getMessage());
     }
