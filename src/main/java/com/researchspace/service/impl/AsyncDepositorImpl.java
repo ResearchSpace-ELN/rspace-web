@@ -1,6 +1,7 @@
 package com.researchspace.service.impl;
 
 import static com.researchspace.core.util.TransformerUtils.toList;
+import static com.researchspace.dataverse.rspaceadapter.DataverseRSpaceRepository.IGSN_INVENTORY_LINKED_ITEMS;
 import static com.researchspace.dataverse.rspaceadapter.DataverseRSpaceRepository.RAID_METADATA_PROPERTY;
 import static com.researchspace.model.apps.App.APP_DATAVERSE;
 import static com.researchspace.model.apps.App.APP_ZENODO;
@@ -99,7 +100,28 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
 
   private @Autowired DMPUpdateHandler dmpUpdateHandler;
 
-  private RepositoryOperationResult doDeposit(
+  private RepositoryOperationResult doDepositArchive(
+      User subject,
+      IRepository repository,
+      RepoDepositConfig repoDepositCfg,
+      RepositoryConfig repoCfg,
+      ArchiveResult archiveResult)
+      throws IOException {
+    RepositoryOperationResult result = null;
+    File file = archiveResult.getExportFile();
+    try {
+      SubmissionMetadata metadata =
+          generateArchiveSubmissionMetaData(subject, archiveResult, repoDepositCfg);
+      result = repository.submitDeposit(new UserDepositorAdapter(subject), file, metadata, repoCfg);
+    } catch (Exception e) {
+      result =
+          new RepositoryOperationResult(
+              false, "Submitting archive deposit failed:" + e.getMessage(), null, null);
+    }
+    return result;
+  }
+
+  private RepositoryOperationResult doDepositEcatDocument(
       User subject,
       IRepository repository,
       RepoDepositConfig repoDepositCfg,
@@ -113,7 +135,7 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
     } catch (Exception e) {
       result =
           new RepositoryOperationResult(
-              false, "Submitting deposit failed:" + e.getMessage(), null, null);
+              false, "Submitting document deposit failed:" + e.getMessage(), null, null);
     }
     return result;
   }
@@ -276,7 +298,8 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
                 tempDir.toString(), document.getName().replaceAll(NOT_ALLOWED_FILENAME_CHARS, ""));
         Files.createSymbolicLink(symbolicLinkPath, fileInFileStore.toPath());
         repoDepositResult =
-            doDeposit(subject, repository, repoDepositConfig, repoCfg, symbolicLinkPath.toFile());
+            doDepositEcatDocument(
+                subject, repository, repoDepositConfig, repoCfg, symbolicLinkPath.toFile());
         Files.delete(symbolicLinkPath);
         Files.delete(tempDir);
       } else {
@@ -299,16 +322,15 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
       RepositoryConfig repoCfg,
       Future<ArchiveResult> archive)
       throws InterruptedException, ExecutionException {
-
     RepositoryOperationResult result;
+    ArchiveResult archiveResult = archive.get();
     try {
-      result =
-          doDeposit(subject, repository, repoDepositConfig, repoCfg, archive.get().getExportFile());
+      result = doDepositArchive(subject, repository, repoDepositConfig, repoCfg, archiveResult);
     } catch (Exception e) {
       log.error("Submitting deposit failed: {}", e.getMessage());
       result = new RepositoryOperationResult(false, e.getMessage(), null, null);
     }
-    postDeposit(result, app, subject, archive.get().getExportFile(), repoDepositConfig);
+    postDeposit(result, app, subject, archiveResult.getExportFile(), repoDepositConfig);
     return new AsyncResult<>(result);
   }
 
@@ -450,6 +472,12 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
 
   private SubmissionMetadata generateSubmissionMetaData(
       User subject, RepoDepositConfig archiveConfig) throws IOException, IllegalStateException {
+    return generateArchiveSubmissionMetaData(subject, null, archiveConfig);
+  }
+
+  private SubmissionMetadata generateArchiveSubmissionMetaData(
+      User subject, ArchiveResult archiveResult, RepoDepositConfig archiveConfig)
+      throws IOException, IllegalStateException {
     SubmissionMetadata metadata = new SubmissionMetadata();
     addOrcidIdsForAuthorsIfAvailable(archiveConfig);
     List<IDepositor> authors = new ArrayList<>(archiveConfig.getMeta().getAuthors());
@@ -486,12 +514,20 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
               .build());
     }
     metadata.setTerms(terms);
-
+    metadata.setOtherProperties(new HashMap<>());
     if (archiveConfig.getRaidAssociated() != null) {
-      metadata.setOtherProperties(
-          Map.of(
+      metadata
+          .getOtherProperties()
+          .put(
               RAID_METADATA_PROPERTY,
-              archiveConfig.getRaidAssociated().getRaid().getRaidIdentifier()));
+              archiveConfig.getRaidAssociated().getRaid().getRaidIdentifier());
+    }
+    if (archiveResult != null && !archiveResult.getIgsnInventoryLinkedItems().isEmpty()) {
+      metadata
+          .getOtherProperties()
+          .put(
+              IGSN_INVENTORY_LINKED_ITEMS,
+              String.join(",", archiveResult.getIgsnInventoryLinkedItems()));
     }
 
     return setDmpOnlineDmpToolOnSubmissionMetadata(

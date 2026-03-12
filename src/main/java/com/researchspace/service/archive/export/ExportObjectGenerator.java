@@ -45,6 +45,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.io.IOUtils;
@@ -184,7 +185,7 @@ public class ExportObjectGenerator {
    * @return the name of the xml file holding the exported docs, or <code>null</code> if this doc
    *     was already exported, or could not be exported.
    */
-  public String makeRecordExport(
+  public Map<String, ArchivalDocument> makeRecordExport(
       IArchiveExportConfig aconfig,
       StructuredDocument strucDoc,
       Number revision,
@@ -251,7 +252,7 @@ public class ExportObjectGenerator {
       roCrateHandler.buildXmlFileEntity(
           recordFolder, documentFileName + "_form.xml", strucDoc, false, hashForForm.toHex());
     }
-    return exportFileName;
+    return Map.of(exportFileName, archiveDoc);
   }
 
   private void writeToFiles(
