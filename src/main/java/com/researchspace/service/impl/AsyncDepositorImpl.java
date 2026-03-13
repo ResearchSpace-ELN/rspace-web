@@ -36,6 +36,8 @@ import com.researchspace.service.IAsyncArchiveDepositor;
 import com.researchspace.service.IntegrationsHandler;
 import com.researchspace.service.UserExternalIdResolver;
 import com.researchspace.service.UserManager;
+import com.researchspace.service.archive.export.ExportEcatDocumentResult;
+import com.researchspace.service.archive.export.ExportFileResult;
 import com.researchspace.service.raid.RaIDServiceClientAdapter;
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -126,12 +129,15 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
       IRepository repository,
       RepoDepositConfig repoDepositCfg,
       RepositoryConfig repoCfg,
-      File file)
+      ExportFileResult exportFileResult)
       throws IOException {
     RepositoryOperationResult result = null;
     try {
-      SubmissionMetadata metadata = generateSubmissionMetaData(subject, repoDepositCfg);
-      result = repository.submitDeposit(new UserDepositorAdapter(subject), file, metadata, repoCfg);
+      SubmissionMetadata metadata =
+          generateSubmissionMetaData(subject, exportFileResult, repoDepositCfg);
+      result =
+          repository.submitDeposit(
+              new UserDepositorAdapter(subject), exportFileResult.getFile(), metadata, repoCfg);
     } catch (Exception e) {
       result =
           new RepositoryOperationResult(
@@ -281,11 +287,12 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
       IRepository repository,
       RepoDepositConfig repoDepositConfig,
       RepositoryConfig repoCfg,
-      Future<EcatDocumentFile> documentFuture)
+      Future<ExportEcatDocumentResult> documentFuture)
       throws InterruptedException, ExecutionException {
 
     RepositoryOperationResult repoDepositResult;
-    EcatDocumentFile document = documentFuture.get();
+    ExportEcatDocumentResult exportResult = documentFuture.get();
+    EcatDocumentFile document = exportResult.getEcatDocumentFile();
     try {
       if (document != null) {
         File fileInFileStore = new File(new URI(document.getFileProperty().getAbsolutePathUri()));
@@ -299,7 +306,12 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
         Files.createSymbolicLink(symbolicLinkPath, fileInFileStore.toPath());
         repoDepositResult =
             doDepositEcatDocument(
-                subject, repository, repoDepositConfig, repoCfg, symbolicLinkPath.toFile());
+                subject,
+                repository,
+                repoDepositConfig,
+                repoCfg,
+                new ExportFileResult(
+                    symbolicLinkPath.toFile(), exportResult.getIgsnInventoryLinkedItems()));
         Files.delete(symbolicLinkPath);
         Files.delete(tempDir);
       } else {
@@ -471,12 +483,21 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
   }
 
   private SubmissionMetadata generateSubmissionMetaData(
-      User subject, RepoDepositConfig archiveConfig) throws IOException, IllegalStateException {
-    return generateArchiveSubmissionMetaData(subject, null, archiveConfig);
+      User subject, ExportFileResult exportFileResult, RepoDepositConfig archiveConfig)
+      throws IOException, IllegalStateException {
+    return generateArchiveSubmissionMetaData(
+        subject, exportFileResult.getIgsnInventoryLinkedItems(), archiveConfig);
   }
 
   private SubmissionMetadata generateArchiveSubmissionMetaData(
       User subject, ArchiveResult archiveResult, RepoDepositConfig archiveConfig)
+      throws IOException, IllegalStateException {
+    return generateArchiveSubmissionMetaData(
+        subject, archiveResult.getIgsnInventoryLinkedItems(), archiveConfig);
+  }
+
+  private SubmissionMetadata generateArchiveSubmissionMetaData(
+      User subject, Set<String> igsnInventoryLinkedItems, RepoDepositConfig archiveConfig)
       throws IOException, IllegalStateException {
     SubmissionMetadata metadata = new SubmissionMetadata();
     addOrcidIdsForAuthorsIfAvailable(archiveConfig);
@@ -522,12 +543,10 @@ public class AsyncDepositorImpl implements IAsyncArchiveDepositor {
               RAID_METADATA_PROPERTY,
               archiveConfig.getRaidAssociated().getRaid().getRaidIdentifier());
     }
-    if (archiveResult != null && !archiveResult.getIgsnInventoryLinkedItems().isEmpty()) {
+    if (igsnInventoryLinkedItems != null && !igsnInventoryLinkedItems.isEmpty()) {
       metadata
           .getOtherProperties()
-          .put(
-              IGSN_INVENTORY_LINKED_ITEMS,
-              String.join(",", archiveResult.getIgsnInventoryLinkedItems()));
+          .put(IGSN_INVENTORY_LINKED_ITEMS, String.join(",", igsnInventoryLinkedItems));
     }
 
     return setDmpOnlineDmpToolOnSubmissionMetadata(

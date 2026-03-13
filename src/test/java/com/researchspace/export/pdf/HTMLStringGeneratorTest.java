@@ -113,7 +113,7 @@ public class HTMLStringGeneratorTest {
     afs.setId(fileStoreId);
     Mockito.when(netFileManager.getNfsFileStore(fileStoreId)).thenReturn(afs);
     // when HTML is generated for PDF
-    ExportProcesserInput documentData = htmlGenerator.extractHtmlStr(anyDoc, cfg);
+    ExportProcessorInput documentData = htmlGenerator.extractHtmlStr(anyDoc, cfg);
     // then NFS links are set into document Data
     assertTrue(documentData.hasNfsLinks());
     assertEquals(documentData.getNfsLinks().size(), 2);
@@ -132,7 +132,7 @@ public class HTMLStringGeneratorTest {
     ExportToFileConfig cfg = makeConfig();
     // now set config to not include comments
     cfg.setComments(false);
-    ExportProcesserInput documentData = htmlGenerator.extractHtmlStr(anyDoc, cfg);
+    ExportProcessorInput documentData = htmlGenerator.extractHtmlStr(anyDoc, cfg);
     verify(commentMgr, never()).getCommentItems(1L);
     assertEquals(0, documentData.getComments().size());
     // now set config to  include comments
@@ -160,7 +160,7 @@ public class HTMLStringGeneratorTest {
     anydoc.setId(1L);
     htmlGenerator.setUrlPrefix("http://demo.researchspace.com");
     ExportToFileConfig cfg = makeConfig();
-    ExportProcesserInput documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
+    ExportProcessorInput documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
     assertTrue(
         documentData.getDocumentAsHtml().contains("http://demo.researchspace.com/Streamfile/2"));
 
@@ -197,7 +197,7 @@ public class HTMLStringGeneratorTest {
         .thenReturn(Optional.of(new ExternalId(IdentifierScheme.ORCID, OrcidId)));
     StructuredDocument anyDoc = createAnySDWithText("any");
     anyDoc.setId(1L);
-    ExportProcesserInput input = htmlGenerator.extractHtmlStr(anyDoc, cfg);
+    ExportProcessorInput input = htmlGenerator.extractHtmlStr(anyDoc, cfg);
     String documentAsHtml = input.getDocumentAsHtml();
     // check metadata elements are added
     org.jsoup.nodes.Document htmlDoc = Jsoup.parse(documentAsHtml);
@@ -226,7 +226,7 @@ public class HTMLStringGeneratorTest {
     lom.addMaterial(testSubSample, testSubSample.getQuantity());
     anyDoc.getFields().get(0).addListOfMaterials(lom);
 
-    ExportProcesserInput input = htmlGenerator.extractHtmlStr(anyDoc, cfg);
+    ExportProcessorInput input = htmlGenerator.extractHtmlStr(anyDoc, cfg);
     String documentAsHtml = input.getDocumentAsHtml();
     assertTrue(documentAsHtml, documentAsHtml.contains("test lom"));
     assertTrue(documentAsHtml, documentAsHtml.contains("SAMPLE"));
@@ -240,7 +240,7 @@ public class HTMLStringGeneratorTest {
     StructuredDocument anydoc = TestFactory.createAnySDWithText(html);
     anydoc.setId(1L);
     ExportToFileConfig cfg = makeConfig();
-    ExportProcesserInput documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
+    ExportProcessorInput documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
     // default sclae factor = 67.3% from page width to A4
     assertTrue(documentData.getDocumentAsHtml().contains("width=\"673\""));
     assertTrue(documentData.getDocumentAsHtml().contains("height=\"673\""));
@@ -259,7 +259,7 @@ public class HTMLStringGeneratorTest {
     StructuredDocument anydoc = TestFactory.createAnySDWithText(html);
     anydoc.setId(1L);
     ExportToFileConfig cfg = makeConfig();
-    ExportProcesserInput documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
+    ExportProcessorInput documentData = htmlGenerator.extractHtmlStr(anydoc, cfg);
     assertTrue(
         "unexpected content: " + documentData.getDocumentAsHtml(),
         documentData
@@ -283,7 +283,7 @@ public class HTMLStringGeneratorTest {
     doc.setId(1L);
     doc.setName("<img src='' onerror='alert(2);'>name with special html chars &∅∈∌");
     ExportToFileConfig cfg = makeConfig();
-    ExportProcesserInput documentData = htmlGenerator.extractHtmlStr(doc, cfg);
+    ExportProcessorInput documentData = htmlGenerator.extractHtmlStr(doc, cfg);
     String data = documentData.getDocumentAsHtml();
     assertFalse(data.contains("<img"));
     // Additional checks to be sure the data wasn't just thrown out completely
@@ -325,9 +325,9 @@ public class HTMLStringGeneratorTest {
     structuredDocument.setId(1L);
     ExportToFileConfig config = makeConfig();
 
-    ExportProcesserInput exportProcesserInput =
+    ExportProcessorInput exportProcessorInput =
         htmlGenerator.extractHtmlStr(structuredDocument, config);
-    String html = exportProcesserInput.getDocumentAsHtml();
+    String html = exportProcessorInput.getDocumentAsHtml();
 
     assertTrue(
         "html doesn't contain selected choices 'a, b'. html is: " + html,
