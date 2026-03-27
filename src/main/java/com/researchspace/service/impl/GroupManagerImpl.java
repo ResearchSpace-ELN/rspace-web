@@ -77,6 +77,7 @@ import com.researchspace.service.PiChangeHandler;
 import com.researchspace.service.RecordManager;
 import com.researchspace.service.RecordSharingManager;
 import com.researchspace.service.UserFolderCreator;
+import com.researchspace.service.UserManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -123,6 +124,7 @@ public class GroupManagerImpl implements GroupManager {
   private @Autowired UserGroupDao ugDao;
   private @Autowired RecordGroupSharingDao groupshareRecordDao;
   private @Autowired RecordSharingManager sharingManager;
+  private @Autowired UserManager userManager;
   private @Autowired UserDao userDao;
   private @Autowired FolderDao folderDao;
   private @Autowired GroupMembershipEventDao groupMembershipEventDao;
@@ -365,11 +367,26 @@ public class GroupManagerImpl implements GroupManager {
 
   @Override
   public Optional<ApiGroupInfo> getGroupInfoById(Long groupId) {
-    Set<Group> groups = this.listGroupsForUser();
-    return groups.stream()
-        .filter(g -> g.getId().equals(groupId))
-        .findFirst()
-        .map(ApiGroupInfo::new);
+    String uname = (String) SecurityUtils.getSubject().getPrincipal();
+    User currentUser = userDao.getUserByUsername(uname);
+    Group currentGroup = groupDao.get(groupId);
+    Optional<ApiGroupInfo> candidateResult = Optional.of(new ApiGroupInfo(currentGroup));
+
+    if (currentUser.hasSysadminRole() || currentUser.isPiOrLabAdminOfGroup(currentGroup)) {
+      return candidateResult;
+    } else {
+      Set<Group> userGroups = currentUser.getGroups();
+      if (userGroups.contains(currentGroup)) {
+        return candidateResult;
+      } else {
+        userManager.populateConnectedGroupList(currentUser);
+        if (currentUser.isConnectedToGroup(currentGroup)) {
+          return candidateResult;
+        } else {
+          return Optional.empty();
+        }
+      }
+    }
   }
 
   @Override
@@ -921,6 +938,27 @@ public class GroupManagerImpl implements GroupManager {
     String uname = (String) SecurityUtils.getSubject().getPrincipal();
     return userDao.getUserByUsername(uname).getGroups();
   }
+
+  //  @Override
+  //  public Set<Group> listGroupsForUser() {
+  //    String uname = (String) SecurityUtils.getSubject().getPrincipal();
+  //    User currentUser = userDao.getUserByUsername(uname);
+  //    Set<Group> result;
+  //    if (currentUser.hasSysadminRole()) {
+  //      return new HashSet<>(groupDao.getAll());
+  //    } else {
+  //      result = new HashSet<>();
+  //      userManager.populateConnectedGroupList(currentUser);
+  //      for (Group currentGroup : groupDao.getAll()) {
+  //        if (currentUser.isPiOrLabAdminOfGroup(currentGroup)
+  //            || currentUser.isConnectedToGroup(currentGroup)) {
+  //          result.add(currentGroup);
+  //        }
+  //      }
+  //      result.addAll(currentUser.getGroups());
+  //    }
+  //    return result;
+  //  }
 
   @Override
   public List<Group> listGroupsForOwner(User owner) {
