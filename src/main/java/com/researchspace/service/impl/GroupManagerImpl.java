@@ -379,7 +379,7 @@ public class GroupManagerImpl implements GroupManager {
       if (userGroups.contains(currentGroup)) {
         return candidateResult;
       } else {
-        userManager.populateConnectedGroupList(currentUser);
+        userManager.populateConnectedGroupSet(currentUser);
         if (currentUser.isConnectedToGroup(currentGroup)) {
           return candidateResult;
         } else {
