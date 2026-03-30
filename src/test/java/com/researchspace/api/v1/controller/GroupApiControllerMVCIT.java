@@ -10,7 +10,6 @@ import com.researchspace.model.User;
 import com.researchspace.service.GroupManager;
 import com.researchspace.testutils.TestGroup;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
@@ -120,7 +119,6 @@ GroupApiControllerMVCIT extends API_MVC_TestBase {
   }
 
   @Test
-  @Ignore
   public void testGetUserGroupById_NonExistentId_Returns404() throws Exception {
     TestGroup group = createTestGroup(2);
     String apiKey = createNewApiKeyForUser(group.getPi());

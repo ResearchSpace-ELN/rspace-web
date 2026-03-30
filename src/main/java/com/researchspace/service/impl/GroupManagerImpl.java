@@ -98,6 +98,7 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -258,7 +259,7 @@ public class GroupManagerImpl implements GroupManager {
     for (RecordGroupSharing recordSharing : sharedinGrp) {
       ShareConfigElement configEl =
           new ShareConfigElement(grpId, recordSharing.getPermType().toString());
-      ShareConfigElement[] config = new ShareConfigElement[] {configEl};
+      ShareConfigElement[] config = new ShareConfigElement[]{configEl};
       sharingManager.unshareRecord(userToRemove, recordSharing.getShared().getId(), config);
     }
 
@@ -367,9 +368,14 @@ public class GroupManagerImpl implements GroupManager {
 
   @Override
   public Optional<ApiGroupInfo> getGroupInfoById(Long groupId) {
+    Group currentGroup;
+    try {
+      currentGroup = groupDao.get(groupId);
+    } catch (ObjectRetrievalFailureException orex) {
+      return Optional.empty();
+    }
     String uname = (String) SecurityUtils.getSubject().getPrincipal();
     User currentUser = userDao.getUserByUsername(uname);
-    Group currentGroup = groupDao.get(groupId);
     Optional<ApiGroupInfo> candidateResult = Optional.of(new ApiGroupInfo(currentGroup));
 
     if (currentUser.hasSysadminRole() || currentUser.isPiOrLabAdminOfGroup(currentGroup)) {
@@ -399,7 +405,8 @@ public class GroupManagerImpl implements GroupManager {
   }
 
   @Override
-  public List<ApiGroupInfo> getGroupInfoListByQuery(User user, PaginationCriteria<Group> pgCrit) {
+  public List<ApiGroupInfo> getGroupInfoListByQuery(User
+      user, PaginationCriteria<Group> pgCrit) {
     ISearchResults<Group> groupSearchResult = this.list(user, pgCrit);
     return groupSearchResult.getResults().stream()
         .map(ApiGroupInfo::new)
@@ -463,7 +470,8 @@ public class GroupManagerImpl implements GroupManager {
     }
     // add shared snippets folder IF it has not already been created
     if (grp.getSharedSnippetGroupFolderId() == null) {
-      Folder grpSharedSnippetFolder = recordFactory.createCommunalGroupSnippetFolder(grp, creator);
+      Folder grpSharedSnippetFolder = recordFactory.createCommunalGroupSnippetFolder(grp,
+          creator);
       folderDao.save(grpSharedSnippetFolder);
       grp.setSharedSnippetGroupFolderId(grpSharedSnippetFolder.getId());
       groupDao.save(grp);
@@ -544,7 +552,7 @@ public class GroupManagerImpl implements GroupManager {
     Folder snippetFolder = recordManager.getGalleryMediaFolderForUser(Folder.SNIPPETS_FOLDER, u);
     Folder snippetSharedFolder;
     if (snippetFolder.getSystemSubFolderByName(
-            SHARED_SNIPPETS_FOLDER_PREFIX + Folder.SHARED_FOLDER_NAME)
+        SHARED_SNIPPETS_FOLDER_PREFIX + Folder.SHARED_FOLDER_NAME)
         == null) {
       snippetSharedFolder =
           recordFactory.createSystemCreatedFolder(
@@ -556,7 +564,8 @@ public class GroupManagerImpl implements GroupManager {
     }
     Folder projectGroupsSnippets =
         recordFactory.createSystemCreatedFolder(
-            UserFolderCreator.SHARED_SNIPPETS_FOLDER_PREFIX + Folder.PROJECT_GROUPS_FOLDER_NAME, u);
+            UserFolderCreator.SHARED_SNIPPETS_FOLDER_PREFIX + Folder.PROJECT_GROUPS_FOLDER_NAME,
+            u);
     projectGroupsSnippets.getSharingACL().addACLElement(element);
     contentUtils.addChild(snippetSharedFolder, projectGroupsSnippets, u);
 
@@ -566,7 +575,8 @@ public class GroupManagerImpl implements GroupManager {
   /* after adding user to group */
   private void addMemberFoldersToGroupAdminsFolders(Set<User> members, Group group) {
     if (group.isLabGroup()) {
-      addMemberFoldersToAdminsLabGroupsFolder(members, getGroupAdminsWhoCanSeeMemberFolders(group));
+      addMemberFoldersToAdminsLabGroupsFolder(members,
+          getGroupAdminsWhoCanSeeMemberFolders(group));
     }
   }
 
@@ -770,7 +780,8 @@ public class GroupManagerImpl implements GroupManager {
   private boolean isAssignedGroupOwner(User u, Group grp) {
     if (!StringUtils.isBlank(grp.getGroupOwners())) {
       String[] groupOwners = grp.getGroupOwners().split(",");
-      return Arrays.stream(groupOwners).anyMatch(groupOwner -> u.getUsername().equals(groupOwner));
+      return Arrays.stream(groupOwners)
+          .anyMatch(groupOwner -> u.getUsername().equals(groupOwner));
     }
     return false;
   }
@@ -921,7 +932,8 @@ public class GroupManagerImpl implements GroupManager {
   }
 
   private boolean isLabAdminDemotion(RoleInGroup role, UserGroup ug) {
-    return ug.getRoleInGroup().equals(RoleInGroup.RS_LAB_ADMIN) && RoleInGroup.DEFAULT.equals(role);
+    return ug.getRoleInGroup().equals(RoleInGroup.RS_LAB_ADMIN) && RoleInGroup.DEFAULT.equals(
+        role);
   }
 
   private boolean isPiDemotion(RoleInGroup role, UserGroup ug) {
@@ -1298,7 +1310,8 @@ public class GroupManagerImpl implements GroupManager {
   private void validateUserInGroup(User user, Group group) {
     if (!user.hasGroup(group)) {
       throw new IllegalArgumentException(
-          String.format("User %s is not in group %s", user.getUsername(), group.getDisplayName()));
+          String.format("User %s is not in group %s", user.getUsername(),
+              group.getDisplayName()));
     }
   }
 

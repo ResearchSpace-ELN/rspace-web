@@ -33,11 +33,13 @@ public interface GroupManager {
   /** Get a group by its id */
   Group getGroup(Long groupId);
 
-  /**
-   * Get a ApiGroupInfo by its ID. The method returns a GroupInfo if the active current user: * is a
-   * member of the group * is a Pi or a Lab Admin of the group * is connected to the group * is
-   * sysadmin (also if not part of the group)
-   */
+  /** Get a ApiGroupInfo by its ID.
+   * The method returns a GroupInfo if  the active current user:
+   * * is a member of the group
+   * * is a Pi or a Lab Admin of the group
+   * * is connected to the group
+   * * is sysadmin (also if not part of the group)
+   **/
   Optional<ApiGroupInfo> getGroupInfoById(Long groupId);
 
   /** Get a list of ApiGroupInfo where the user belongs */
