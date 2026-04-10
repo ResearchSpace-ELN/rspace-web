@@ -919,10 +919,11 @@ public class SubSampleApiManagerTest extends SpringTransactionalTest {
         .setParameter("t", new java.util.Date(originalSubSample.getCreatedMillis() - 500))
         .setParameter("id", originalSubSample.getId())
         .executeUpdate();
-    // Refresh to pick up HQL-backdated creationDate without detaching from session
-    SubSample ssEntity =
-        sessionFactory.getCurrentSession().get(SubSample.class, originalSubSample.getId());
-    sessionFactory.getCurrentSession().refresh(ssEntity);
+    // Flush and clear the L1 cache so split() reads the HQL-backdated creationDate from DB.
+    // Using clear() rather than evict() avoids "collection was evicted" errors that arise
+    // when refresh() detaches lazy collections still referenced by the Sample's SubSample list.
+    sessionFactory.getCurrentSession().flush();
+    sessionFactory.getCurrentSession().clear();
 
     final int requiredTotal = 8;
     List<ApiSubSample> copies =

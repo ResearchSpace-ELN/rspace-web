@@ -64,6 +64,7 @@ import com.researchspace.model.RecordGroupSharing;
 import com.researchspace.model.Role;
 import com.researchspace.model.RoleInGroup;
 import com.researchspace.model.User;
+import com.researchspace.model.comms.Communication;
 import com.researchspace.model.comms.CommunicationStatus;
 import com.researchspace.model.comms.CommunicationTarget;
 import com.researchspace.model.comms.MessageOrRequest;
@@ -2107,6 +2108,12 @@ public abstract class BaseManagerTestCaseBase extends AbstractJUnit4SpringContex
         .setParameter("t", past)
         .setParameterList("ids", ids)
         .executeUpdate();
+    // Evict stale L1-cached entities so subsequent queries see the updated timestamps.
+    ids.forEach(
+        id -> {
+          Object stale = sessionFactory.getCurrentSession().get(Communication.class, id);
+          if (stale != null) sessionFactory.getCurrentSession().evict(stale);
+        });
   }
 
   /**
