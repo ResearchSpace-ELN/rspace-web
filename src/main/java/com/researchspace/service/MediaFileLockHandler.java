@@ -1,5 +1,6 @@
 package com.researchspace.service;
 
+import java.time.Clock;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,18 +22,19 @@ import org.springframework.stereotype.Component;
 public class MediaFileLockHandler {
 
   private int lockDurationInMilis = 30 * 60 * 1000;
+  private Clock clock = Clock.systemUTC();
 
   private Map<String, WopiFileLock> locksMap = new HashMap<>();
 
   @Data
   @AllArgsConstructor
-  private static class WopiFileLock {
+  private class WopiFileLock {
     private String lockId;
     private String fileId;
     private Date lockTimer;
 
     private void resetLockTimer() {
-      lockTimer = new Date();
+      lockTimer = Date.from(clock.instant());
     }
   }
 
@@ -129,17 +131,21 @@ public class MediaFileLockHandler {
   }
 
   private void putNewLockToMap(String fileId, String lockId) {
-    WopiFileLock newLock = new WopiFileLock(lockId, fileId, new Date());
+    WopiFileLock newLock = new WopiFileLock(lockId, fileId, Date.from(clock.instant()));
     locksMap.put(fileId, newLock);
   }
 
   private boolean hasLockExpired(WopiFileLock wopiFileLock) {
-    return wopiFileLock.getLockTimer().getTime() + lockDurationInMilis <= (new Date()).getTime();
+    return wopiFileLock.getLockTimer().getTime() + lockDurationInMilis <= clock.millis();
   }
 
   /*
    * for testing
    */
+  public void setClock(Clock clock) {
+    this.clock = clock;
+  }
+
   public void setLockDurationInMilis(int lockDurationInMilis) {
     this.lockDurationInMilis = lockDurationInMilis;
   }
