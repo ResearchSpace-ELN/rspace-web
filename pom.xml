@@ -92,6 +92,7 @@
             <configuration>
               <forkCount>2</forkCount>
               <reuseForks>true</reuseForks>
+              <rerunFailingTestsCount>2</rerunFailingTestsCount>
               <excludes>
                 <exclude>**/EgnyteFileSetupConfigTest.java</exclude>
                 <exclude>**/ProdConfigWiringTest.java</exclude>

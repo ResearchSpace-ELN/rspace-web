@@ -919,9 +919,10 @@ public class SubSampleApiManagerTest extends SpringTransactionalTest {
         .setParameter("t", new java.util.Date(originalSubSample.getCreatedMillis() - 500))
         .setParameter("id", originalSubSample.getId())
         .executeUpdate();
+    // Refresh to pick up HQL-backdated creationDate without detaching from session
     SubSample ssEntity =
         sessionFactory.getCurrentSession().get(SubSample.class, originalSubSample.getId());
-    sessionFactory.getCurrentSession().evict(ssEntity);
+    sessionFactory.getCurrentSession().refresh(ssEntity);
 
     final int requiredTotal = 8;
     List<ApiSubSample> copies =
