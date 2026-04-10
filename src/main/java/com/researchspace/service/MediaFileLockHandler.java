@@ -28,14 +28,10 @@ public class MediaFileLockHandler {
 
   @Data
   @AllArgsConstructor
-  private class WopiFileLock {
+  private static class WopiFileLock {
     private String lockId;
     private String fileId;
     private Date lockTimer;
-
-    private void resetLockTimer() {
-      lockTimer = Date.from(clock.instant());
-    }
   }
 
   /**
@@ -77,7 +73,7 @@ public class MediaFileLockHandler {
     if (!currentLockId.equals(lockId)) {
       return currentLockId;
     }
-    currentLock.resetLockTimer();
+    currentLock.setLockTimer(Date.from(clock.instant()));
     return null;
   }
 
@@ -113,7 +109,7 @@ public class MediaFileLockHandler {
     /* relocking. "This operation must be atomic" - so let's just change id
      * of current lock and update its timer */
     currentLock.setLockId(newLockId);
-    currentLock.resetLockTimer();
+    currentLock.setLockTimer(Date.from(clock.instant()));
 
     return null;
   }

@@ -46,7 +46,7 @@ public class WopiLocksHandlerTest {
   }
 
   @Test
-  public void testLockRefreshingAndExpiring() throws Exception {
+  public void testLockRefreshingAndExpiring() {
     // Use a mutable clock that we advance manually — no Thread.sleep needed
     AtomicLong epochMs = new AtomicLong(1_000_000L);
     Clock fakeClock =
@@ -58,7 +58,7 @@ public class WopiLocksHandlerTest {
 
           @Override
           public Clock withZone(java.time.ZoneId zone) {
-            return this;
+            throw new UnsupportedOperationException("test clock does not support zone changes");
           }
 
           @Override
