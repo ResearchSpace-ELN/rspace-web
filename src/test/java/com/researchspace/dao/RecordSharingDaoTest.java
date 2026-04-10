@@ -108,7 +108,7 @@ public class RecordSharingDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void listRecords() throws InterruptedException {
+  public void listRecords() {
     Group grp2 = TestFactory.createAnyGroup(user, new User[] {});
     grp2.setUniqueName("any2");
     grp2 = grpDao.save(grp2);
@@ -117,12 +117,14 @@ public class RecordSharingDaoTest extends BaseDaoTestCase {
 
     RecordGroupSharing rgs = createAndShareRecord(grp2, "xyyyz");
     flush();
-    Thread.sleep(1001);
+    backdateRecordGroupSharings(List.of(rgs.getId()), 4000); // 4 s ago — oldest
+
     RecordGroupSharing rg2s = createAndShareRecord(grp2, "abcdyyyefgh");
     flush();
+    backdateRecordGroupSharings(List.of(rg2s.getId()), 2000); // 2 s ago — middle
 
-    Thread.sleep(1001);
     RecordGroupSharing rg3s = createAndShareRecord(grp2, "mmyyymmm");
+    // rg3s has creationDate = now — newest; no backdating needed
 
     PaginationCriteria<RecordGroupSharing> pg =
         PaginationCriteria.createDefaultForClass(RecordGroupSharing.class);
