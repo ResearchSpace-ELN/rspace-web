@@ -67,7 +67,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testGetMessagesByFilter() throws InterruptedException {
+  public void testGetMessagesByFilter() {
     User sender = createAndSaveUserIfNotExists(getRandomAlphabeticString("source"));
     User target = createAndSaveUserIfNotExists(getRandomAlphabeticString("recipient"));
     /// send some basic message
@@ -102,15 +102,15 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testGetAllSentAndReceivedMessages() throws InterruptedException {
+  public void testGetAllSentAndReceivedMessages() {
     User sender = createAndSaveUserIfNotExists(getRandomAlphabeticString("source"));
     User target = createAndSaveUserIfNotExists(getRandomAlphabeticString("recipient"));
     User target2 = createAndSaveUserIfNotExists(getRandomAlphabeticString("recipient2"));
     PaginationCriteria<CommunicationTarget> pgcrit = getDefaultPgCrit();
 
     // total 12 messages from sender
-    saveNMessages(7, sender, MessageType.SIMPLE_MESSAGE, target, target2);
-    Thread.sleep(1000);
+    List<Long> batch1Ids = saveNMessages(7, sender, MessageType.SIMPLE_MESSAGE, target, target2);
+    backdateCommunications(batch1Ids, 2000); // 2 s in the past — no sleep needed
     // total 5 messages to sender
     saveNMessages(5, target, MessageType.SIMPLE_MESSAGE, sender, target2);
 
@@ -140,13 +140,13 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testGetAllSentAndReceivedMessagesWithDefaultPagination() throws InterruptedException {
+  public void testGetAllSentAndReceivedMessagesWithDefaultPagination() {
     User sender = createAndSaveUserIfNotExists(getRandomAlphabeticString("source"));
     User target = createAndSaveUserIfNotExists(getRandomAlphabeticString("recipient"));
 
     // Create IPagination.DEFAULT_RESULTS_PERPAGE + 7 messages
-    saveNMessages(7, sender, MessageType.SIMPLE_MESSAGE, target);
-    Thread.sleep(1000);
+    List<Long> batch1Ids = saveNMessages(7, sender, MessageType.SIMPLE_MESSAGE, target);
+    backdateCommunications(batch1Ids, 2000);
     saveNMessages(IPagination.DEFAULT_RESULTS_PERPAGE, target, MessageType.SIMPLE_MESSAGE, sender);
 
     PaginationCriteria<CommunicationTarget> pgcrit = getDefaultPgCrit();
@@ -200,13 +200,15 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testMarkAllNotificationsAsRead() throws InterruptedException {
+  public void testMarkAllNotificationsAsRead() {
 
     originator = createAndSaveUserIfNotExists("source");
     User target = createAndSaveUserIfNotExists("recipient");
-    saveNNotifications(IPagination.DEFAULT_RESULTS_PERPAGE, originator, target);
+    List<Long> batchIds =
+        saveNNotifications(IPagination.DEFAULT_RESULTS_PERPAGE, originator, target);
+    backdateCommunications(batchIds, 2000); // 2 s in the past
 
-    // Now listing new notifications. We are using the default pagination
+    // re-query to get the backdated timestamps
     PaginationCriteria<CommunicationTarget> pgCrit =
         PaginationCriteria.createDefaultForClass(CommunicationTarget.class);
     pgCrit.setOrderBy("communication.creationTime");
@@ -216,9 +218,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
         notifications.get(IPagination.DEFAULT_RESULTS_PERPAGE - 1).getCreationTime();
     Date secondAfterLast = DateUtils.addSeconds(lastNotificationDate, 1);
 
-    // Ensure next notification is new time using sleep(2000)
-    Thread.sleep(2000);
-    saveNNotifications(1, originator, target);
+    saveNNotifications(1, originator, target); // saved "now", which is > secondAfterLast
 
     // Now deleting earlier notifications
     dao.markAllNotificationsAsRead(target.getUsername(), secondAfterLast);
@@ -228,7 +228,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testMarkNotificationsAsReadAndKeepMessages() throws InterruptedException {
+  public void testMarkNotificationsAsReadAndKeepMessages() {
 
     User sender = createAndSaveUserIfNotExists("source");
     User target = createAndSaveUserIfNotExists("recipient");
@@ -327,7 +327,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testSortOrderForSearches() throws InterruptedException {
+  public void testSortOrderForSearches() {
     // Test for search test
     PaginationCriteria<CommunicationTarget> pc = getDefaultPgCrit();
     pc.setOrderBy("originator.username");
@@ -396,7 +396,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testNewNotifications() throws InterruptedException {
+  public void testNewNotifications() {
     originator = createAndSaveUserIfNotExists("source");
     User target = createAndSaveUserIfNotExists("recipient");
     saveNNotifications(IPagination.DEFAULT_RESULTS_PERPAGE + 2, originator, target);
@@ -418,7 +418,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testFindExistingNotificationsFor() throws InterruptedException {
+  public void testFindExistingNotificationsFor() {
     originator = createAndSaveUserIfNotExists("source");
     User target = createAndSaveUserIfNotExists("recipient");
     assertFalse(
@@ -480,7 +480,7 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
   }
 
   @Test
-  public void testDeleteOldNotifications() throws ParseException, InterruptedException {
+  public void testDeleteOldNotifications() throws ParseException {
     originator = createAndSaveUserIfNotExists("source");
     User target1 = createAndSaveUserIfNotExists("recipient");
     User target2 = createAndSaveUserIfNotExists("recipient2");
@@ -556,10 +556,10 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
     return rc;
   }
 
-  private void saveNMessages(int n, User from, MessageType type, User... to) {
+  private List<Long> saveNMessages(int n, User from, MessageType type, User... to) {
+    List<Long> ids = new ArrayList<>();
     for (int i = 0; i < n; i++) {
-      MessageOrRequest mor;
-      mor = createRequestOfType(from, type);
+      MessageOrRequest mor = createRequestOfType(from, type);
       Set<CommunicationTarget> cts = new HashSet<>();
       for (User target : to) {
         CommunicationTarget ct = new CommunicationTarget();
@@ -570,12 +570,14 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
       mor.setRecipients(cts);
       mor.setMessage(getRandomAlphabeticString("any"));
       dao.save(mor);
+      ids.add(mor.getId());
     }
+    return ids;
   }
 
-  private void saveNNotifications(int n, User from, User... to) throws InterruptedException {
+  private List<Long> saveNNotifications(int n, User from, User... to) {
+    List<Long> ids = new ArrayList<>();
     for (int i = 0; i < n; i++) {
-      Thread.sleep(1); // ensure all are distinct by equals()
       Notification not = createAnyNotification(from);
       Set<CommunicationTarget> cts = new HashSet<CommunicationTarget>();
       for (User t : to) {
@@ -586,7 +588,9 @@ public class CommunicationDaoTest extends BaseDaoTestCase {
       }
       not.setRecipients(cts);
       dao.save(not);
+      ids.add(not.getId());
     }
+    return ids;
   }
 
   private long getCommTargetCount() {
