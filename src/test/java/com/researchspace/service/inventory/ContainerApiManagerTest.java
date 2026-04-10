@@ -1385,7 +1385,7 @@ public class ContainerApiManagerTest extends SpringTransactionalTest {
     assertNotNull(topLevelMoveDateMillis);
 
     // move inside list container
-    Thread.sleep(100);
+    Thread.sleep(1);
     updateRequest = new ApiContainer();
     updateRequest.setId(subContainer.getId());
     updateRequest.setParentContainer(listContainer);
@@ -1396,7 +1396,7 @@ public class ContainerApiManagerTest extends SpringTransactionalTest {
     assertTrue(listMoveDateMillis > topLevelMoveDateMillis);
 
     // move back to workbench
-    Thread.sleep(100);
+    Thread.sleep(1);
     updateRequest = new ApiContainer();
     updateRequest.setId(subContainer.getId());
     updateRequest.setParentContainer(workbench);
@@ -1408,7 +1408,7 @@ public class ContainerApiManagerTest extends SpringTransactionalTest {
     assertTrue(workbenchMoveDateMillis > listMoveDateMillis);
 
     // move back to list container
-    Thread.sleep(100);
+    Thread.sleep(1);
     updateRequest = new ApiContainer();
     updateRequest.setId(subContainer.getId());
     updateRequest.setParentContainer(listContainer);

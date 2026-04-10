@@ -903,7 +903,7 @@ public class SubSampleApiManagerTest extends SpringTransactionalTest {
   }
 
   @Test
-  public void splitSubsample() throws InterruptedException {
+  public void splitSubsample() {
     User testUser = createInitAndLoginAnyUser();
     ApiSampleWithFullSubSamples createdSample = createBasicSampleForUser(testUser);
     assertEquals("5 g", createdSample.getQuantity().toQuantityInfo().toPlainString());
@@ -911,8 +911,17 @@ public class SubSampleApiManagerTest extends SpringTransactionalTest {
     ApiSubSampleInfo originalSubSample = createdSample.getSubSamples().get(0);
     assertEquals("5 g", originalSubSample.getQuantity().toQuantityInfo().toPlainString());
 
-    // wait a moment, to verify modification date on a split subsample
-    Thread.sleep(100);
+    // Backdate creationDate 500ms into the past so that the split's modificationDate
+    // (set to Instant.now()) will always differ from creationDate.
+    sessionFactory
+        .getCurrentSession()
+        .createQuery("update SubSample s set s.editInfo.creationDate = :t where s.id = :id")
+        .setParameter("t", new java.util.Date(originalSubSample.getCreatedMillis() - 500))
+        .setParameter("id", originalSubSample.getId())
+        .executeUpdate();
+    SubSample ssEntity =
+        sessionFactory.getCurrentSession().get(SubSample.class, originalSubSample.getId());
+    sessionFactory.getCurrentSession().evict(ssEntity);
 
     final int requiredTotal = 8;
     List<ApiSubSample> copies =
