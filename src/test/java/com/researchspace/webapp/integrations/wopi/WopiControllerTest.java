@@ -10,6 +10,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.axiope.search.IFileIndexer;
 import com.researchspace.model.EcatDocumentFile;
 import com.researchspace.model.EcatMediaFile;
 import com.researchspace.model.Group;
@@ -19,6 +20,7 @@ import com.researchspace.model.core.GlobalIdentifier;
 import com.researchspace.model.field.Field;
 import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.service.MediaFileLockHandler;
+import com.researchspace.service.impl.MediaManagerImpl;
 import com.researchspace.testutils.RSpaceTestUtils;
 import com.researchspace.testutils.SpringTransactionalTest;
 import com.researchspace.webapp.integrations.wopi.WopiAccessTokenHandler.WopiAccessToken;
@@ -33,11 +35,13 @@ import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.AuthorizationException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class WopiControllerTest extends SpringTransactionalTest {
 
@@ -55,6 +59,8 @@ public class WopiControllerTest extends SpringTransactionalTest {
   private MockHttpServletRequest req;
   private MockHttpServletResponse resp;
 
+  private IFileIndexer originalFileIndexer;
+
   @Before
   public void setUp() throws Exception {
     super.setUp();
@@ -68,6 +74,22 @@ public class WopiControllerTest extends SpringTransactionalTest {
     // spying on lock handler, so we can get put additional assertion checks
     testLockHandler = spy(MediaFileLockHandler.class);
     wopiController.setLockHandler(testLockHandler);
+
+    // Replace the real file indexer with a no-op to avoid slow Tika parsing on every upload.
+    // WOPI tests do not exercise full-text search, so indexing is irrelevant here.
+    MediaManagerImpl mediaManagerImpl = getTargetObject(mediaMgr, MediaManagerImpl.class);
+    originalFileIndexer =
+        (IFileIndexer) ReflectionTestUtils.getField(mediaManagerImpl, "fileIndexer");
+    ReflectionTestUtils.setField(mediaManagerImpl, "fileIndexer", IFileIndexer.NOOP_INDEXER);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    super.tearDown();
+    if (originalFileIndexer != null) {
+      MediaManagerImpl mediaManagerImpl = getTargetObject(mediaMgr, MediaManagerImpl.class);
+      ReflectionTestUtils.setField(mediaManagerImpl, "fileIndexer", originalFileIndexer);
+    }
   }
 
   @Test
