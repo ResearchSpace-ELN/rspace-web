@@ -90,6 +90,8 @@
           <execution> <!-- default execution skips 'prod'/'prod-test' profile tests -->
             <id>default-test</id>
             <configuration>
+              <forkCount>2</forkCount>
+              <reuseForks>true</reuseForks>
               <excludes>
                 <exclude>**/EgnyteFileSetupConfigTest.java</exclude>
                 <exclude>**/ProdConfigWiringTest.java</exclude>
