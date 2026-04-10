@@ -168,6 +168,7 @@ import lombok.Value;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.mgt.SecurityManager;
@@ -2087,5 +2088,42 @@ public abstract class BaseManagerTestCaseBase extends AbstractJUnit4SpringContex
   protected FileInputStream getTestResourceFileStream(String fileName)
       throws FileNotFoundException {
     return new FileInputStream(new File("src/test/resources/TestResources/" + fileName));
+  }
+
+  /**
+   * Sets the creationTime of Communication entities (MessageOrRequest, Notification, etc.) to
+   * {@code millisAgo} milliseconds before now. Use this instead of Thread.sleep() when you need
+   * batch-1 entities to appear "older" than batch-2 entities in sort-by-time tests.
+   *
+   * @param ids IDs of the Communication rows to backdate
+   * @param millisAgo how many milliseconds in the past to set (e.g. 2000 = 2 seconds ago)
+   */
+  protected void backdateCommunications(List<Long> ids, int millisAgo) {
+    if (ids.isEmpty()) return;
+    java.util.Date past = DateUtils.addMilliseconds(new java.util.Date(), -millisAgo);
+    sessionFactory
+        .getCurrentSession()
+        .createQuery("update Communication c set c.creationTime = :t where c.id in (:ids)")
+        .setParameter("t", past)
+        .setParameterList("ids", ids)
+        .executeUpdate();
+  }
+
+  /**
+   * Sets the creationDate of RecordGroupSharing entities to {@code millisAgo} milliseconds before
+   * now.
+   *
+   * @param ids IDs of the RecordGroupSharing rows to backdate
+   * @param millisAgo how many milliseconds in the past to set
+   */
+  protected void backdateRecordGroupSharings(List<Long> ids, int millisAgo) {
+    if (ids.isEmpty()) return;
+    java.util.Date past = DateUtils.addMilliseconds(new java.util.Date(), -millisAgo);
+    sessionFactory
+        .getCurrentSession()
+        .createQuery("update RecordGroupSharing r set r.creationDate = :t where r.id in (:ids)")
+        .setParameter("t", past)
+        .setParameterList("ids", ids)
+        .executeUpdate();
   }
 }
