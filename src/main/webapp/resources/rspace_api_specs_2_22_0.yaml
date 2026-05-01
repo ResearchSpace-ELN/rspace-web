@@ -2969,6 +2969,15 @@ paths:
           required: true
           type: integer
           format: int64
+        - name: updateFieldHtml
+          in: query
+          required: false
+          type: boolean
+          default: false
+          description: >
+            When true, updates the embedded stoichiometry reference in the owning document field HTML
+            to reflect the new revision. Defaults to false. Set to true when calling the API directly;
+            leave false when calling from the UI (which handles its own field update).
         - in: body
           name: body
           required: true
@@ -3005,6 +3014,15 @@ paths:
           required: true
           type: integer
           format: int64
+        - name: updateFieldHtml
+          in: query
+          required: false
+          type: boolean
+          default: false
+          description: >
+            When true, removes the stoichiometry reference from the owning document field HTML
+            before deletion. Defaults to false. Set to true when calling the API directly;
+            leave false when calling from the UI (which handles its own field update).
       responses:
         '200':
           description: Deletion result
@@ -3492,9 +3510,17 @@ definitions:
           type: integer
           format: int64
         example: [1234, 1235]
+      updateFieldHtml:
+        type: boolean
+        default: false
+        description: >
+          When true, updates the embedded stoichiometry reference in the owning document field HTML
+          to reflect the new revision. Defaults to false. Set to true when calling the API directly;
+          leave false when calling from the UI (which handles its own field update).
     example:
       stoichiometryId: 42
       linkIds: [1234, 1235]
+      updateFieldHtml: false
   StockDeductionResult:
     description: Result of a batch stock deduction operation
     properties:

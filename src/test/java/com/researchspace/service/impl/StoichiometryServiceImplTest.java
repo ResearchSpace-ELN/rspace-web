@@ -255,7 +255,7 @@ public class StoichiometryServiceImplTest {
     when(stoichiometryManager.get(5L)).thenReturn(existing);
     when(permissionUtils.isPermitted(any(), eq(PermissionType.WRITE), eq(user))).thenReturn(false);
 
-    assertThrows(AuthorizationException.class, () -> service.delete(5L, user));
+    assertThrows(AuthorizationException.class, () -> service.delete(5L, user, false));
   }
 
   @Test
@@ -263,12 +263,11 @@ public class StoichiometryServiceImplTest {
     Stoichiometry existing = makeStoichiometryWithReaction(5L);
     when(stoichiometryManager.get(5L)).thenReturn(existing);
     when(permissionUtils.isPermitted(any(), eq(PermissionType.WRITE), eq(user))).thenReturn(true);
-    when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(Collections.emptyList());
 
     doThrow(new RuntimeException("problem removing")).when(stoichiometryManager).remove(5L);
 
     StoichiometryException ex =
-        assertThrows(StoichiometryException.class, () -> service.delete(5L, user));
+        assertThrows(StoichiometryException.class, () -> service.delete(5L, user, false));
     assertTrue(ex.getMessage().contains("Error deleting stoichiometry with id 5"));
   }
 
@@ -277,10 +276,22 @@ public class StoichiometryServiceImplTest {
     Stoichiometry existing = makeStoichiometryWithReaction(5L);
     when(stoichiometryManager.get(5L)).thenReturn(existing);
     when(permissionUtils.isPermitted(any(), eq(PermissionType.WRITE), eq(user))).thenReturn(true);
+
+    assertDoesNotThrow(() -> service.delete(5L, user, false));
+    verify(stoichiometryManager).remove(5L);
+    verify(fieldManager, never()).getFieldsByRecordId(anyLong(), any());
+  }
+
+  @Test
+  void delete_whenUpdateFieldHtmlTrue_syncsThenRemoves() throws Exception {
+    Stoichiometry existing = makeStoichiometryWithReaction(5L);
+    when(stoichiometryManager.get(5L)).thenReturn(existing);
+    when(permissionUtils.isPermitted(any(), eq(PermissionType.WRITE), eq(user))).thenReturn(true);
     when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(Collections.emptyList());
 
-    assertDoesNotThrow(() -> service.delete(5L, user));
+    assertDoesNotThrow(() -> service.delete(5L, user, true));
     verify(stoichiometryManager).remove(5L);
+    verify(fieldManager).getFieldsByRecordId(anyLong(), any());
   }
 
   @Test

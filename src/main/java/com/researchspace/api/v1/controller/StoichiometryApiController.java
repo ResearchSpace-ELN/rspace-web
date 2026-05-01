@@ -63,18 +63,23 @@ public class StoichiometryApiController extends BaseApiController implements Sto
 
   @Override
   public StoichiometryDTO updateStoichiometry(
-      long stoichiometryId, StoichiometryUpdateDTO stoichiometryUpdateDTO, User user) {
+      long stoichiometryId,
+      StoichiometryUpdateDTO stoichiometryUpdateDTO,
+      boolean updateFieldHtml,
+      User user) {
     Stoichiometry stoichiometry =
         stoichiometryService.update(stoichiometryId, stoichiometryUpdateDTO, user);
     // Get latest revision number after updated
     Long newRevision = getLatestRevisionNumber(stoichiometry.getId());
-    stoichiometryService.syncFieldHtml(stoichiometryId, newRevision, user);
+    if (updateFieldHtml) {
+      stoichiometryService.syncFieldHtml(stoichiometryId, newRevision, user);
+    }
     return StoichiometryMapper.toDTO(stoichiometry, newRevision);
   }
 
   @Override
-  public Boolean deleteStoichiometry(long stoichiometryId, User user) {
-    stoichiometryService.delete(stoichiometryId, user);
+  public Boolean deleteStoichiometry(long stoichiometryId, boolean updateFieldHtml, User user) {
+    stoichiometryService.delete(stoichiometryId, user, updateFieldHtml);
     return Boolean.TRUE;
   }
 
@@ -85,7 +90,9 @@ public class StoichiometryApiController extends BaseApiController implements Sto
     StockDeductionResult result =
         stoichiometryInventoryLinkManager.deductStock(stoichiometryId, linkIds, user);
     result.setRevisionNumber(getLatestRevisionNumber(stoichiometryId));
-    stoichiometryService.syncFieldHtml(stoichiometryId, result.getRevisionNumber(), user);
+    if (request.isUpdateFieldHtml()) {
+      stoichiometryService.syncFieldHtml(stoichiometryId, result.getRevisionNumber(), user);
+    }
     return result;
   }
 

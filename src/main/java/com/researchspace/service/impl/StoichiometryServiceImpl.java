@@ -148,14 +148,16 @@ public class StoichiometryServiceImpl implements StoichiometryService {
   }
 
   @Override
-  public void delete(long stoichiometryId, User user) {
+  public void delete(long stoichiometryId, User user, boolean updateFieldHtml) {
     Stoichiometry stoichiometry = stoichiometryManager.get(stoichiometryId);
     Record owningRecord = stoichiometry.getRecord();
     if (!hasPermissions(owningRecord, user, PermissionType.WRITE)) {
       throw new AuthorizationException(
           "User does not have write permissions on document containing stoichiometry");
     }
-    syncFieldHtml(stoichiometryId, null, user);
+    if (updateFieldHtml) {
+      syncFieldHtml(stoichiometryId, null, user);
+    }
     try {
       stoichiometryManager.remove(stoichiometryId);
     } catch (Exception e) {

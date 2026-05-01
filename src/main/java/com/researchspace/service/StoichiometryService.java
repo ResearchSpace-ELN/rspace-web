@@ -18,7 +18,7 @@ public interface StoichiometryService {
   Stoichiometry update(
       long stoichiometryId, StoichiometryUpdateDTO stoichiometryUpdateDTO, User user);
 
-  void delete(long stoichiometryId, User user);
+  void delete(long stoichiometryId, User user, boolean updateFieldHtml);
 
   StoichiometryMolecule getMoleculeInfo(String smiles);
 

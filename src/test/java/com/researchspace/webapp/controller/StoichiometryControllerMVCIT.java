@@ -790,7 +790,7 @@ public class StoichiometryControllerMVCIT extends API_MVC_TestBase {
                     .content(
                         new ObjectMapper()
                             .writeValueAsString(
-                                new StockDeductionRequest(stoichiometryId, List.of(linkId))))
+                                new StockDeductionRequest(stoichiometryId, List.of(linkId), false)))
                     .principal(principal)
                     .header("apiKey", apiKey))
             .andExpect(status().isOk())

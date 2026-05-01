@@ -31,11 +31,15 @@ public interface StoichiometryApi {
   StoichiometryDTO updateStoichiometry(
       @RequestParam("stoichiometryId") long stoichiometryId,
       @RequestBody StoichiometryUpdateDTO stoichiometryUpdateDTO,
+      @RequestParam(value = "updateFieldHtml", required = false, defaultValue = "false")
+          boolean updateFieldHtml,
       @RequestAttribute(name = "user") User user);
 
   @DeleteMapping
   Boolean deleteStoichiometry(
       @RequestParam("stoichiometryId") long stoichiometryId,
+      @RequestParam(value = "updateFieldHtml", required = false, defaultValue = "false")
+          boolean updateFieldHtml,
       @RequestAttribute(name = "user") User user);
 
   @PostMapping("/link/deductStock")
