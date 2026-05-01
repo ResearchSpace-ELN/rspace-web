@@ -24,4 +24,11 @@ public interface StoichiometryService {
 
   Stoichiometry createNewFromDataWithoutInventoryLinks(
       StoichiometryDTO stoichiometryDTO, RSChemElement chemElement, User user);
+
+  /**
+   * Updates the embedded HTML reference (data-stoichiometry-table attribute) in the owning document
+   * field to reflect a change. Pass {@code newRevision = null} to remove the reference (e.g. after
+   * deletion).
+   */
+  void syncFieldHtml(long stoichiometryId, Long newRevision, User user);
 }

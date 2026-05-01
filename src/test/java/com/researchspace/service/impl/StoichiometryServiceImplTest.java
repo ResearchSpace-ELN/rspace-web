@@ -9,12 +9,15 @@ import com.researchspace.model.User;
 import com.researchspace.model.dtos.chemistry.ElementalAnalysisDTO;
 import com.researchspace.model.dtos.chemistry.MoleculeInfoDTO;
 import com.researchspace.model.dtos.chemistry.StoichiometryUpdateDTO;
+import com.researchspace.model.field.Field;
 import com.researchspace.model.permissions.IPermissionUtils;
 import com.researchspace.model.permissions.PermissionType;
 import com.researchspace.model.record.Record;
+import com.researchspace.model.record.StructuredDocument;
 import com.researchspace.model.stoichiometry.Stoichiometry;
 import com.researchspace.model.stoichiometry.StoichiometryMolecule;
 import com.researchspace.service.ChemistryService;
+import com.researchspace.service.FieldManager;
 import com.researchspace.service.RSChemElementManager;
 import com.researchspace.service.RecordManager;
 import com.researchspace.service.StoichiometryManager;
@@ -22,6 +25,8 @@ import com.researchspace.service.chemistry.ChemistryProvider;
 import com.researchspace.service.chemistry.StoichiometryException;
 import com.researchspace.testutils.TestFactory;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import javax.ws.rs.NotFoundException;
 import org.apache.shiro.authz.AuthorizationException;
@@ -42,6 +47,7 @@ public class StoichiometryServiceImplTest {
   @Mock private ChemistryProvider chemistryProvider;
   @Mock private RSChemElementManager rsChemElementManager;
   @Mock private RecordManager recordManager;
+  @Mock private FieldManager fieldManager;
 
   @InjectMocks private StoichiometryServiceImpl service;
 
@@ -257,6 +263,7 @@ public class StoichiometryServiceImplTest {
     Stoichiometry existing = makeStoichiometryWithReaction(5L);
     when(stoichiometryManager.get(5L)).thenReturn(existing);
     when(permissionUtils.isPermitted(any(), eq(PermissionType.WRITE), eq(user))).thenReturn(true);
+    when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(Collections.emptyList());
 
     doThrow(new RuntimeException("problem removing")).when(stoichiometryManager).remove(5L);
 
@@ -270,6 +277,7 @@ public class StoichiometryServiceImplTest {
     Stoichiometry existing = makeStoichiometryWithReaction(5L);
     when(stoichiometryManager.get(5L)).thenReturn(existing);
     when(permissionUtils.isPermitted(any(), eq(PermissionType.WRITE), eq(user))).thenReturn(true);
+    when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(Collections.emptyList());
 
     assertDoesNotThrow(() -> service.delete(5L, user));
     verify(stoichiometryManager).remove(5L);
@@ -306,6 +314,75 @@ public class StoichiometryServiceImplTest {
     when(rsChemElementManager.getInfo("CCO")).thenReturn(Optional.empty());
 
     assertThrows(NotFoundException.class, () -> service.getMoleculeInfo("CCO"));
+  }
+
+  @Test
+  void syncFieldHtml_whenStoichiometryNotFound_doesNothing() {
+    when(stoichiometryManager.get(99L)).thenReturn(null);
+    assertDoesNotThrow(() -> service.syncFieldHtml(99L, 5L, user));
+    verify(fieldManager, never()).getFieldsByRecordId(anyLong(), any());
+  }
+
+  @Test
+  void syncFieldHtml_whenNoFields_doesNothing() throws Exception {
+    Stoichiometry stoich = makeStoichiometryWithReaction(1L);
+    stoich.setId(10L);
+    when(stoichiometryManager.get(10L)).thenReturn(stoich);
+    when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(Collections.emptyList());
+
+    assertDoesNotThrow(() -> service.syncFieldHtml(10L, 7L, user));
+    verify(fieldManager, never()).save(any(), any());
+  }
+
+  @Test
+  void syncFieldHtml_whenFieldContainsStoichiometry_updatesRevision() throws Exception {
+    Stoichiometry stoich = makeStoichiometryWithReaction(1L);
+    stoich.setId(10L);
+    when(stoichiometryManager.get(10L)).thenReturn(stoich);
+
+    StructuredDocument doc = TestFactory.createAnySD();
+    Field field = doc.getFields().get(0);
+    field.setFieldData("<p><img data-stoichiometry-table='{\"id\":10,\"revision\":3}' /></p>");
+    when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(List.of(field));
+    when(fieldManager.save(any(), any())).thenReturn(field);
+
+    service.syncFieldHtml(10L, 7L, user);
+
+    verify(fieldManager).save(argThat(f -> f.getFieldData().contains("\"revision\":7")), eq(user));
+  }
+
+  @Test
+  void syncFieldHtml_whenDeleteCase_removesAttribute() throws Exception {
+    Stoichiometry stoich = makeStoichiometryWithReaction(1L);
+    stoich.setId(10L);
+    when(stoichiometryManager.get(10L)).thenReturn(stoich);
+
+    StructuredDocument doc = TestFactory.createAnySD();
+    Field field = doc.getFields().get(0);
+    field.setFieldData("<p><img data-stoichiometry-table='{\"id\":10,\"revision\":3}' /></p>");
+    when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(List.of(field));
+    when(fieldManager.save(any(), any())).thenReturn(field);
+
+    service.syncFieldHtml(10L, null, user);
+
+    verify(fieldManager)
+        .save(argThat(f -> !f.getFieldData().contains("data-stoichiometry-table")), eq(user));
+  }
+
+  @Test
+  void syncFieldHtml_whenFieldDoesNotContainStoichiometry_doesNotSave() throws Exception {
+    Stoichiometry stoich = makeStoichiometryWithReaction(1L);
+    stoich.setId(10L);
+    when(stoichiometryManager.get(10L)).thenReturn(stoich);
+
+    StructuredDocument doc = TestFactory.createAnySD();
+    Field field = doc.getFields().get(0);
+    field.setFieldData("<p>No stoichiometry here</p>");
+    when(fieldManager.getFieldsByRecordId(anyLong(), any())).thenReturn(List.of(field));
+
+    service.syncFieldHtml(10L, 7L, user);
+
+    verify(fieldManager, never()).save(any(), any());
   }
 
   private Stoichiometry makeStoichiometryWithReaction(Long reactionId) throws Exception {

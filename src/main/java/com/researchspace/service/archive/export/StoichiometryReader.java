@@ -11,8 +11,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StoichiometryReader {
+
+  private static final Logger log = LoggerFactory.getLogger(StoichiometryReader.class);
 
   @SneakyThrows
   public List<StoichiometryDTO> extractStoichiometriesFromFieldContents(String htmlContent) {
@@ -40,6 +44,25 @@ public class StoichiometryReader {
       if (Objects.equals(extracted.getId(), target.getId())) {
         stoichiometryElement.attr(
             "data-stoichiometry-table", mapper.writeValueAsString(newStoichiometry));
+      }
+    }
+    return doc.body().html();
+  }
+
+  @SneakyThrows
+  public String removeFromFieldHtml(String htmlContent, Long stoichiometryId) {
+    Document doc = Jsoup.parse(htmlContent);
+    Elements stoichiometryElements = doc.getElementsByAttribute("data-stoichiometry-table");
+    for (Element stoichiometryElement : stoichiometryElements) {
+      String stoichiometryAttribute = stoichiometryElement.attr("data-stoichiometry-table");
+      try {
+        StoichiometryDTO extracted =
+            new ObjectMapper().readValue(stoichiometryAttribute, StoichiometryDTO.class);
+        if (Objects.equals(extracted.getId(), stoichiometryId)) {
+          stoichiometryElement.removeAttr("data-stoichiometry-table");
+        }
+      } catch (Exception e) {
+        log.warn("Could not parse data-stoichiometry-table attribute: {}", e.getMessage());
       }
     }
     return doc.body().html();
