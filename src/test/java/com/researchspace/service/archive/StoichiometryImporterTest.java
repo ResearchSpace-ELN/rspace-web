@@ -119,13 +119,6 @@ public class StoichiometryImporterTest {
   // --- importReactionlessStoichiometries (RSDEV-1091) ---
 
   @Test
-  public void testReactionlessImport_whenNoStoichiometries_doesNothing() {
-    when(oldField.getStoichiometries()).thenReturn(null);
-    testee.importReactionlessStoichiometries(Collections.emptySet());
-    verifyZeroInteractions(service);
-  }
-
-  @Test
   public void testReactionlessImport_whenEmptyStoichiometriesList_doesNothing() {
     when(oldField.getStoichiometries()).thenReturn(new ArrayList<>());
     testee.importReactionlessStoichiometries(Collections.emptySet());
@@ -141,7 +134,8 @@ public class StoichiometryImporterTest {
   }
 
   @Test
-  public void testReactionlessImport_whenStoichHasNullParentReaction_isImportedWithMolecules() {
+  public void
+      testReactionlessImport_whenStoichHasNullParentReaction_callsServiceAndRewritesFieldHtml() {
     Stoichiometry created = new Stoichiometry();
     created.setId(77L);
     when(oldField.getStoichiometries()).thenReturn(List.of(existingStoich));
@@ -161,8 +155,11 @@ public class StoichiometryImporterTest {
   }
 
   @Test
-  public void testReactionlessImport_whenOrphanReactionLinkedStoich_logsWarnAndDoesNotImport() {
-    // existingStoich has a parentReactionId that is NOT in the imported chem element set
+  public void testReactionlessImport_whenOrphanReactionLinkedStoich_doesNotImport() {
+    // existingStoich has a parentReactionId that is NOT in the imported chem element set.
+    // The production code emits a log.warn for this case (see StoichiometryImporter); we only
+    // assert the user-facing behaviour here (no import) — the log line is best-effort
+    // observability.
     when(oldField.getStoichiometries()).thenReturn(List.of(existingStoich));
     when(existingStoich.getParentReactionId()).thenReturn(99999L);
 

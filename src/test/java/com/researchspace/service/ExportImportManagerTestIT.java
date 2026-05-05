@@ -1296,7 +1296,8 @@ public class ExportImportManagerTestIT extends RealTransactionSpringTestBase {
   /**
    * RSDEV-1091: reaction-less Stoichiometry with molecules round-trips through XML archive.
    * Verifies that the molecules survive export/import (the bug this ticket fixes was that they were
-   * silently dropped) and that no phantom RSChemElement rows are created during import.
+   * silently dropped) and that one fresh RSChemElement row is created per molecule on import,
+   * matching the user-creation path (the {@code rs_chem_id} column is NOT NULL).
    */
   @Test
   public void testExportImportReactionlessStoichiometryWithMolecules() throws Exception {

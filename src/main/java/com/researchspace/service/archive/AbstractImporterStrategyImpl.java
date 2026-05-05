@@ -861,8 +861,7 @@ abstract class AbstractImporterStrategyImpl {
       Map<String, EcatMediaFile> oldIdToNewGalleryItem)
       throws IOException {
     List<ArchivalGalleryMetadata> chemMeta = archiveFld.getChemElementMeta();
-    StoichiometryImporter stoichiometryImporter = null;
-    stoichiometryImporter =
+    StoichiometryImporter stoichiometryImporter =
         new StoichiometryImporter(
             stoichiometryService, new StoichiometryReader(), archiveFld, fld, fieldManager, user);
     if (chemMeta != null && !chemMeta.isEmpty()) {

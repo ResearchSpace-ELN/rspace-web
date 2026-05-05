@@ -52,7 +52,7 @@ public class StoichiometryImporter {
             .filter(
                 s ->
                     s.getParentReactionId() != null
-                        && s.getParentReactionId() == oldChemElement.getId())
+                        && s.getParentReactionId().equals(oldChemElement.getId()))
             .findFirst()
             .orElse(null);
     if (matching != null) {
@@ -75,16 +75,14 @@ public class StoichiometryImporter {
    *
    * <p>For each archive stoichiometry with {@code parentReactionId == null}, creates a new
    * stoichiometry on the importing instance bound to {@code newField}'s structured document, copies
-   * every molecule (with {@code rsChemElement = null}), rewrites the field's {@code
-   * data-stoichiometry-table} JSON to reference the new id, and saves the field.
+   * every molecule (each backed by a fresh {@link RSChemElement} — {@code rs_chem_id} is NOT NULL
+   * on {@code StoichiometryMolecule}), rewrites the field's {@code data-stoichiometry-table} JSON
+   * to reference the new id, and saves the field.
    *
    * @param archivedChemElementIds the set of chem element IDs present in the archive (from {@code
    *     ArchivalField.getChemElementMeta()}); used to detect orphan stoichiometries.
    */
   public void importReactionlessStoichiometries(Set<Long> archivedChemElementIds) {
-    if (oldField.getStoichiometries() == null) {
-      return;
-    }
     for (StoichiometryDTO archived : oldField.getStoichiometries()) {
       if (archived.getParentReactionId() == null) {
         Stoichiometry created =

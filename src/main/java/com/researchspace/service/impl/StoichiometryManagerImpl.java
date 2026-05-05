@@ -165,8 +165,7 @@ public class StoichiometryManagerImpl extends GenericManagerImpl<Stoichiometry, 
   @Override
   public Stoichiometry createReactionlessFromArchive(
       StoichiometryDTO existing, Record record, User user) {
-    Stoichiometry stoichiometry = Stoichiometry.builder().record(record).build();
-    stoichiometry = save(stoichiometry);
+    Stoichiometry stoichiometry = createEmpty(record, user);
     if (existing.getMolecules() != null) {
       for (StoichiometryMoleculeDTO moleculeDTO : existing.getMolecules()) {
         RSChemElement chemElement = createNewRsChemElement(user, moleculeDTO);
