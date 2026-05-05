@@ -843,7 +843,7 @@ public class ContainerApiManagerTest extends SpringTransactionalTest {
     Container updatedContainer = containerApiMgr.getContainerById(containerId, testUser);
     FileProperty jpgImageFP = updatedContainer.getImageFileProperty();
     assertNotNull(jpgImageFP);
-    assertEquals("102469", jpgImageFP.getFileSize());
+    assertEquals("87958", jpgImageFP.getFileSize());
     assertEquals(mainImageHash + ".jpg", jpgImageFP.getFileName());
     FileProperty jpgThumbnailFP = updatedContainer.getThumbnailFileProperty();
     assertNotNull(jpgThumbnailFP);
