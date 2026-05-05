@@ -689,6 +689,10 @@ public abstract class ApiInventoryRecordInfo extends IdentifiableNameableApiObje
       result = new ApiSubSample();
     } else if (ApiInventoryRecordType.CONTAINER.equals(type)) {
       result = new ApiContainer();
+    } else if (ApiInventoryRecordType.INSTRUMENT.equals(type)) {
+      result = new ApiInstrument();
+    } else if (ApiInventoryRecordType.INSTRUMENT_TEMPLATE.equals(type)) {
+      result = new ApiInstrumentTemplate();
     } else {
       throw new IllegalArgumentException(
           "unrecognized type in provided ApiInventoryRecordInfo: " + type);

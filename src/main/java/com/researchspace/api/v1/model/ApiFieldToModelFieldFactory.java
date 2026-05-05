@@ -15,7 +15,7 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class ApiFieldToModelFieldFactory {
 
-  public InventoryEntityField apiInvenotryFieldToModelField(ApiInventoryEntityField field) {
+  public InventoryEntityField apiInventoryFieldToModelField(ApiInventoryEntityField field) {
     InventoryEntityField toAdd = null;
     switch (field.getType()) {
       case STRING:

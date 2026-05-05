@@ -255,7 +255,7 @@ public class ApiContainerInfo extends ApiInventoryRecordInfo {
         && !getCanStoreInstruments().equals(dbContainer.isCanStoreInstruments())) {
       if (!getCanStoreInstruments() && !dbContainer.getStoredInstruments().isEmpty()) {
         throw new IllegalArgumentException(
-            "Cannot set canStoreInstrument to false, as this container is already storing"
+            "Cannot set canStoreInstruments to false, as this container is already storing"
                 + " instruments");
       }
       dbContainer.setCanStoreInstruments(getCanStoreInstruments());

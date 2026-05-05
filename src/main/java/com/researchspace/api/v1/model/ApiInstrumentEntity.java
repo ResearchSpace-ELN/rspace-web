@@ -132,7 +132,7 @@ public abstract class ApiInstrumentEntity extends ApiInstrumentEntityInfo {
   @Override
   protected void nullifyListsForLimitedView(ApiInventoryRecordInfo apiInvRec) {
     super.nullifyListsForLimitedView(apiInvRec);
-    ApiInstrument apiInstrument = (ApiInstrument) apiInvRec;
+    ApiInstrumentEntity apiInstrument = (ApiInstrumentEntity) apiInvRec;
     apiInstrument.setFields(null);
     apiInstrument.setExtraFields(null);
     apiInstrument.setSharedWith(null);

@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @WebAppConfiguration
 @TestPropertySource(properties = {"inventory.instrument.enabled=true"})
@@ -42,7 +43,7 @@ public class InstrumentsApiControllerMVCIT extends API_MVC_InventoryTestBase {
             .andReturn();
 
     assertNull(result.getResolvedException());
-    ApiInstrument created = getFromJsonResponseBody(result, ApiInstrument.class);
+    ApiInstrument created = mvcUtils.getFromJsonResponseBody(result, ApiInstrument.class);
     assertNotNull(created);
     assertNotNull(created.getId());
     assertEquals("instrument-1", created.getName());
@@ -73,7 +74,7 @@ public class InstrumentsApiControllerMVCIT extends API_MVC_InventoryTestBase {
             .andReturn();
 
     assertNull(result.getResolvedException());
-    ApiInstrument retrieved = getFromJsonResponseBody(result, ApiInstrument.class);
+    ApiInstrument retrieved = mvcUtils.getFromJsonResponseBody(result, ApiInstrument.class);
     assertNotNull(retrieved);
     assertEquals(instrument.getId(), retrieved.getId());
     assertEquals("myInstrument", retrieved.getName());
@@ -131,7 +132,7 @@ public class InstrumentsApiControllerMVCIT extends API_MVC_InventoryTestBase {
                     apiKey, "/instruments", anyUser, "{\"name\": \"instrument-ok\"}"))
             .andExpect(status().isCreated())
             .andReturn();
-    ApiInstrument created = getFromJsonResponseBody(result, ApiInstrument.class);
+    ApiInstrument created = mvcUtils.getFromJsonResponseBody(result, ApiInstrument.class);
     assertEquals("instrument-ok", created.getName());
   }
 
@@ -153,7 +154,7 @@ public class InstrumentsApiControllerMVCIT extends API_MVC_InventoryTestBase {
             .andExpect(status().isCreated())
             .andReturn();
 
-    ApiInstrument created = getFromJsonResponseBody(result, ApiInstrument.class);
+    ApiInstrument created = mvcUtils.getFromJsonResponseBody(result, ApiInstrument.class);
     assertNotNull(created);
     assertNotNull(created.getId());
     assertEquals("instrument-in-grid", created.getName());
@@ -163,13 +164,13 @@ public class InstrumentsApiControllerMVCIT extends API_MVC_InventoryTestBase {
             .perform(getInstrumentById(anyUser, apiKey, created.getId()))
             .andExpect(status().isOk())
             .andReturn();
-    ApiInstrument retrieved = getFromJsonResponseBody(getResult, ApiInstrument.class);
+    ApiInstrument retrieved = mvcUtils.getFromJsonResponseBody(getResult, ApiInstrument.class);
     assertNotNull(retrieved);
     assertEquals(created.getId(), retrieved.getId());
     assertEquals("instrument-in-grid", retrieved.getName());
   }
 
-  private org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
+  private MockHttpServletRequestBuilder
       getInstrumentById(User user, String apiKey, Long instrumentId) {
     return createBuilderForGet(API_VERSION.ONE, apiKey, "/instruments/{id}", user, instrumentId);
   }

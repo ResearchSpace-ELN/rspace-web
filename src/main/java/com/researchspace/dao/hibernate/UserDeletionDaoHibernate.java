@@ -265,7 +265,7 @@ public class UserDeletionDaoHibernate implements UserDeletionDao {
           format(
               "delete sfRelTable from %s_AUD sfRelTable left join InventoryEntityField ief on"
                   + " sfRelTable.inventoryEntityField_id = ief.id left join InstrumentEntity ins on"
-                  + " ief.sample_id = ins.id"
+                  + " ief.instrumentEntity_id = ins.id"
                   + " where ins.owner_id = :id",
               table));
       execute(
@@ -274,7 +274,7 @@ public class UserDeletionDaoHibernate implements UserDeletionDao {
           format(
               "delete sfRelTable from %s sfRelTable left join InventoryEntityField ief on"
                   + " sfRelTable.inventoryEntityField_id = ief.id left join InstrumentEntity ins on"
-                  + " ief.sample_id = ins.id"
+                  + " ief.instrumentEntity_id = ins.id"
                   + " where ins.owner_id = :id",
               table));
     }

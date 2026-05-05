@@ -56,7 +56,7 @@ abstract class SampleTemplateFieldValidator implements Validator {
     if (apiTemplateField.getType() != null) {
       try {
         // this internally calls model.validate
-        apiFieldToModelFieldFactory.apiInvenotryFieldToModelField(apiTemplateField);
+        apiFieldToModelFieldFactory.apiInventoryFieldToModelField(apiTemplateField);
       } catch (IllegalArgumentException e) {
         errors.rejectValue(
             "content",

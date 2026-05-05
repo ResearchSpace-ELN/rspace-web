@@ -749,7 +749,7 @@ public class SampleApiManagerImpl extends InventoryApiManagerImpl<Sample>
 
   private void createFields(ApiSampleTemplatePost apiSample, Sample sample) {
     for (ApiInventoryEntityField field : apiSample.getFields()) {
-      InventoryEntityField toAdd = apiFieldToModelFieldFactory.apiInvenotryFieldToModelField(field);
+      InventoryEntityField toAdd = apiFieldToModelFieldFactory.apiInventoryFieldToModelField(field);
       sample.addSampleField(toAdd);
     }
   }
@@ -783,7 +783,7 @@ public class SampleApiManagerImpl extends InventoryApiManagerImpl<Sample>
     for (ApiInventoryEntityField apiField : apiSample.getFields()) {
       if (apiField.isNewFieldRequest()) {
         InventoryEntityField toAdd =
-            apiFieldToModelFieldFactory.apiInvenotryFieldToModelField(apiField);
+            apiFieldToModelFieldFactory.apiInventoryFieldToModelField(apiField);
         dbTemplate.addSampleField(toAdd);
         changed = true;
       }

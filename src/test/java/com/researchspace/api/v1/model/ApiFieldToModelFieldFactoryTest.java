@@ -30,7 +30,7 @@ public class ApiFieldToModelFieldFactoryTest {
       any.setContent("some content");
       any.setType(type);
       any.setName("afield");
-      assertNotNull(factory.apiInvenotryFieldToModelField(any));
+      assertNotNull(factory.apiInventoryFieldToModelField(any));
     }
   }
 
@@ -49,17 +49,17 @@ public class ApiFieldToModelFieldFactoryTest {
     ApiInventoryEntityField anyApiField = new ApiInventoryEntityField();
     anyApiField.setType(ApiFieldType.CHOICE);
     // no definition
-    assertIllegalArgumentException(() -> factory.apiInvenotryFieldToModelField(anyApiField));
+    assertIllegalArgumentException(() -> factory.apiInventoryFieldToModelField(anyApiField));
 
     // no options
     ApiInventoryFieldDef def = new ApiInventoryFieldDef();
     anyApiField.setDefinition(def);
-    assertIllegalArgumentException(() -> factory.apiInvenotryFieldToModelField(anyApiField));
+    assertIllegalArgumentException(() -> factory.apiInventoryFieldToModelField(anyApiField));
 
     // valid options, no content (i.e no default preselected options)
     def.setOptions(Arrays.asList("a=b", "a=c"));
     anyApiField.setContent("");
-    assertNotNull(factory.apiInvenotryFieldToModelField(anyApiField));
+    assertNotNull(factory.apiInventoryFieldToModelField(anyApiField));
   }
 
   @Test
@@ -67,17 +67,17 @@ public class ApiFieldToModelFieldFactoryTest {
     ApiInventoryEntityField anyApiField = new ApiInventoryEntityField();
     anyApiField.setType(ApiFieldType.RADIO);
     // no definition
-    assertIllegalArgumentException(() -> factory.apiInvenotryFieldToModelField(anyApiField));
+    assertIllegalArgumentException(() -> factory.apiInventoryFieldToModelField(anyApiField));
 
     // no options
     ApiInventoryFieldDef def = new ApiInventoryFieldDef();
     anyApiField.setDefinition(def);
-    assertIllegalArgumentException(() -> factory.apiInvenotryFieldToModelField(anyApiField));
+    assertIllegalArgumentException(() -> factory.apiInventoryFieldToModelField(anyApiField));
 
     // valid options, no content (i.e no default preselected options)
     def.setOptions(Arrays.asList("a=b", "a=c"));
     anyApiField.setContent("");
-    assertNotNull(factory.apiInvenotryFieldToModelField(anyApiField));
+    assertNotNull(factory.apiInventoryFieldToModelField(anyApiField));
   }
 
   @Test
@@ -102,8 +102,8 @@ public class ApiFieldToModelFieldFactoryTest {
     any.setContent(invalid);
     any.setType(type);
     any.setName("afield");
-    assertIllegalArgumentException(() -> factory.apiInvenotryFieldToModelField(any));
+    assertIllegalArgumentException(() -> factory.apiInventoryFieldToModelField(any));
     any.setContent(valid);
-    assertNotNull(factory.apiInvenotryFieldToModelField(any));
+    assertNotNull(factory.apiInventoryFieldToModelField(any));
   }
 }
