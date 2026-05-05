@@ -236,6 +236,96 @@ All schema changes via Liquibase changesets in `src/main/resources/sqlUpdates/`.
 
 STOMP over WebSocket at `/ws` endpoint with SockJS fallback. Spring's `@EnableWebSocketMessageBroker` with simple broker for `/topic` prefixed destinations. Origin validation via `OriginRefererChecker`.
 
+## Isolated Database (Agent Tasks)
+
+When running tests that require a database (Spring integration tests or IT tests — not
+pure unit tests with `-Dfast=true`) or running the application during a task, spin up
+an isolated MariaDB container so your work doesn't touch the developer's local database.
+
+### Step 1 — Check Docker availability
+
+```bash
+docker info > /dev/null 2>&1
+```
+
+If this fails, skip to **Fallback** below.
+
+### Step 2 — Start the container
+
+Run the following as a single shell block so all variables remain in scope for later steps.
+Also write state to `/tmp/rspace-agent-db.env` so it survives across separate shell invocations.
+
+```bash
+AGENT_DB_NAME="rspace-agent-db-$$"
+AGENT_DB_PORT=$(python3 -c "import socket; s=socket.socket(); s.bind(('',0)); print(s.getsockname()[1]); s.close()")
+AGENT_DB_PROPS="src/main/resources/deployments/dev/deployment.properties"
+AGENT_DB_ORIG=$(grep "^jdbc\.url=" "$AGENT_DB_PROPS" || echo "")
+printf 'AGENT_DB_NAME=%s\nAGENT_DB_PORT=%s\nAGENT_DB_ORIG=%s\n' \
+  "$AGENT_DB_NAME" "$AGENT_DB_PORT" "$AGENT_DB_ORIG" > /tmp/rspace-agent-db.env
+
+docker run -d \
+  --name "$AGENT_DB_NAME" \
+  -e MYSQL_ROOT_PASSWORD=rootpwd \
+  -e MYSQL_DATABASE=rspace \
+  -e MYSQL_USER=rspacedbuser \
+  -e MYSQL_PASSWORD=rspacedbpwd \
+  -p "127.0.0.1:${AGENT_DB_PORT}:3306" \
+  mariadb:10.11 \
+  --character-set-server=utf8mb4 \
+  --collation-server=utf8mb4_unicode_ci
+
+until docker exec "$AGENT_DB_NAME" mariadb-admin ping -u root -prootpwd --silent 2>/dev/null; do
+  sleep 1
+done
+```
+
+### Step 3 — Patch the JDBC URL
+
+```bash
+. /tmp/rspace-agent-db.env
+# portable sed: works on both macOS and Linux
+sed -i.bak '/^jdbc\.url=/d' "$AGENT_DB_PROPS" && rm -f "${AGENT_DB_PROPS}.bak"
+echo "jdbc.url=jdbc:mysql://127.0.0.1:${AGENT_DB_PORT}/rspace" >> "$AGENT_DB_PROPS"
+```
+
+### Step 4 — Initialise the schema
+
+On the **first** Maven test/run command in the task, add `-Denvironment=drop-recreate-db`
+to create the schema in the fresh container. For all subsequent Maven commands in the same
+task, use `-Denvironment=keepdbintact`. Note: pure unit tests (`-Dfast=true`) don't touch
+the DB and don't need either flag.
+
+### Step 5 — Cleanup (always, even on failure)
+
+At the end of the task (or if the task is interrupted), restore the properties file and
+stop the container:
+
+```bash
+. /tmp/rspace-agent-db.env
+sed -i.bak '/^jdbc\.url=/d' "$AGENT_DB_PROPS" && rm -f "${AGENT_DB_PROPS}.bak"
+if [ -n "$AGENT_DB_ORIG" ]; then
+  echo "$AGENT_DB_ORIG" >> "$AGENT_DB_PROPS"
+fi
+docker stop "$AGENT_DB_NAME" && docker rm "$AGENT_DB_NAME"
+rm -f /tmp/rspace-agent-db.env
+```
+
+If you can't clean up (e.g. the session crashed), the developer can run:
+
+```bash
+docker ps -a --filter "name=rspace-agent-db-" --format '{{.Names}}' | xargs docker rm -f
+```
+
+### Fallback (Docker unavailable)
+
+Skip Steps 2–3. Assume a local MariaDB instance is running with:
+- DB name: `rspace`
+- User: `rspacedbuser` / `rspacedbpwd`
+- URL: `jdbc:mysql://localhost:3306/rspace` (the default in `defaultDeployment.properties`)
+
+Do **not** drop or recreate this database — use `-Denvironment=keepdbintact` (or the equivalent
+flag for the run command) to preserve the developer's existing data.
+
 ## Common Development Pitfalls
 
 1. **Java language level:** Source is Java 11 (`<release>11</release>`) despite using JDK 17. Do not use records, sealed classes, text blocks, or other post-Java 11 features.
