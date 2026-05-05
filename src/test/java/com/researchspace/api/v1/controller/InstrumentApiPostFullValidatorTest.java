@@ -82,8 +82,7 @@ public class InstrumentApiPostFullValidatorTest extends InventoryRecordValidatio
   public void validateFieldDefinitionsAndContent() {
     User testUser = createInitAndLoginAnyUser();
     ApiInstrument apiInstrumentPost = new ApiInstrument();
-    ApiInstrumentFullPost fullPost =
-        new ApiInstrumentFullPost();
+    ApiInstrumentFullPost fullPost = new ApiInstrumentFullPost();
     fullPost.setApiInstrument(apiInstrumentPost);
     fullPost.setUser(testUser);
     fullPost.setTemplate(createInstrumentTemplateWithNumberAndTextFields());
