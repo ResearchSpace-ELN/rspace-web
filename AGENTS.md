@@ -260,8 +260,9 @@ AGENT_DB_NAME="rspace-agent-db-$$"
 AGENT_DB_PORT=$(python3 -c "import socket; s=socket.socket(); s.bind(('',0)); print(s.getsockname()[1]); s.close()")
 AGENT_DB_PROPS="src/main/resources/deployments/dev/deployment.properties"
 AGENT_DB_ORIG=$(grep "^jdbc\.url=" "$AGENT_DB_PROPS" || echo "")
-printf 'AGENT_DB_NAME=%s\nAGENT_DB_PORT=%s\nAGENT_DB_ORIG=%s\n' \
-  "$AGENT_DB_NAME" "$AGENT_DB_PORT" "$AGENT_DB_ORIG" > /tmp/rspace-agent-db.env
+printf 'AGENT_DB_NAME=%s\nAGENT_DB_PORT=%s\n' \
+  "$AGENT_DB_NAME" "$AGENT_DB_PORT" > /tmp/rspace-agent-db.env
+printf 'AGENT_DB_ORIG=%q\n' "$AGENT_DB_ORIG" >> /tmp/rspace-agent-db.env
 
 docker run -d \
   --name "$AGENT_DB_NAME" \
@@ -313,7 +314,7 @@ rm -f /tmp/rspace-agent-db.env
 If you can't clean up (e.g. the session crashed), the developer can run:
 
 ```bash
-docker ps -a --filter "name=rspace-agent-db-" --format '{{.Names}}' | xargs docker rm -f
+docker ps -a --filter "name=rspace-agent-db-" --format '{{.Names}}' | while read -r c; do docker rm -f "$c"; done
 ```
 
 ### Fallback (Docker unavailable)
