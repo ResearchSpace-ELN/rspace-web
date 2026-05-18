@@ -5,7 +5,7 @@ See [AGENTS.md](./AGENTS.md) for full project context (build, test, architecture
 ## PR Descriptions
 
 When creating or updating GitHub pull request descriptions:
-- Start by stating the investigation/fix was done by GitHub Copilot AI agent on behalf of the user
+- Start by stating the investigation/fix was done by Claude AI agent on behalf of the user
 - Follow with a one-sentence summary of what the PR fixes or adds
 - Keep the description concise — avoid exhaustive detail
 - Include a **Root causes** section (brief bullet points) when it's a bug fix
@@ -22,7 +22,7 @@ When creating or updating GitHub pull request descriptions:
 ## Jira Comments
 
 When adding comments to Jira tickets:
-- Start by stating the investigation/fix was done by GitHub Copilot AI agent on behalf of the user
+- Start by stating the investigation/fix was done by Claude AI agent on behalf of the user
 - Keep comments brief — aim for under 10 lines
 - Cover: root cause (1-2 sentences), fix (1-2 sentences), links to PRs or commits
 - Use **bold** for section labels (Root cause, Fix, PRs)
