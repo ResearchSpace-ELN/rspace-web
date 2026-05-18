@@ -13,6 +13,7 @@ import BaseSearch from "../../components/BaseSearch";
 import DMPToolMenuItem from "../../eln-dmp-integration/DMPTool/DMPToolMenuItem";
 import ArgosMenuItem from "../../eln-dmp-integration/Argos/ArgosMenuItem";
 import DMPOnlineMenuItem from "../../eln-dmp-integration/DMPOnline/DMPOnlineMenuItem";
+import DMPAssistantMenuItem from "../../eln-dmp-integration/DMPAssistant/DMPAssistantMenuItem";
 import IrodsWrapper from "./IrodsWrapper";
 import Alerts from "../../components/Alerts/Alerts";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -179,6 +180,7 @@ export default function GalleryToolbar(): React.ReactNode {
         <DMPToolMenuItem onClick={closeImportMenu} />
         <ArgosMenuItem onClick={closeImportMenu} />
         <DMPOnlineMenuItem onClick={closeImportMenu} />
+        <DMPAssistantMenuItem onClick={closeImportMenu} />
         {/*
           <MenuItem id="fromDropbox" style={{display: "none"}} data-test-id="gallery-import-dropbpx" onClick={closeImportMenu}>From Dropbox</MenuItem>
           <MenuItem id="fromBox" style={{display: "none"}} data-test-id="gallery-import-box" onClick={closeImportMenu}>From Box</MenuItem>

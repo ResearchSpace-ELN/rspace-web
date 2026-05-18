@@ -81,6 +81,9 @@ export type IntegrationStates = {
   DIGITALCOMMONSDATA: IntegrationState<{
     ACCESS_TOKEN: Optional<string>;
   }>;
+  DMPASSISTANT: IntegrationState<{
+    ACCESS_TOKEN: Optional<string>;
+  }>;
   DMPONLINE: IntegrationState<{
     ACCESS_TOKEN: Optional<string>;
   }>;
@@ -350,6 +353,17 @@ function decodeDigitalCommonsData(
           data.options,
           "DIGITAL_COMMONS_DATA_USER_TOKEN"
       ),
+    },
+  };
+}
+
+function decodeDmpAssistant(
+    data: FetchedState
+): IntegrationStates["DMPASSISTANT"] {
+  return {
+    mode: parseState(data),
+    credentials: {
+      ACCESS_TOKEN: parseCredentialString(data.options, "ACCESS_TOKEN"),
     },
   };
 }
@@ -894,6 +908,7 @@ function decodeIntegrationStates(data: {
     CLUSTERMARKET: decodeClustermarket(data.CLUSTERMARKET),
     DATAVERSE: decodeDataverse(data.DATAVERSE),
     DIGITALCOMMONSDATA: decodeDigitalCommonsData(data.DIGITALCOMMONSDATA),
+    DMPASSISTANT: decodeDmpAssistant(data.DMPASSISTANT),
     DMPONLINE: decodeDmponline(data.DMPONLINE),
     DMPTOOL: decodeDmpTool(data.DMPTOOL),
     DROPBOX: decodeDropbox(data.DROPBOX),
@@ -1019,6 +1034,19 @@ const encodeIntegrationState = <I extends Integration>(
         data.credentials;
     return {
       name: "DIGITALCOMMONSDATA",
+      available: data.mode !== "UNAVAILABLE",
+      enabled: data.mode === "ENABLED",
+      options: creds.ACCESS_TOKEN.map((token) => ({
+        ACCESS_TOKEN: token,
+      })).orElse({}),
+    };
+  }
+  if (integration === "DMPASSISTANT") {
+    // @ts-expect-error Looks like this is a bug in TypeScript?
+    const creds: IntegrationStates["DMPASSISTANT"]["credentials"] =
+        data.credentials;
+    return {
+      name: "DMPASSISTANT",
       available: data.mode !== "UNAVAILABLE",
       enabled: data.mode === "ENABLED",
       options: creds.ACCESS_TOKEN.map((token) => ({
@@ -1532,6 +1560,10 @@ export function useIntegrationsEndpoint(): {
                 return decodeDigitalCommonsData(
                     responseData.data
                 ) as IntegrationStates[I];
+              case "DMPASSISTANT":
+                return decodeDmpAssistant(
+                    responseData.data
+                ) as IntegrationStates[I];
               case "DMPONLINE":
                 return decodeDmponline(responseData.data) as IntegrationStates[I];
               case "DMPTOOL":
@@ -1645,6 +1677,8 @@ export function useIntegrationsEndpoint(): {
           return decodeDigitalCommonsData(
               response.data.data
           ) as IntegrationStates[I];
+        case "DMPASSISTANT":
+          return decodeDmpAssistant(response.data.data) as IntegrationStates[I];
         case "DMPONLINE":
           return decodeDmponline(response.data.data) as IntegrationStates[I];
         case "DMPTOOL":
