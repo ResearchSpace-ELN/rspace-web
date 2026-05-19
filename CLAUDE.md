@@ -315,8 +315,8 @@ DevDocs/                           # Developer documentation
 
 ## Agent-Specific Config Files
 
-- **AGENTS.md** (this file): Primary instructions for all AI agents
-- **CLAUDE.md**: Points to AGENTS.md — for Claude Code / Anthropic agents
+- **AGENTS.md**: Primary instructions for all AI agents, Claude is not reading this even when directed to do so in Claude.md (this file). Hence we make a copy of Agents.md in this file.
+- **CLAUDE.md**: A copy of AGENTS.md — for Claude Code / Anthropic agents
 - **.github/copilot-instructions.md**: Quick-reference for GitHub Copilot — points to AGENTS.md
 
 ## Repo-Local Agent Skills
