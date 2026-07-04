@@ -13,12 +13,9 @@ export default function IGSN(): React.ReactNode {
   const sidebarId = React.useId();
   const [selectedIgsns, setSelectedIgsns] = React.useState<RsSet<Identifier>>(new RsSet([]));
 
-  React.useEffect(() => {
-    document.title = "Manage IGSN IDs | RSpace Inventory";
-  }, []);
-
   return (
     <>
+      <title>Manage IGSN IDs | RSpace Inventory</title>
       <Header sidebarId={sidebarId} />
       <Box sx={{ display: "flex", height: "calc(100% - 48px)" }}>
         <Sidebar id={sidebarId} />

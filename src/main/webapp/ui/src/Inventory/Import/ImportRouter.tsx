@@ -24,10 +24,6 @@ export default function ImportRouter(): React.ReactNode {
     importStore.importData?.updateRecordType(new URLSearchParams(location.search));
   }, [location.search]);
 
-  useEffect(() => {
-    document.title = "Import CSV | RSpace Inventory";
-  }, []);
-
   const sidebarId = React.useId();
   const mainContentRef = useLandmark("Import main content");
 
@@ -35,6 +31,7 @@ export default function ImportRouter(): React.ReactNode {
   if (recordType === "SAMPLES" || recordType === "CONTAINERS" || recordType === "SUBSAMPLES") {
     return (
       <NavigationContext>
+        <title>Import CSV | RSpace Inventory</title>
         <Header sidebarId={sidebarId} />
         <Box sx={{ display: "flex", height: "calc(100% - 48px)" }}>
           <Sidebar id={sidebarId} />

@@ -8,7 +8,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes, useParams } from "react-router";
 import axios from "@/common/axios";
-import Result from "@/util/result";
 import createAccentedTheme from "../../accentedTheme";
 import { ACCENT_COLOR } from "../../assets/branding/rspace/gallery";
 import Alerts from "../../components/Alerts/Alerts";
@@ -131,16 +130,20 @@ const WholePage = ({
     trackEvent("user:load:page:gallery", { section: selectedSection });
   }, []);
 
-  React.useEffect(() => {
+  const pageTitle = React.useMemo(() => {
     try {
-      Result.lift2<ReadonlyArray<GalleryFile>, GallerySection, void>((p, s) => {
-        document.title = `${title({ path: p, section: s })} | RSpace Gallery`;
-      })(FetchingData.getSuccessValue(path), FetchingData.getSuccessValue(selectedSection));
+      return FetchingData.getSuccessValue(path)
+        .flatMap((p) =>
+          FetchingData.getSuccessValue(selectedSection).map(
+            (s) => `${title({ path: p, section: s })} | RSpace Gallery`,
+          ),
+        )
+        .orElse(null);
     } catch (e) {
-      console.error("Error setting document title", e);
-      document.title = "RSpace Gallery";
+      console.error("Error computing document title", e);
+      return "RSpace Gallery";
     }
-  }, [listingOf, path]);
+  }, [path, selectedSection, title]);
 
   return (
     <Box
@@ -159,6 +162,7 @@ const WholePage = ({
         height: "100%",
       }}
     >
+      {pageTitle !== null && <title>{pageTitle}</title>}
       <CallableImagePreview>
         <CallablePdfPreview>
           <CallableAsposePreview>
@@ -411,6 +415,10 @@ export function Gallery() {
   return (
     <StyledEngineProvider injectFirst enableCssLayer>
       <CssBaseline />
+      <meta
+        name="theme-color"
+        content={`hsl(${ACCENT_COLOR.background.hue}, ${ACCENT_COLOR.background.saturation}%, ${ACCENT_COLOR.background.lightness}%)`}
+      />
       <ThemeProvider theme={createAccentedTheme(ACCENT_COLOR)}>
         <Alerts>
           <QueryClientProvider client={queryClient}>
@@ -485,10 +493,5 @@ window.addEventListener("load", () => {
         </BrowserRouter>
       </React.StrictMode>,
     );
-
-    const meta = document.createElement("meta");
-    meta.name = "theme-color";
-    meta.content = `hsl(${ACCENT_COLOR.background.hue}, ${ACCENT_COLOR.background.saturation}%, ${ACCENT_COLOR.background.lightness}%)`;
-    document.head?.appendChild(meta);
   }
 });

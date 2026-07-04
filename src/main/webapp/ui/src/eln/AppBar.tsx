@@ -37,6 +37,8 @@ window.addEventListener("load", () => {
     container: shadow,
   });
 
+  const branding = color(currentPage());
+
   const root = createRoot(wrapper);
   root.render(
     <React.StrictMode>
@@ -45,7 +47,11 @@ window.addEventListener("load", () => {
           <Analytics>
             <ErrorBoundary>
               <CssBaseline />
-              <ThemeProvider theme={createAccentedTheme(color(currentPage()))}>
+              <meta
+                name="theme-color"
+                content={`hsl(${branding.background.hue}, ${branding.background.saturation}%, ${branding.background.lightness}%)`}
+              />
+              <ThemeProvider theme={createAccentedTheme(branding)}>
                 <Box sx={{ fontSize: "1rem", lineHeight: "1.5" }}>
                   {/*
                    * We use a DialogBoundary to keep the menu inside the shadow DOM
@@ -62,11 +68,4 @@ window.addEventListener("load", () => {
       </CacheProvider>
     </React.StrictMode>,
   );
-
-  const meta = document.createElement("meta");
-  meta.name = "theme-color";
-  meta.content = `hsl(${color(currentPage()).background.hue}, ${
-    color(currentPage()).background.saturation
-  }%, ${color(currentPage()).background.lightness}%)`;
-  document.head?.appendChild(meta);
 });
