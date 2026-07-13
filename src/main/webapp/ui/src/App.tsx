@@ -67,18 +67,15 @@ function App(): React.ReactNode {
   );
 }
 
-window.addEventListener("load", () => {
-  const domContainer = document.getElementById("app");
-  window.scrollTo(0, 1);
+const domContainer = document.getElementById("app");
+window.scrollTo(0, 1);
 
-  if (domContainer) {
-    const root = createRoot(domContainer);
-    root.render(
-      <I18nRoot namespaces={["inventory", "common", "about"]} fallback={<LoaderCircular />}>
-        <App />
-      </I18nRoot>,
-    );
-  }
-});
+if (domContainer) {
+  createRoot(domContainer).render(
+    <I18nRoot namespaces={["inventory", "common", "about"]} fallback={<LoaderCircular />}>
+      <App />
+    </I18nRoot>,
+  );
+}
 
 export default observer(App);
