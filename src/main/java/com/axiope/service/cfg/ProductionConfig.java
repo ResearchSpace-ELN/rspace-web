@@ -150,6 +150,7 @@ public class ProductionConfig extends BaseConfig {
   public GlobalInitManager globalInitManager() {
     GlobalInitManagerImpl mgr = new GlobalInitManagerImpl();
     List<IApplicationInitialisor> inits = new ArrayList<>();
+    inits.add(featureFlagInitialisor());
     inits.add(licenseServerChecker());
     inits.add(fileStoreRootDetector());
     inits.add(indexer());
@@ -173,6 +174,7 @@ public class ProductionConfig extends BaseConfig {
   public GlobalInitManager globalInitManagerTest() {
     GlobalInitManagerImpl mgr = new GlobalInitManagerImpl();
     List<IApplicationInitialisor> inits = new ArrayList<>();
+    inits.add(featureFlagInitialisor());
     inits.add(loadfromCSV());
     inits.add(indexer());
     inits.add(chemistryIndexer());

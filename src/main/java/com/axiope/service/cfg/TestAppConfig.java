@@ -122,6 +122,7 @@ public class TestAppConfig extends BaseConfig {
   public GlobalInitManager globalInitManager() {
     GlobalInitManagerImpl mgr = new GlobalInitManagerImpl();
     List<IApplicationInitialisor> inits = new ArrayList<IApplicationInitialisor>();
+    inits.add(featureFlagInitialisor());
     inits.add(fileStoreRootDetector());
     inits.add(indexer());
     inits.add(chemistryIndexer());
